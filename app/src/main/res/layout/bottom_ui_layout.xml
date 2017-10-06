@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_ui"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageButton
+        android:id="@+id/main_menu_button"
+        style="@style/buttonIconStyle"
+
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+
+        android:src="@drawable/ic_undo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:ignore="RtlHardcoded"/>
+
+    <GridLayout
+        android:id="@+id/main_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/expand_menu"
+        android:columnCount="3"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/main_menu_button"
+        app:layout_constraintLeft_toLeftOf="@+id/main_menu_button">
+
+        <LinearLayout
+            style="@style/buttonLayoutStyle">
+
+            <ImageButton
+                android:id="@+id/save_button"
+                style="@style/buttonIconStyle"
+                android:src="@drawable/ic_undo"/>
+
+            <TextView
+                android:id="@+id/save_text"
+                style="@style/buttonTextStyle"
+                android:text="保存"/>
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/buttonLayoutStyle">
+
+            <ImageButton
+                android:id="@+id/share_button"
+                style="@style/buttonIconStyle"
+                android:src="@drawable/ic_undo"/>
+
+            <TextView
+                android:id="@+id/share_text"
+                style="@style/buttonTextStyle"
+                android:text="扫码分享"/>
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/buttonLayoutStyle">
+
+            <ImageButton
+                android:id="@+id/email_button"
+                style="@style/buttonIconStyle"
+                android:src="@drawable/ic_undo"/>
+
+            <TextView
+                android:id="@+id/email_text"
+                style="@style/buttonTextStyle"
+                android:text="邮件发送"/>
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/buttonLayoutStyle">
+
+            <ImageButton
+                android:id="@+id/change_bg_button"
+                style="@style/buttonIconStyle"
+                android:src="@drawable/ic_undo"/>
+
+            <TextView
+                android:id="@+id/change_bg_text"
+                style="@style/buttonTextStyle"
+                android:text="背景"/>
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/buttonLayoutStyle">
+
+            <ImageButton
+                android:id="@+id/insert_img_button"
+                style="@style/buttonIconStyle"
+                android:src="@drawable/ic_undo"/>
+
+            <TextView
+                android:id="@+id/insert_img_text"
+                style="@style/buttonTextStyle"
+                android:text="插入图片"/>
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/buttonLayoutStyle">
+
+            <ImageButton
+                android:id="@+id/close_button"
+                style="@style/buttonIconStyle"
+                android:src="@drawable/ic_undo"/>
+
+            <TextView
+                android:id="@+id/close_text"
+                style="@style/buttonTextStyle"
+                android:text="关闭"/>
+        </LinearLayout>
+    </GridLayout>
+
+    <LinearLayout
+        android:id = "@+id/paint_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintVertical_bias="1.0"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp">
+        <ImageButton
+            android:id="@+id/pen_button"
+            android:src="@drawable/ic_pen"
+            style="@style/buttonIconStyle"/>
+
+        <ImageButton
+            android:id = "@+id/erase_menu_button"
+            android:src="@drawable/ic_eraser"
+            style="@style/buttonIconStyle"/>
+        <ImageButton
+            android:id = "@+id/select_drag_button"
+            style="@style/buttonIconStyle"/>
+        <ImageButton
+            android:id = "@+id/undo_button"
+            style="@style/buttonIconStyle"/>
+        <ImageButton
+            android:id = "@+id/redo_button"
+            style="@style/buttonIconStyle"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id = "@+id/page_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintHorizontal_bias="1.0"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp">
+        <ImageButton
+            android:id="@+id/new_page_button"
+            style="@style/buttonIconStyle"/>
+
+        <ImageButton
+            android:id = "@+id/prev_page_button"
+            style="@style/buttonIconStyle"/>
+        <ImageButton
+            android:id = "@+id/select_page_button"
+            style="@style/buttonIconStyle"
+            tools:ignore="ContentDescription"/>
+        <ImageButton
+            android:id = "@+id/next_page_button"
+            style="@style/buttonIconStyle"/>
+
+    </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/seekBar2"
+        android:layout_width="300dp"
+        android:layout_height="30dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintVertical_bias="0.0"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/paint_menu"
+        android:layout_marginStart="0dp"
+        app:layout_constraintLeft_toLeftOf="@+id/paint_menu">
+
+        <ImageButton
+            android:id="@+id/erase_button"
+            style="@style/buttonIconStyle"/>
+        <android.support.v4.widget.Space
+            android:layout_width="10dp"
+            android:layout_height="match_parent"/>
+
+        <com.SiWei.PaintingApp.CustomSlideToUnlockView
+            android:id="@+id/slider"
+            android:layout_width="110dp"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>

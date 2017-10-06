@@ -13,10 +13,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.widget.GridLayout;
 import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Toast;
 
 import java.io.File;
@@ -24,20 +25,25 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, PaletteView.Callback,Handler.Callback {
+import static com.SiWei.PaintingApp.R.id.main_menu;
+import static com.SiWei.PaintingApp.R.id.slider;
 
-    private View mUndoView;
-    private View mRedoView;
-    private View mPenView;
-    private View mEraserView;
-    private View mClearView;
+public class MainActivity extends AppCompatActivity implements PaletteView.Callback,View.OnClickListener, CustomSlideToUnlockView.CallBack,View.OnTouchListener, SeekBar.OnSeekBarChangeListener, Handler.Callback {
+
+//    private View mUndoView;
+//    private View mRedoView;
+//    private View mPenView;
+//    private View mEraserView;
+//    private View mClearView;
     private PaletteView mPaletteView;
     private ProgressDialog mSaveProgressDlg;
     private static final int MSG_SAVE_SUCCESS = 1;
     private static final int MSG_SAVE_FAILED = 2;
     private Handler mHandler;
 
-    private  SeekBar mSeekBar;
+    private SeekBar mSeekBar;
+    private GridLayout mMainMenu;
+    private CustomSlideToUnlockView mCustomSlideToUnlockView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,49 +52,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         mPaletteView = (PaletteView) findViewById(R.id.palette);
-        mPaletteView.setCallback(this);
+       // mPaletteView.setCallback(this);
+        mPaletteView.setOnTouchListener(this);
 
-        mUndoView = findViewById(R.id.undo);
-        mRedoView = findViewById(R.id.redo);
-        mPenView = findViewById(R.id.pen);
-        mPenView.setSelected(true);
-        mEraserView = findViewById(R.id.eraser);
-        mClearView = findViewById(R.id.clear);
-
-        mUndoView.setOnClickListener(this);
-        mRedoView.setOnClickListener(this);
-        mPenView.setOnClickListener(this);
-        mEraserView.setOnClickListener(this);
-        mClearView.setOnClickListener(this);
-
-        mUndoView.setEnabled(false);
-        mRedoView.setEnabled(false);
+//        mUndoView = findViewById(R.id.undo);
+//        mRedoView = findViewById(R.id.redo);
+//        mPenView = findViewById(R.id.pen);
+//        mPenView.setSelected(true);
+//        mEraserView = findViewById(R.id.eraser);
+//        mClearView = findViewById(R.id.clear);
+//
+//        mUndoView.setOnClickListener(this);
+//        mRedoView.setOnClickListener(this);
+//        mPenView.setOnClickListener(this);
+//        mEraserView.setOnClickListener(this);
+//        mClearView.setOnClickListener(this);
+//
+//        mUndoView.setEnabled(false);
+//        mRedoView.setEnabled(false);
 
         mHandler = new Handler(this);
 
-        mSeekBar = (SeekBar) findViewById(R.id.seekBar);
+        mSeekBar = (SeekBar) findViewById(R.id.seekBar2);
         mSeekBar.setMax(100);
         mSeekBar.setProgress(10);
-        mSeekBar.setOnSeekBarChangeListener(seekBarChange);
+        mSeekBar.setOnSeekBarChangeListener(this);
+
+        mMainMenu = (GridLayout) findViewById(main_menu);
+
+        mCustomSlideToUnlockView = (CustomSlideToUnlockView) findViewById(slider);
+        mCustomSlideToUnlockView.setmCallBack(this);
+
     }
-    private OnSeekBarChangeListener seekBarChange = new OnSeekBarChangeListener() {
 
-        @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {
-        }
 
-        @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {
-        }
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+    }
 
-        @Override
-        public void onProgressChanged(SeekBar seekBar, int progress,
-                                      boolean fromUser) {
-            mPaletteView.setPenRawSize(progress);
-            mPaletteView.setEraserSize(progress);
-            Log.v("asdf", toString().valueOf(progress));
-        }
-    };
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress,
+                                  boolean fromUser) {
+        mPaletteView.setPenRawSize(progress);
+        mPaletteView.setEraserSize(progress);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -96,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mHandler.removeMessages(MSG_SAVE_SUCCESS);
     }
 
-    private void initSaveProgressDlg(){
+    private void initSaveProgressDlg() {
         mSaveProgressDlg = new ProgressDialog(this);
         mSaveProgressDlg.setMessage("正在保存,请稍候...");
         mSaveProgressDlg.setCancelable(false);
@@ -110,14 +122,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean handleMessage(Message msg) {
-        switch (msg.what){
+        switch (msg.what) {
             case MSG_SAVE_FAILED:
                 mSaveProgressDlg.dismiss();
-                Toast.makeText(this,"保存失败",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "保存失败", Toast.LENGTH_SHORT).show();
                 break;
             case MSG_SAVE_SUCCESS:
                 mSaveProgressDlg.dismiss();
-                Toast.makeText(this,"画板已保存",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "画板已保存", Toast.LENGTH_SHORT).show();
                 break;
         }
         return true;
@@ -165,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.save:
-                if(mSaveProgressDlg==null){
+                if (mSaveProgressDlg == null) {
                     initSaveProgressDlg();
                 }
                 mSaveProgressDlg.show();
@@ -177,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         if (savedFile != null) {
                             scanFile(MainActivity.this, savedFile);
                             mHandler.obtainMessage(MSG_SAVE_SUCCESS).sendToTarget();
-                        }else{
+                        } else {
                             mHandler.obtainMessage(MSG_SAVE_FAILED).sendToTarget();
                         }
                     }
@@ -189,32 +201,62 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onUndoRedoStatusChanged() {
-        mUndoView.setEnabled(mPaletteView.canUndo());
-        mRedoView.setEnabled(mPaletteView.canRedo());
+//        mUndoView.setEnabled(mPaletteView.canUndo());
+//        mRedoView.setEnabled(mPaletteView.canRedo());
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.undo:
+            case R.id.undo_button:
                 mPaletteView.undo();
                 break;
-            case R.id.redo:
+            case R.id.redo_button:
                 mPaletteView.redo();
                 break;
-            case R.id.pen:
+            case R.id.pen_button:
                 v.setSelected(true);
-                mEraserView.setSelected(false);
+//                mEraserView.setSelected(false);
                 mPaletteView.setMode(PaletteView.Mode.DRAW);
                 break;
-            case R.id.eraser:
+            case R.id.erase_button:
                 v.setSelected(true);
-                mPenView.setSelected(false);
+//                mPenView.setSelected(false);
                 mPaletteView.setMode(PaletteView.Mode.ERASER);
                 break;
             case R.id.clear:
                 mPaletteView.clear();
                 break;
+            case R.id.main_menu_button:
+                if (mMainMenu.getVisibility() == View.INVISIBLE) {
+                    mMainMenu.setVisibility(View.VISIBLE);
+                } else {
+                    mMainMenu.setVisibility(View.INVISIBLE);
+                }
+                break;
         }
+    }
+
+    @Override
+    public void onSlide(int distance) {
+
+    }
+
+    @Override
+    public void onUnlocked() {
+        Log.i("slider", "wiped");
+        mPaletteView.clear();
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        switch (motionEvent.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                Log.i("panel", "down"+String.valueOf(motionEvent.getSize()));
+                break;
+            case MotionEvent.ACTION_MOVE:
+                Log.i("panel", "move"+String.valueOf(motionEvent.getSize()));
+        }
+        return false;
     }
 }

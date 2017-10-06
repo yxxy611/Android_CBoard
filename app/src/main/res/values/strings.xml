@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">PaintingApp</string>
+    <string name="app_name">CBboard</string>
+    <string name="hint">滑动擦除</string>
 </resources>
+
