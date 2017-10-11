@@ -234,6 +234,15 @@ public class MainActivity extends AppCompatActivity implements PaletteView.Callb
                     mMainMenu.setVisibility(View.INVISIBLE);
                 }
                 break;
+            case R.id.new_page_button:
+                mPaletteView.crateNewPage();
+                break;
+            case R.id.prev_page_button:
+                mPaletteView.prevPage();
+                break;
+            case R.id.next_page_button:
+                mPaletteView.nextPage();
+                break;
         }
     }
 

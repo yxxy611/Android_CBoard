@@ -22,8 +22,12 @@ public class PaletteView extends View {
     private Path mPath;
     private float mLastX;
     private float mLastY;
-    private Bitmap mBufferBitmap;
-    private Canvas mBufferCanvas;
+    //private Bitmap mBufferBitmap;
+    //private Canvas mBufferCanvas;
+    private Bitmap[] mBitmaps = new Bitmap[5];
+    private Canvas[] mCanvas = new Canvas[5];
+    private int count = 0;
+    private int countNow = 0;
 
     private static final int MAX_CACHE_STEP = 20;
 
@@ -79,8 +83,10 @@ public class PaletteView extends View {
     }
 
     private void initBuffer(){
-        mBufferBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        mBufferCanvas = new Canvas(mBufferBitmap);
+        mBitmaps[countNow] = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+        //mBufferBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+        mCanvas[countNow] = new Canvas(mBitmaps[countNow]);
+        //mBufferCanvas = new Canvas(mBufferBitmap);
     }
 
     private abstract static class DrawingInfo {
@@ -100,6 +106,32 @@ public class PaletteView extends View {
 
     public Mode getMode() {
         return mMode;
+    }
+
+    public void crateNewPage(){
+        if(count < 5) {
+            count++;
+        }
+        countNow = count;
+        mBitmaps[countNow] = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+        //mBufferBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+        mCanvas[countNow] = new Canvas(mBitmaps[countNow]);
+        //mBufferCanvas = new Canvas(mBufferBitmap);
+        invalidate();
+    }
+
+    public void prevPage(){
+        if(countNow > 0){
+            countNow --;
+            invalidate();
+        }
+    }
+
+    public void nextPage(){
+        if(countNow < 5){
+            countNow ++;
+            invalidate();
+        }
     }
 
     public void setMode(Mode mode) {
@@ -136,9 +168,9 @@ public class PaletteView extends View {
 
     private void reDraw(){
         if (mDrawingList != null) {
-            mBufferBitmap.eraseColor(Color.TRANSPARENT);
+            mBitmaps[countNow].eraseColor(Color.TRANSPARENT);
             for (DrawingInfo drawingInfo : mDrawingList) {
-                drawingInfo.draw(mBufferCanvas);
+                drawingInfo.draw(mCanvas[countNow]);
             }
             invalidate();
         }
@@ -184,7 +216,7 @@ public class PaletteView extends View {
     }
 
     public void clear() {
-        if (mBufferBitmap != null) {
+        if (mBitmaps[countNow] != null) {
             if (mDrawingList != null) {
                 mDrawingList.clear();
             }
@@ -192,7 +224,7 @@ public class PaletteView extends View {
                 mRemovedList.clear();
             }
             mCanEraser = false;
-            mBufferBitmap.eraseColor(Color.TRANSPARENT);
+            mBitmaps[countNow].eraseColor(Color.TRANSPARENT);
             invalidate();
             if (mCallback != null) {
                 mCallback.onUndoRedoStatusChanged();
@@ -227,8 +259,8 @@ public class PaletteView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mBufferBitmap != null) {
-            canvas.drawBitmap(mBufferBitmap, 0, 0, null);
+        if (mBitmaps[countNow] != null) {
+            canvas.drawBitmap(mBitmaps[countNow], 0, 0, null);
         }
     }
 
@@ -249,13 +281,13 @@ public class PaletteView extends View {
             case MotionEvent.ACTION_MOVE:
                 //这里终点设为两点的中心点的目的在于使绘制的曲线更平滑，如果终点直接设置为x,y，效果和lineto是一样的,实际是折线效果
                 mPath.quadTo(mLastX, mLastY, (x + mLastX)/2, (y + mLastY)/2);
-                if (mBufferBitmap == null) {
+                if (mBitmaps[countNow] == null) {
                     initBuffer();
                 }
                 if (mMode == Mode.ERASER && !mCanEraser) {
                     break;
                 }
-                mBufferCanvas.drawPath(mPath,mPaint);
+                mCanvas[countNow].drawPath(mPath,mPaint);
                 invalidate();
                 mLastX = x;
                 mLastY = y;
