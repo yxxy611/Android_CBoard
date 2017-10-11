@@ -109,15 +109,15 @@ public class PaletteView extends View {
     }
 
     public void crateNewPage(){
-        if(count < 5) {
+        if(count < 4) {
             count++;
+            countNow = count;
+            mBitmaps[countNow] = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+            //mBufferBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+            mCanvas[countNow] = new Canvas(mBitmaps[countNow]);
+            //mBufferCanvas = new Canvas(mBufferBitmap);
+            invalidate();
         }
-        countNow = count;
-        mBitmaps[countNow] = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        //mBufferBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        mCanvas[countNow] = new Canvas(mBitmaps[countNow]);
-        //mBufferCanvas = new Canvas(mBufferBitmap);
-        invalidate();
     }
 
     public void prevPage(){
@@ -128,7 +128,7 @@ public class PaletteView extends View {
     }
 
     public void nextPage(){
-        if(countNow < 5){
+        if(countNow < 4){
             countNow ++;
             invalidate();
         }
