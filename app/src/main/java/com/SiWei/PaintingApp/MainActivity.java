@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -25,6 +26,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import cn.forward.androids.utils.ImageUtils;
+
 import static com.SiWei.PaintingApp.R.id.main_menu;
 import static com.SiWei.PaintingApp.R.id.slider;
 
@@ -44,6 +47,10 @@ public class MainActivity extends AppCompatActivity implements PaletteView.Callb
     private SeekBar mSeekBar;
     private GridLayout mMainMenu;
     private CustomSlideToUnlockView mCustomSlideToUnlockView;
+    private boolean mIsMovingPic = false;
+
+
+    //private View mBtnColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +89,8 @@ public class MainActivity extends AppCompatActivity implements PaletteView.Callb
 
         mCustomSlideToUnlockView = (CustomSlideToUnlockView) findViewById(slider);
         mCustomSlideToUnlockView.setmCallBack(this);
+
+        //mBtnColor = findViewById(R.id.btn_set_color);
 
     }
 
@@ -205,12 +214,15 @@ public class MainActivity extends AppCompatActivity implements PaletteView.Callb
 //        mRedoView.setEnabled(mPaletteView.canRedo());
     }
 
+    private boolean mDone = false;
+
     @Override
     public void onClick(View v) {
+        mDone = false;
         switch (v.getId()) {
-            case R.id.undo_button:
-                mPaletteView.undo();
-                break;
+            //case R.id.undo_button:
+                //mPaletteView.undo();
+               // break;
             case R.id.redo_button:
                 mPaletteView.redo();
                 break;
@@ -243,6 +255,44 @@ public class MainActivity extends AppCompatActivity implements PaletteView.Callb
             case R.id.next_page_button:
                 mPaletteView.nextPage();
                 break;
+            case R.id.select_drag_button:
+                if (!(Params.getDialogInterceptor() != null
+                        && Params.getDialogInterceptor().onShow(MainActivity.this, mPaletteView, Params.DialogType.COLOR_PICKER))) {
+                    new ColorPickerDialog(MainActivity.this, mPaletteView.getColor().getColor(), "画笔颜色",
+                            new ColorPickerDialog.OnColorChangedListener() {
+                                public void colorChanged(int color) {
+                                    //mBtnColor.setBackgroundColor(color);
+                                    if (mPaletteView.isSelectedItem()) {
+                                        mPaletteView.setSelectedItemColor(color);
+                                    } else {
+                                        mPaletteView.setColor(color);
+                                    }
+                                }
+
+                                @Override
+                                public void colorChanged(Drawable color) {
+                                    //mBtnColor.setBackgroundDrawable(color);
+                                    if (mPaletteView.isSelectedItem()) {
+                                        mPaletteView.setSelectedItemColor(ImageUtils.getBitmapFromDrawable(color));
+                                    } else {
+                                        mPaletteView.setColor(ImageUtils.getBitmapFromDrawable(color));
+                                    }
+                                }
+                            }).show();
+                }
+                break;
+            case R.id.undo_button:
+                v.setSelected(!v.isSelected());
+                mIsMovingPic = v.isSelected();
+                if (mIsMovingPic) {
+                    Toast.makeText(getApplicationContext(), R.string.graffiti_moving_pic, Toast.LENGTH_SHORT).show();
+                }
+                mDone = true;
+                if (mDone) {
+                    return;
+                }
+                break;
+
         }
     }
 
@@ -268,4 +318,5 @@ public class MainActivity extends AppCompatActivity implements PaletteView.Callb
         }
         return false;
     }
+
 }
