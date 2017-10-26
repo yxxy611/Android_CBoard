@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements PaletteView.Callb
                 //mPaletteView.undo();
                // break;
             case R.id.redo_button:
-                mPaletteView.redo();
+                //mPaletteView.redo();
                 break;
             case R.id.pen_button:
                 v.setSelected(true);
@@ -281,18 +281,6 @@ public class MainActivity extends AppCompatActivity implements PaletteView.Callb
                             }).show();
                 }
                 break;
-            case R.id.undo_button:
-                v.setSelected(!v.isSelected());
-                mIsMovingPic = v.isSelected();
-                if (mIsMovingPic) {
-                    Toast.makeText(getApplicationContext(), R.string.graffiti_moving_pic, Toast.LENGTH_SHORT).show();
-                }
-                mDone = true;
-                if (mDone) {
-                    return;
-                }
-                break;
-
         }
     }
 
