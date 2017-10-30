@@ -4,21 +4,15 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Xfermode;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.SiWei.PaintingApp.DrawUtil.GRAFFITI_PIXEL_UNIT;
 
 public class PaletteView extends View {
 
@@ -60,6 +54,8 @@ public class PaletteView extends View {
     private float mSelectedItemX, mSelectedItemY;
     private boolean mIsRotatingSelectedItem;
     private float mRotateTextDiff; // 开始旋转图片时的差值（当前图片与触摸点的角度）
+
+    private final RectF dirtyRect = new RectF();
 
     public enum Mode {
         DRAW,
@@ -104,7 +100,7 @@ public class PaletteView extends View {
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         //mPaint.setColor(Color.WHITE);
-        mDrawSize = 20;
+        mDrawSize = 5;
         mEraserSize = 80;
         mPaint.setStrokeWidth(mDrawSize);
         mPaint.setColor(0XFFcccccc);

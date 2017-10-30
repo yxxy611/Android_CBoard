@@ -3,6 +3,8 @@
     <color name="colorPrimary">#aaaaaa</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#aaaaaa</color>
+    <color name ="colorWhite">#ffffff</color>
+
 
     <drawable name="toolbar_bg">#30000000</drawable>
 </resources>

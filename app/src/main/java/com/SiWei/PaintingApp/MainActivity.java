@@ -38,6 +38,9 @@ public class MainActivity extends AppCompatActivity implements PaletteView.Callb
 //    private View mPenView;
 //    private View mEraserView;
 //    private View mClearView;
+
+    private CirclePanelView mCirclePanelView;
+
     private PaletteView mPaletteView;
     private ProgressDialog mSaveProgressDlg;
     private static final int MSG_SAVE_SUCCESS = 1;
@@ -61,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements PaletteView.Callb
         mPaletteView = (PaletteView) findViewById(R.id.palette);
        // mPaletteView.setCallback(this);
         mPaletteView.setOnTouchListener(this);
+        mCirclePanelView = (CirclePanelView)findViewById(R.id.circlePanel);
 
 //        mUndoView = findViewById(R.id.undo);
 //        mRedoView = findViewById(R.id.redo);
@@ -224,6 +228,7 @@ public class MainActivity extends AppCompatActivity implements PaletteView.Callb
                 //mPaletteView.undo();
                // break;
             case R.id.redo_button:
+                mCirclePanelView.awake();
                 //mPaletteView.redo();
                 break;
             case R.id.pen_button:
@@ -247,13 +252,19 @@ public class MainActivity extends AppCompatActivity implements PaletteView.Callb
                 }
                 break;
             case R.id.new_page_button:
-                mPaletteView.crateNewPage();
+                mCirclePanelView.confirm();
+                //mPaletteView.crateNewPage();
                 break;
             case R.id.prev_page_button:
-                mPaletteView.prevPage();
+                mCirclePanelView.menuScrollPrev();
+                //mPaletteView.prevPage();
                 break;
             case R.id.next_page_button:
-                mPaletteView.nextPage();
+                mCirclePanelView.menuScrollNext();
+                //mPaletteView.nextPage();
+                break;
+            case R.id.remove_page_button:
+                mCirclePanelView.dismiss();
                 break;
             case R.id.select_drag_button:
                 if (!(Params.getDialogInterceptor() != null

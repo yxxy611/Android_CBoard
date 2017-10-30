@@ -88,13 +88,13 @@ public class CustomSlideToUnlockView extends RelativeLayout {
      **/
     private void init(TypedArray mTypedArray) {
 
-        slideImageViewWidth = (int) mTypedArray.getDimension(R.styleable.SlideToUnlockView_slideImageViewWidth, DensityUtil.dp2px(getContext(), 30));
+        slideImageViewWidth = (int) mTypedArray.getDimension(R.styleable.SlideToUnlockView_slideImageViewWidth, DensityUtil.dp2px(getContext(), 25));
         slideImageViewResId = mTypedArray.getResourceId(R.styleable.SlideToUnlockView_slideImageViewResId, -1);
         slideImageViewResIdAfter = mTypedArray.getResourceId(R.styleable.SlideToUnlockView_slideImageViewResIdAfter, -1);
         viewBackgroundResId = mTypedArray.getResourceId(R.styleable.SlideToUnlockView_viewBackgroundResId, -1);
         textHint = mTypedArray.getString(R.styleable.SlideToUnlockView_textHint);
-        textSize = mTypedArray.getInteger(R.styleable.SlideToUnlockView_textSize, 5);
-        textColorResId = mTypedArray.getColor(R.styleable.SlideToUnlockView_textColorResId, getResources().getColor(android.R.color.white));
+        textSize = mTypedArray.getInteger(R.styleable.SlideToUnlockView_textSize, 3);
+        textColorResId = mTypedArray.getColor(R.styleable.SlideToUnlockView_textColorResId, getResources().getColor(android.R.color.background_dark));
         THRESHOLD = mTypedArray.getFloat(R.styleable.SlideToUnlockView_slideThreshold, 0.5f);
 
         mTypedArray.recycle();
