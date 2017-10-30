@@ -14,6 +14,9 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PaletteView extends View {
 
     private Paint mPaint;
@@ -22,15 +25,15 @@ public class PaletteView extends View {
     private float mLastY;
     //private Bitmap mBufferBitmap;
     //private Canvas mBufferCanvas;
-    private Bitmap[] mBitmaps = new Bitmap[5];
-    private Canvas[] mCanvas = new Canvas[5];
+    private Bitmap[] mBitmaps = new Bitmap[10];
+    private Canvas mCanvas;
     private int count = 0;
     private int countNow = 0;
 
-    private static final int MAX_CACHE_STEP = 20;
+    private static final int MAX_CACHE_STEP = 100;
 
-    //private List<DrawingInfo> mDrawingList;
-    //private List<DrawingInfo> mRemovedList;
+    private List<DrawingInfo> mDrawingList;
+    private List<DrawingInfo> mRemovedList;
 
     private Xfermode mClearMode;
     private float mDrawSize;
@@ -119,7 +122,7 @@ public class PaletteView extends View {
     private void initBuffer(){
         mBitmaps[countNow] = Bitmap.createBitmap(1920, 1080, Bitmap.Config.ARGB_8888);
         //mBufferBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        mCanvas[countNow] = new Canvas(mBitmaps[countNow]);
+        mCanvas = new Canvas(mBitmaps[countNow]);
         //mBufferCanvas = new Canvas(mBufferBitmap);
     }
 
@@ -144,97 +147,12 @@ public class PaletteView extends View {
         return mGraffitiRotateDegree;
     }
 
-/*    private void resetPaint(Pen pen, Paint paint, Matrix matrix, PenColor color, int rotateDegree) {
-        mPaint.setColor(Color.BLACK);
-        switch (pen) { // 设置画笔
-            case HAND:
-            case TEXT:
-                paint.setShader(null);
-                mShaderMatrixColor.reset();
-
-                if (color.getType() == GraffitiColor.Type.BITMAP) { // 旋转底图
-                    if (mGraffitiRotateDegree != 0) {
-                        float px = mOriginalPivotX, py = mOriginalPivotY;
-                        if (mGraffitiRotateDegree == 90 || mGraffitiRotateDegree == 270) { //　交换中心点的xy坐标
-                            float t = px;
-                            px = py;
-                            py = t;
-                        }
-                        mShaderMatrixColor.postRotate(mGraffitiRotateDegree, px, py);
-                        if (Math.abs(mGraffitiRotateDegree) == 90 || Math.abs(mGraffitiRotateDegree) == 270) {
-                            mShaderMatrixColor.postTranslate((py - px), -(py - px));
-                        }
-                    }
-                }
-
-                color.initColor(paint, mShaderMatrixColor);
-                break;
-            case COPY:
-                // 调整copy图片位置
-                mBitmapShader.setLocalMatrix(matrix);
-                paint.setShader(this.mBitmapShader);
-                break;
-            case ERASER:
-                mBitmapShaderEraser.setLocalMatrix(matrix);
-                if (mBitmapShader != mBitmapShaderEraser) {
-                    mBitmapShaderEraser.setLocalMatrix(mShaderMatrixEraser);
-                }
-                paint.setShader(this.mBitmapShaderEraser);
-                break;
-        }
-    }
-
-     画出文字
-    private void draw(Canvas canvas, GraffitiSelectableItem selectableItem) {
-        canvas.save();
-
-        float[] xy = selectableItem.getXy(mGraffitiRotateDegree); // 获取旋转图片后文字的起始坐标
-        canvas.translate(xy[0], xy[1]); // 把坐标系平移到文字矩形范围
-        canvas.rotate(mGraffitiRotateDegree - selectableItem.getGraffitiRotate() + selectableItem.getItemRotate(), 0, 0); // 旋转坐标系
-
-        // 在变换后的坐标系中画出文字
-        if (selectableItem == mSelectedItem) {
-            Rect rect = selectableItem.getBounds(mGraffitiRotateDegree);
-            mPaint.setShader(null);
-            // Rect
-            if (selectableItem.getColor().getType() == GraffitiColor.Type.COLOR) {
-                mPaint.setColor(Color.argb(126,
-                        255 - Color.red(selectableItem.getColor().getColor()),
-                        255 - Color.green(selectableItem.getColor().getColor()),
-                        255 - Color.blue(selectableItem.getColor().getColor())));
-            } else {
-            mPaint.setColor(0x88888888);
-//            }
-            mPaint.setStyle(Paint.Style.FILL);
-            mPaint.setStrokeWidth(1);
-            canvas.drawRect(rect, mPaint);
-            // border
-            if (mIsRotatingSelectedItem) {
-                mPaint.setColor(0x88ffd700);
-            } else {
-                mPaint.setColor(0x88888888);
-            }
-            mPaint.setStyle(Paint.Style.STROKE);
-            mPaint.setStrokeWidth(2 * GRAFFITI_PIXEL_UNIT);
-            canvas.drawRect(rect, mPaint);
-            // rotate
-            mPaint.setStyle(Paint.Style.STROKE);
-            mPaint.setStrokeWidth(4 * GRAFFITI_PIXEL_UNIT);
-            canvas.drawLine(rect.right, rect.top + rect.height() / 2,
-                    rect.right + (GraffitiSelectableItem.ITEM_CAN_ROTATE_BOUND - 16) * GRAFFITI_PIXEL_UNIT, rect.top + rect.height() / 2, mPaint);
-            canvas.drawCircle(rect.right + (GraffitiSelectableItem.ITEM_CAN_ROTATE_BOUND - 8) * GRAFFITI_PIXEL_UNIT, rect.top + rect.height() / 2, 8 * GRAFFITI_PIXEL_UNIT, mPaint);
-
-        }
-        resetPaint(Pen.TEXT, mPaint, null, selectableItem.getColor(), selectableItem.getGraffitiRotate());
-
-        selectableItem.draw(canvas, this, mPaint);
-
-        canvas.restore();
-
-    }*/
-
     public Mode getMode() {
         return mMode;
+    }
+
+    private void loadBitmap(){
+        mCanvas.setBitmap(mBitmaps[countNow]);
     }
 
     public void crateNewPage(){
@@ -243,8 +161,8 @@ public class PaletteView extends View {
             countNow = count;
             mBitmaps[countNow] = Bitmap.createBitmap(1920, 1080, Bitmap.Config.ARGB_8888);
             //mBufferBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-            mCanvas[countNow] = new Canvas(mBitmaps[countNow]);
             //mBufferCanvas = new Canvas(mBufferBitmap);
+            loadBitmap();
             invalidate();
         }
     }
@@ -252,6 +170,7 @@ public class PaletteView extends View {
     public void prevPage(){
         if(countNow > 0){
             countNow --;
+            loadBitmap();
             invalidate();
         }
     }
@@ -259,6 +178,7 @@ public class PaletteView extends View {
     public void nextPage(){
         if(countNow < 4){
             countNow ++;
+            loadBitmap();
             invalidate();
         }
     }
@@ -331,11 +251,11 @@ public class PaletteView extends View {
         mPaint.setAlpha(alpha);
     }
 
-    /*private void reDraw(){
+    private void reDraw(){
         if (mDrawingList != null) {
             mBitmaps[countNow].eraseColor(Color.TRANSPARENT);
             for (DrawingInfo drawingInfo : mDrawingList) {
-                drawingInfo.draw(mCanvas[countNow]);
+                drawingInfo.draw(mCanvas);
             }
             invalidate();
         }
@@ -379,16 +299,16 @@ public class PaletteView extends View {
                 mCallback.onUndoRedoStatusChanged();
             }
         }
-    }*/
+    }
 
     public void clear() {
         if (mBitmaps[countNow] != null) {
-            /*if (mDrawingList != null) {
+            if (mDrawingList != null) {
                 mDrawingList.clear();
             }
             if (mRemovedList != null) {
                 mRemovedList.clear();
-            }*/
+            }
             mCanEraser = false;
             mBitmaps[countNow].eraseColor(Color.TRANSPARENT);
             invalidate();
@@ -407,7 +327,7 @@ public class PaletteView extends View {
         return result;
     }
 
-    /*private void saveDrawingPath(){
+    private void saveDrawingPath(){
         if (mDrawingList == null) {
             mDrawingList = new ArrayList<>(MAX_CACHE_STEP);
         } else if (mDrawingList.size() == MAX_CACHE_STEP) {
@@ -423,7 +343,7 @@ public class PaletteView extends View {
         if (mCallback != null) {
             mCallback.onUndoRedoStatusChanged();
         }
-    }*/
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -456,9 +376,9 @@ public class PaletteView extends View {
                 break;
             case MotionEvent.ACTION_UP:
                 if (mMode == Mode.DRAW || mCanEraser) {
-                    //saveDrawingPath();
+                    saveDrawingPath();
                 }
-                mCanvas[countNow].drawPath(mPath,mPaint);
+                mCanvas.drawPath(mPath,mPaint);
                 mPath.reset();
                 break;
         }

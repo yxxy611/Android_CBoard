@@ -224,12 +224,12 @@ public class MainActivity extends AppCompatActivity implements PaletteView.Callb
     public void onClick(View v) {
         mDone = false;
         switch (v.getId()) {
-            //case R.id.undo_button:
-                //mPaletteView.undo();
-               // break;
+            case R.id.undo_button:
+                mPaletteView.undo();
+                break;
             case R.id.redo_button:
-                mCirclePanelView.awake();
-                //mPaletteView.redo();
+                //mCirclePanelView.awake();
+                mPaletteView.redo();
                 break;
             case R.id.pen_button:
                 v.setSelected(true);
@@ -267,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements PaletteView.Callb
                 mCirclePanelView.dismiss();
                 break;
             case R.id.select_drag_button:
-                if (!(Params.getDialogInterceptor() != null
+                /*if (!(Params.getDialogInterceptor() != null
                         && Params.getDialogInterceptor().onShow(MainActivity.this, mPaletteView, Params.DialogType.COLOR_PICKER))) {
                     new ColorPickerDialog(MainActivity.this, mPaletteView.getColor().getColor(), "画笔颜色",
                             new ColorPickerDialog.OnColorChangedListener() {
@@ -290,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements PaletteView.Callb
                                     }
                                 }
                             }).show();
-                }
+                }*/
                 break;
         }
     }
