@@ -96,6 +96,7 @@ public class PaletteView extends View {
     }
 
     private void init() {
+        //this.setLayerType(View.LAYER_TYPE_SOFTWARE,null);
         mPath = new Path();
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         mPaint.setStyle(Paint.Style.STROKE);
@@ -110,7 +111,6 @@ public class PaletteView extends View {
         // 反锯齿
         mPaint.setAntiAlias(true);
         mPaint.setDither(true);
-
 
         mClearMode = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
 
@@ -156,7 +156,7 @@ public class PaletteView extends View {
     }
 
     public void crateNewPage(){
-        if(count < 4) {
+        if(count < 9) {
             count++;
             countNow = count;
             mBitmaps[countNow] = Bitmap.createBitmap(1920, 1080, Bitmap.Config.ARGB_8888);
@@ -176,7 +176,7 @@ public class PaletteView extends View {
     }
 
     public void nextPage(){
-        if(countNow < 4){
+        if(countNow < 9){
             countNow ++;
             loadBitmap();
             invalidate();
@@ -347,7 +347,10 @@ public class PaletteView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawBitmap(mBitmaps[countNow], 0, 0, null);
+        if (mBitmaps[countNow] != null) {
+            canvas.drawBitmap(mBitmaps[countNow], 0, 0, null);
+        }
+        //canvas.drawBitmap(mBitmaps[countNow], 0, 0, null);
         canvas.drawPath(mPath,mPaint);
     }
 
@@ -356,8 +359,16 @@ public class PaletteView extends View {
         final int action = event.getAction() & MotionEvent.ACTION_MASK;
         final float x = event.getX();
         final float y = event.getY();
+        float touchSize;
         switch (action) {
             case MotionEvent.ACTION_DOWN:
+                touchSize = event.getSize();
+                if(touchSize > 0.005){
+                    setMode(Mode.ERASER);
+                    setEraserSize(100);
+                }else{
+                    setMode(Mode.DRAW);
+                }
                 mLastX = x;
                 mLastY = y;
                 if (mPath == null) {
@@ -367,10 +378,10 @@ public class PaletteView extends View {
                 break;
             case MotionEvent.ACTION_MOVE:
                 //这里终点设为两点的中心点的目的在于使绘制的曲线更平滑，如果终点直接设置为x,y，效果和lineto是一样的,实际是折线效果
-                mPath.quadTo(mLastX, mLastY, (x + mLastX)/2, (y + mLastY)/2);
                 if (mMode == Mode.ERASER && !mCanEraser) {
                     break;
                 }
+                mPath.quadTo(mLastX, mLastY, (x + mLastX)/2, (y + mLastY)/2);
                 mLastX = x;
                 mLastY = y;
                 break;

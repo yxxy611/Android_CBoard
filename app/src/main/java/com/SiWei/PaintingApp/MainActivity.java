@@ -292,6 +292,11 @@ public class MainActivity extends AppCompatActivity implements PaletteView.Callb
                             }).show();
                 }*/
                 break;
+            case R.id.close_button:
+                this.finish();
+                break;
+            case R.id.save_button:
+                initSaveProgressDlg();
         }
     }
 
