@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="ImageSelctorLib-release-unspecified">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.android/build-cache/d8a974d6b4e20b2e044e8aa568ca7b5b3e999492/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/d8a974d6b4e20b2e044e8aa568ca7b5b3e999492/output/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.android/build-cache/d8a974d6b4e20b2e044e8aa568ca7b5b3e999492/output/jars/libs/xUtils-2.6.14.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
