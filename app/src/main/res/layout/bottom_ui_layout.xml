@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_ui"
@@ -21,7 +20,7 @@
         android:src="@drawable/menu_01"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        tools:ignore="RtlHardcoded"/>
+        tools:ignore="RtlHardcoded" />
 
     <GridLayout
         android:id="@+id/main_menu"
@@ -30,92 +29,86 @@
         android:layout_marginBottom="8dp"
         android:background="@drawable/expand_menu"
         android:columnCount="3"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/main_menu_button"
         app:layout_constraintLeft_toLeftOf="@+id/main_menu_button">
 
-        <LinearLayout
-            style="@style/buttonLayoutStyle">
+        <LinearLayout style="@style/buttonLayoutStyle">
 
             <ImageButton
                 android:id="@+id/save_button"
                 style="@style/buttonIconStyle"
-                android:src="@drawable/save_01"/>
+                android:src="@drawable/save_01" />
 
             <TextView
                 android:id="@+id/save_text"
                 style="@style/buttonTextStyle"
-                android:text="保存"/>
+                android:text="保存" />
         </LinearLayout>
 
-        <LinearLayout
-            style="@style/buttonLayoutStyle">
+        <LinearLayout style="@style/buttonLayoutStyle">
 
             <ImageButton
                 android:id="@+id/share_button"
                 style="@style/buttonIconStyle"
-                android:src="@drawable/share_01"/>
+                android:src="@drawable/share_01" />
 
             <TextView
                 android:id="@+id/share_text"
                 style="@style/buttonTextStyle"
-                android:text="扫码分享"/>
+                android:text="扫码分享" />
         </LinearLayout>
 
-        <LinearLayout
-            style="@style/buttonLayoutStyle">
+        <LinearLayout style="@style/buttonLayoutStyle">
 
             <ImageButton
                 android:id="@+id/email_button"
                 style="@style/buttonIconStyle"
-                android:src="@drawable/mail_01"/>
+                android:src="@drawable/mail_01" />
 
             <TextView
                 android:id="@+id/email_text"
                 style="@style/buttonTextStyle"
-                android:text="邮件发送"/>
+                android:text="邮件发送" />
         </LinearLayout>
 
-        <LinearLayout
-            style="@style/buttonLayoutStyle">
+        <LinearLayout style="@style/buttonLayoutStyle">
 
             <ImageButton
                 android:id="@+id/change_bg_button"
                 style="@style/buttonIconStyle"
-                android:src="@drawable/change_bg_01"/>
+                android:src="@drawable/change_bg_01" />
 
             <TextView
                 android:id="@+id/change_bg_text"
                 style="@style/buttonTextStyle"
-                android:text="背景"/>
+                android:text="背景" />
         </LinearLayout>
 
-        <LinearLayout
-            style="@style/buttonLayoutStyle">
+        <LinearLayout style="@style/buttonLayoutStyle">
 
             <ImageButton
                 android:id="@+id/insert_img_button"
                 style="@style/buttonIconStyle"
-                android:src="@drawable/insert_img_01"/>
+                android:src="@drawable/insert_img_01" />
 
             <TextView
                 android:id="@+id/insert_img_text"
                 style="@style/buttonTextStyle"
-                android:text="插入图片"/>
+                android:text="插入图片" />
         </LinearLayout>
 
-        <LinearLayout
-            style="@style/buttonLayoutStyle">
+        <LinearLayout style="@style/buttonLayoutStyle">
 
             <ImageButton
                 android:id="@+id/close_button"
                 style="@style/buttonIconStyle"
-                android:src="@drawable/close_01"/>
+                android:src="@drawable/close_01" />
 
             <TextView
                 android:id="@+id/close_text"
                 style="@style/buttonTextStyle"
-                android:text="关闭"/>
+                android:text="关闭" />
         </LinearLayout>
     </GridLayout>
 
@@ -139,26 +132,26 @@
         <ImageButton
             android:id="@+id/pen_button"
             style="@style/buttonIconStyle"
-            android:src="@drawable/pen_01"/>
+            android:src="@drawable/pen_01" />
 
         <ImageButton
             android:id="@+id/erase_menu_button"
             style="@style/buttonIconStyle"
-            android:src="@drawable/erase_01"/>
+            android:src="@drawable/erase_01" />
 
         <ImageButton
             android:id="@+id/select_drag_button"
-            style="@style/buttonIconStyle"/>
+            style="@style/buttonIconStyle" />
 
         <ImageButton
             android:id="@+id/undo_button"
             style="@style/buttonIconStyle"
-            android:src="@drawable/undo_01"/>
+            android:src="@drawable/undo_01" />
 
         <ImageButton
             android:id="@+id/redo_button"
             style="@style/buttonIconStyle"
-            android:src="@drawable/redo_01"/>
+            android:src="@drawable/redo_01" />
     </LinearLayout>
 
     <LinearLayout
@@ -182,62 +175,50 @@
         <ImageButton
             android:id="@+id/prev_page_button"
             style="@style/buttonIconStyle"
-            android:src="@drawable/prev_01"/>
+            android:src="@drawable/prev_01" />
 
         <ImageButton
             android:id="@+id/new_page_button"
             style="@style/buttonIconStyle"
-            android:src="@drawable/add_01"/>
+            android:src="@drawable/add_01" />
 
         <ImageButton
             android:id="@+id/remove_page_button"
             style="@style/buttonIconStyle"
-            android:src="@drawable/remove_01"/>
+            android:src="@drawable/remove_01" />
 
         <ImageButton
             android:id="@+id/next_page_button"
             style="@style/buttonIconStyle"
-            android:src="@drawable/next_01"/>
+            android:src="@drawable/next_01" />
 
 
     </LinearLayout>
 
-
-    <SeekBar
-        android:id="@+id/seekBar2"
-        android:layout_width="300dp"
-        android:layout_height="30dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.102"
-        />
-
     <LinearLayout
+        android:id="@+id/eraser_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="0dp"
         android:layout_marginStart="0dp"
         android:orientation="horizontal"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/paint_menu"
         app:layout_constraintLeft_toLeftOf="@+id/paint_menu">
 
         <ImageButton
             android:id="@+id/erase_button"
-            style="@style/buttonIconStyle"/>
+            style="@style/buttonIconStyle" />
 
         <android.support.v4.widget.Space
             android:layout_width="10dp"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
         <com.SiWei.PaintingApp.CustomSlideToUnlockView
             android:id="@+id/slider"
             android:layout_width="90dp"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 
