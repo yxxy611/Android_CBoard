@@ -22,7 +22,7 @@ public class PaletteView extends View {
 
     //private Bitmap mBufferBitmap;
     //private Canvas mBufferCanvas;
-    private Bitmap[] mBitmaps = new Bitmap[10];
+    private Bitmap[] mBitmaps = new Bitmap[10];//位图数组
     //private Canvas mCanvas;
     private int count = 0;
     private int countNow = 0;
@@ -589,7 +589,7 @@ public class PaletteView extends View {
                 touchSize = event.getSize();
                 //电视触摸面积：0.003，手机触摸面积：0.02
                 if(mTouchModeTemp == 1){
-                    if(touchSize > 0.003){
+                    if(touchSize > 0.02){
                         tempSize = mPaintSize;
                         tempColor = mColor.getColor();
                         setPaintSize(80);
