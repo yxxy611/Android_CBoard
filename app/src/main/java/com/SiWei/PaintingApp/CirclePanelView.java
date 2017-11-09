@@ -23,13 +23,13 @@ public class CirclePanelView extends View {
     private float mBrushValueTmpCal ;
     private int mColorValueTmpCal;
     private int mOpacityCount, mColorCount, mBrushCount;
-    private Bitmap mMainBmp, mOpacBmp, mMainSelectBmp, mOpacSelectBmp, mBrushSelectBmp;
+    private Bitmap mMainBmp, mOpacBmp, mMainSelectBmp, mOpacSelectBmp, mColorSelectBmp,mBrushSelectBmp;
     private Matrix mMatrix;
     private MenuMode menuMode, tmpMenuMode;
     private Paint mPaint, mPaintTest;
     private int[] palette;
     private float centerX, centerY,posX,posY;
-    private float[] mOffset;
+    private float[] mOffset,mOffsetCenter;
     private boolean isAwake;
     private float[] mGestureCenter, mVectorMoved;
     private float mAng,mAngIni;
@@ -43,16 +43,20 @@ public class CirclePanelView extends View {
         mPaintTest = new Paint();
         mPaintTest.setColor(Color.BLACK);                    //设置画笔颜色
         mPaintTest.setStrokeWidth(1.0f);              //线宽
-        mPaintTest.setStyle(Paint.Style.STROKE);
+        mPaintTest.setStyle(Paint.Style.FILL);
+        mPaintTest.setTextAlign(Paint.Align.CENTER);
+        mPaintTest.setTextSize(20);
         mPaintTest.setAntiAlias(true);
 
         mMainBmp = BitmapFactory.decodeResource(getResources(), R.drawable.cir_main, null);
         centerX = mMainBmp.getWidth() / 2;
         centerY = mMainBmp.getHeight() / 2 + 1;
         mOffset = new float[]{-mMainBmp.getWidth() * 1.5f, -mMainBmp.getHeight()/2};
+        mOffsetCenter = new float[]{mMainBmp.getWidth() * 0.5f, mMainBmp.getHeight()/2};
         mMainSelectBmp = BitmapFactory.decodeResource(getResources(), R.drawable.cir_main_select, null);
         mOpacBmp = BitmapFactory.decodeResource(getResources(), R.drawable.cir_opacity, null);
         mOpacSelectBmp = BitmapFactory.decodeResource(getResources(), R.drawable.cir_opacity_select, null);
+        mColorSelectBmp = BitmapFactory.decodeResource(getResources(), R.drawable.cir_color_select, null).extractAlpha();
         mBrushSelectBmp = BitmapFactory.decodeResource(getResources(), R.drawable.cir_brush_select, null).extractAlpha();
         //mBrushUnselectBmp = BitmapFactory.decodeResource(getResources(), R.drawable.cir_brush_unselect, null);
         menuMode = MenuMode.DEFAULT;
@@ -62,13 +66,13 @@ public class CirclePanelView extends View {
         mColorValueTmp = 0;
         mBrushValueTmp = 0;
         mOpacityCount = 20;
-        mBrushCount = 12;
+        mBrushCount = 8;
         isAwake = false;
         mGestureCenter = null;
         isAngleInitialized = false;
         mVectorMoved = new float[2];
         mOpacityRange = 255;
-        mBrushRange = 6;
+        mBrushRange = 8.75f;
         palette = new int[]{0xff86B32C,
                 0xff0C8858,
                 0xff188EB0,
@@ -86,7 +90,6 @@ public class CirclePanelView extends View {
         mOpacityValue = 255;
         mBrushValue = 1.5f;
         mColorValue = 0xffaaaaaa;
-
     }
 
 
@@ -94,7 +97,7 @@ public class CirclePanelView extends View {
     protected void onDraw(Canvas canvas) {
         if (mGestureCenter != null) {
             Log.d("bbbbb", "Center: " + mGestureCenter[0] + "  " + mGestureCenter[1]);
-            canvas.drawText(String.valueOf(mAng),1500,100,mPaintTest);
+
             canvas.drawCircle(mGestureCenter[0], mGestureCenter[1], 20, mPaintTest);
         }
         switch (menuMode) {
@@ -150,24 +153,6 @@ public class CirclePanelView extends View {
                 //mBrushValueTmp = mBrushValue;
                 break;
         }
-    }
-
-    public void menuScrollNext() {
-        switch (menuMode) {
-            case MAIN:
-                mScrollValue += 1;
-                break;
-            case OPACITY:
-                mOpacityValueTmp = mOpacityValueTmp < mOpacityCount ? mOpacityValueTmp + 1 : mOpacityValueTmp;
-                break;
-            case COLOR:
-                mColorValueTmp = mColorValueTmp < mColorCount - 1 ? mColorValueTmp + 1 : mColorValueTmp;
-                break;
-            case BRUSH:
-                mBrushValueTmp = mBrushValueTmp < mBrushCount - 1 ? mBrushValueTmp + 1 : mBrushValueTmp;//do not need reach 360 deg
-                break;
-        }
-        invalidate();
     }
 
     //根据当前手势初始化二级圆盘
@@ -234,6 +219,23 @@ public class CirclePanelView extends View {
         invalidate();
     }
 
+    public void menuScrollNext() {
+        switch (menuMode) {
+            case MAIN:
+                mScrollValue += 1;
+                break;
+            case OPACITY:
+                mOpacityValueTmp = mOpacityValueTmp < mOpacityCount ? mOpacityValueTmp + 1 : mOpacityValueTmp;
+                break;
+            case COLOR:
+                mColorValueTmp = mColorValueTmp < mColorCount - 1 ? mColorValueTmp + 1 : mColorValueTmp;
+                break;
+            case BRUSH:
+                mBrushValueTmp = mBrushValueTmp < mBrushCount - 1 ? mBrushValueTmp + 1 : mBrushValueTmp;//do not need reach 360 deg
+                break;
+        }
+        invalidate();
+    }
     public void menuScrollPrev() {
         switch (menuMode) {
             case MAIN:
@@ -253,6 +255,13 @@ public class CirclePanelView extends View {
     }
 
     public void awake() {
+
+        if(mGestureCenter==null){
+            mGestureCenter = new float[2];
+            mGestureCenter[0]=600;
+            mGestureCenter[1]=200;
+        }
+
         setPosition();
         mScrollValue = 0;
         menuMode = MenuMode.MAIN;
@@ -353,6 +362,7 @@ public class CirclePanelView extends View {
         mMatrix.postTranslate(posX,posY);
         mOpacityValueTmpCal = mOpacityRange-mOpacityRange/mOpacityCount*mOpacityValueTmp;
         canvas.drawBitmap(mOpacSelectBmp, mMatrix, mPaint);
+        canvas.drawText(String.valueOf((mOpacityCount-mOpacityValueTmp)*5)+"%",posX+mOffsetCenter[0],posY+mOffsetCenter[1]+10,mPaintTest);
     }
 
     private void drawBrushMenu(Canvas canvas) {
@@ -370,7 +380,9 @@ public class CirclePanelView extends View {
             mMatrix.postTranslate(posX,posY);
             canvas.drawBitmap(mBrushSelectBmp, mMatrix, mPaint);
         }
-        mBrushValueTmpCal = mBrushRange/mBrushCount*mBrushValueTmp;
+
+        mBrushValueTmpCal = mBrushRange/(mBrushCount-1)*mBrushValueTmp+0.25f;
+        canvas.drawText(String.valueOf(mBrushValueTmpCal),posX+mOffsetCenter[0],posY+mOffsetCenter[1]+10,mPaintTest);
 
     }
 
@@ -381,14 +393,14 @@ public class CirclePanelView extends View {
             mPaint.setColor(palette[n]);
             mMatrix.setRotate(-n * 360 / mColorCount, centerX, centerY);
             mMatrix.postTranslate(posX,posY);
-            canvas.drawBitmap(mBrushSelectBmp, mMatrix, mPaint);
+            canvas.drawBitmap(mColorSelectBmp, mMatrix, mPaint);
         }
 
         mMatrix.setScale(1.1f, 1.1f, centerX, centerY);
         mMatrix.postRotate(-i * 360 / mColorCount, centerX, centerY);
         mMatrix.postTranslate(posX,posY);
         mPaint.setColor(palette[i]);
-        canvas.drawBitmap(mBrushSelectBmp, mMatrix, mPaint);
+        canvas.drawBitmap(mColorSelectBmp, mMatrix, mPaint);
         mColorValueTmpCal = palette[mColorValueTmp];
     }
 

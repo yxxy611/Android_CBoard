@@ -366,6 +366,26 @@ public class MainActivity extends AppCompatActivity implements PaletteView.Callb
                 ImageSelectorActivity.startActivityForResult(REQ_CODE_SELECT_IMAGE, MainActivity.this, null, false);
                 imgCODE = 1;
                 break;
+            //temp buttons for test
+            case R.id.testButton_01:
+                if(mCirclePanelView.isAwake()){
+                    mCirclePanelView.confirm();
+                    mPaletteView.setTmpColor(mCirclePanelView.getmColorValue(),mCirclePanelView.getmOpacityValue());
+                    mPaletteView.setTmpPaintSize(mCirclePanelView.getmBrushValue()*3);
+                    Log.i("whatever", toString().valueOf(mCirclePanelView.getmOpacityValue()));
+                }else {
+                    mCirclePanelView.awake();
+                }
+                break;
+            case R.id.testButton_02:
+                mCirclePanelView.dismiss();
+                break;
+            case R.id.testButton_03:
+                mCirclePanelView.menuScrollPrev();
+                break;
+            case R.id.testButton_04:
+                mCirclePanelView.menuScrollNext();
+                break;
         }
     }
 
