@@ -130,6 +130,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private ButtonContainer mButtonContainer;
     private LinearLayout mButtonContainerLayout;
 
+    Toast tScale;
+
     public enum TouchMode {
         Move,
         Board
@@ -217,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         Bitmap bitmap1 = new BitmapFactory().decodeResource(getResources(),R.drawable.ic_add);
         mButtonContainer.addView(bitmap1);
 
+        //tScale = Toast.makeText(getApplicationContext(), "当前缩放比例: " + mScale * 100 + "%", Toast.LENGTH_SHORT);
 
     }
 
@@ -439,8 +442,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 mPaletteView.nextPage();
                 break;
             case R.id.remove_page_button:
-                mButtonContainer.removeView(0);
-
+                mPaletteView.removePage(0);
+                //mButtonContainer.removeView(0);
                 //mPaletteView.removePage(0);
                 //mCirclePanelView.dismiss();
                 break;
@@ -530,8 +533,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                             Toast.makeText(getApplicationContext(), "背景更换成功", Toast.LENGTH_SHORT).show();
                             break;
                         case 1:
-                            mBitmap = ImageUtils.createBitmapFromPath(imgPath, 660, 400);
-                            mPaletteView.insertImage(mBitmap);
+                            mBitmap = ImageUtils.createBitmapFromPath(imgPath, 1500, 800);
+                            mPaletteView.insertImage(mBitmap,imgPath);
                             Toast.makeText(getApplicationContext(), "图片插入成功", Toast.LENGTH_SHORT).show();
                             break;
                     }
@@ -721,6 +724,14 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                                 float transX = mPaletteView.toTransX(mTouchCentreX, mToucheCentreXOnGraffiti);
                                 float transY = mPaletteView.toTransY(mTouchCentreY, mToucheCentreYOnGraffiti);
                                 mPaletteView.setTrans(transX, transY);
+                                /*tScale = Toast.makeText(getApplicationContext(), "当前缩放比例: " + mScale * 100 + "%", Toast.LENGTH_SHORT);
+                                tScale.cancel();
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        tScale.show();   // 会发现延迟之后就显示出来了
+                                    }
+                                }, 200);*/
                             }
                         }
                         return true;

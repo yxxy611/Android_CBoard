@@ -24,25 +24,25 @@ public class PaletteView extends View {
 
     //private Bitmap mBufferBitmap;
     //private Canvas mBufferCanvas;
-    private Bitmap[] mBitmaps = new Bitmap[5];
     //private ArrayList<Bitmap> cacheBitmapsList = new ArrayList<>();
-    private int cacheIndex = 0;
+    //private int cacheIndex = 0;
+    //private static final int MAX_CACHE_STEP = 100;
     //private Canvas mCanvas;
+
+    //页面相关
+    private Bitmap mBitmap;
+    private final int mMaxPage = 5;
+    private Bitmap[] mBitmaps = new Bitmap[5];
+    private ArrayList<Bitmap> mPageBitmaps = new ArrayList();
     private int count = 0;
     private int countNow = 0;
 
-    private static final int MAX_CACHE_STEP = 100;
-
     private Callback mCallback;
-
     private final RectF dirtyRect = new RectF();
-
     public static final int ERROR_INIT = -1;
     public static final int ERROR_SAVE = -2;
-
     private static final float VALUE = 1f;
     private final int TIME_SPAN = 80;
-
     private GraffitiListener mGraffitiListener;
 
     //private Bitmap mBitmap; // 原图
@@ -85,13 +85,9 @@ public class PaletteView extends View {
     private boolean isJustDrawOriginal; // 是否只绘制原图
     private boolean mEraserImageIsResizeable;
     private boolean mReady = false;
-
     private boolean mIsEraserSelected = false;
-
     // view 的宽高
     private int mTotalWidth, mTotalHeight;
-
-
     // 保存涂鸦操作，便于撤销
     //private CopyOnWriteArrayList<GraffitiPath> mPathStack = new CopyOnWriteArrayList<GraffitiPath>();
     //    private CopyOnWriteArrayList<GraffitiPath> mPathStackBackup = new CopyOnWriteArrayList<GraffitiPath>();
@@ -260,7 +256,7 @@ public class PaletteView extends View {
     private void initCache() {
         mCRIndex = mPSIndex = 0;
         Path path = new Path();
-        GraffitiPath graffitiPath = GraffitiPath.toPath(Pen.HAND, 10, Color.GRAY, path, 0);
+        GraffitiPath graffitiPath = GraffitiPath.toPath(Pen.HAND, 10, Color.GRAY, path, 0,false);
         mPathStack.add(graffitiPath);
         mAreaPathsList.add(path);
         ChangeRecord cr = new ChangeRecord(false, 0);
@@ -532,8 +528,8 @@ public class PaletteView extends View {
         mDX = mTouchXs[0] - mLastTouchXs[0];
         mDY = mTouchYs[0] - mLastTouchYs[0];
         for (int i = 0; i < mSelectedPaths.size(); i++) {
-            mSelectedPaths.get(i).offset(mDX, mDY);
-            mSelectedAreaPaths.get(i).offset(mDX, mDY);
+            mSelectedPaths.get(i).offset(mDX / mScale, mDY / mScale);
+            mSelectedAreaPaths.get(i).offset(mDX / mScale, mDY / mScale);
             canvas.drawPath(mSelectedPaths.get(i), mPaintLasso);
             //canvas.drawPath(mSelectedAreaPaths.get(i),mPaintLasso);
         }
@@ -557,35 +553,89 @@ public class PaletteView extends View {
         }
     }
 
+    private void initCanvas() {
+        if (mBitmaps[countNow] != null) {
+            mBitmaps[countNow].recycle();
+        }
+        mBitmaps[countNow] = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
+        //mBitmaps[countNow] = Bitmap.createBitmap(960, 540, Bitmap.Config.ARGB_8888);
+        mBitmapCanvas = new Canvas(mBitmaps[countNow]);
+    }
+
     public void crateNewPage() {
-        if (count < 4) {
-            count++;
-            countNow = count;
+        boolean changed = false;
+        for(int i=0;i<mMaxPage;i++){
+            if(i != countNow && mBitmaps[i] == null){
+                countNow = i;
+                changed = true;
+                break;
+            }
+        }
+        if(changed){
             mBitmaps[countNow] = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
-            //mBitmaps[countNow] = Bitmap.createBitmap(960, 540, Bitmap.Config.ARGB_8888);
-            //mBufferBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-            //mBufferCanvas = new Canvas(mBufferBitmap);
             mBitmapCanvas.setBitmap(mBitmaps[countNow]);
             invalidate();
         }
     }
 
     public void removePage(int index) {
-        mBitmaps[index] = null;
+        boolean changed = false;
+        int tempIndex = countNow;
+        for(int i=0;i<mMaxPage;i++){
+            if(i != countNow && mBitmaps[i] != null){
+                countNow = i;
+                changed = true;
+                break;
+            }
+        }
+        if(changed){
+            mBitmapCanvas.setBitmap(mBitmaps[countNow]);
+            mBitmaps[tempIndex].recycle();
+            //mBitmaps[countNow] = null;
+            invalidate();
+        }
     }
 
     public void prevPage() {
-        if (countNow > 0) {
+        //int tempCount = countNow;
+        boolean changed = false;
+        for(int i=countNow-1;i>=0;i--){
+            if(mBitmaps[i] != null && !mBitmaps[i].isRecycled()){
+                countNow = i;
+                changed = true;
+                break;
+            }
+        }
+        if(changed){
+            Log.e("Lilith", "countNow=" + countNow);
+            mBitmapCanvas.setBitmap(mBitmaps[countNow]);
+            invalidate();
+        }
+        /*if (countNow > 0) {
             countNow--;
             if (mBitmaps[countNow] != null) {
                 mBitmapCanvas.setBitmap(mBitmaps[countNow]);
                 invalidate();
             }
-        }
+        }*/
     }
 
     public void nextPage() {
-        if (countNow < 9) {
+        //int tempCount = countNow;
+        boolean changed = false;
+        for(int i=countNow + 1;i<mMaxPage;i++){
+            if(mBitmaps[i] != null && !mBitmaps[i].isRecycled()){
+                countNow = i;
+                changed = true;
+                break;
+            }
+        }
+        if(changed){
+            mBitmapCanvas.setBitmap(mBitmaps[countNow]);
+            invalidate();
+        }
+
+        /*if (countNow < 4) {
             countNow++;
             if (mBitmaps[countNow] != null) {
                 mBitmapCanvas.setBitmap(mBitmaps[countNow]);
@@ -593,7 +643,7 @@ public class PaletteView extends View {
             } else {
                 countNow--;
             }
-        }
+        }*/
     }
 
     public void setPenAlpha(int alpha) {
@@ -775,24 +825,19 @@ public class PaletteView extends View {
         }
     }
 
-    public void insertImage(Bitmap bitmap) {
-        mInsertBitmaps.add(bitmap);
+    public void insertImage(Bitmap bitmap,String imgpath) {
+        GraffitiPath graffitiPath = null;
+        graffitiPath = GraffitiPath.toBitmap(true,imgpath,576,324);
+        mPathStack.add(graffitiPath);
         Path areaPath = new Path();
+        mInsertBitmaps.add(bitmap);
+
         RectF areaRectF = new RectF(576, 324, 576 + bitmap.getWidth(), 324 + bitmap.getHeight());
         areaPath.addRect(areaRectF, Path.Direction.CCW);
         areaPath.setFillType(Path.FillType.WINDING);
         mAreaPathsList.add(areaPath);
         mBitmapCanvas.drawBitmap(bitmap, 576, 324, null);
         invalidate();
-    }
-
-    private void initCanvas() {
-        if (mBitmaps[countNow] != null) {
-            mBitmaps[countNow].recycle();
-        }
-        mBitmaps[countNow] = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
-        //mBitmaps[countNow] = Bitmap.createBitmap(960, 540, Bitmap.Config.ARGB_8888);
-        mBitmapCanvas = new Canvas(mBitmaps[countNow]);
     }
 
     /*private void draw(Canvas canvas, Pen pen, Paint paint, Path path) {
@@ -915,6 +960,8 @@ public class PaletteView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        Log.e("Lilith", "onDraw: 出发啦！！！！！！！");
+        Log.e("Lilith", "CountNow=" + countNow);
         if (!isCircleOpen) {
             float left = (mCentreTranX + mTransX) / (mPrivateScale * mScale);
             float top = (mCentreTranY + mTransY) / (mPrivateScale * mScale);
@@ -1253,7 +1300,7 @@ public class PaletteView extends View {
                     mAreaPathsList.remove(i);
                 }
             }
-            path = GraffitiPath.toPath(mPen, mPaint.getStrokeWidth(), mPaint.getColor(), mCurrPaths[id], countNow);
+            path = GraffitiPath.toPath(mPen, mPaint.getStrokeWidth(), mPaint.getColor(), mCurrPaths[id], countNow,false);
             //addPath(path);
             //mPathStack.add(path);
             mPathStack.add(path);
@@ -1595,25 +1642,30 @@ public class PaletteView extends View {
         int mColor; // 颜色
         Path mPath; // 画笔的路径
         int mPageIndex; //画在哪一页
-        boolean isBitmap; //是否是图片
+        boolean mIsBitmap; //是否是图片
+        String mImgPath;
+        float imgX,imgY;
         int index; //序号
         float maxX, maxY, minX, minY;
         Bitmap bm;
 
-        static GraffitiPath toPath(Pen pen, float width, int color, Path p, int pageindex) {
+        static GraffitiPath toPath(Pen pen, float width, int color, Path p, int pageindex,boolean isbitmap) {
             GraffitiPath path = new GraffitiPath();
             path.mPen = pen;
             path.mStrokeWidth = width;
             path.mColor = color;
             path.mPath = p;
             path.mPageIndex = pageindex;
+            path.mIsBitmap = isbitmap;
             return path;
         }
 
-        static GraffitiPath toBitmap(boolean isbitmap, int index, ArrayList<Bitmap> bms) {
+        static GraffitiPath toBitmap(boolean isbitmap,String imgPath,float imgx,float imgy) {
             GraffitiPath path = new GraffitiPath();
-            path.index = index;
-            path.bm = bms.get(index);
+            path.mIsBitmap = isbitmap;
+            path.mImgPath = imgPath;
+            path.imgX = imgx;
+            path.imgY = imgy;
             return path;
         }
 
