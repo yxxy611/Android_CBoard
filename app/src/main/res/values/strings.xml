@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CBboard</string>
+    <string name="app_name">Xboard</string>
     <string name="hint">滑动擦除</string>
 
     <string name="graffiti_moving_pic">单指移动、双指缩放</string>

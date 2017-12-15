@@ -5,7 +5,7 @@ android {
     buildToolsVersion '25.0.1'
 
     defaultConfig {
-        applicationId "com.beyondsw.palette"
+        applicationId "com.SiWei.PaintingApp"
         minSdkVersion 19
         targetSdkVersion 22
         versionCode 1
@@ -15,6 +15,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
         }
     }
 }
@@ -27,4 +33,5 @@ dependencies {
     compile 'com.github.florent37:viewanimator:1.0.0@aar'
     compile 'com.forward.androids:androids:1.1.4'
     compile project(':ImageSelctorLib-release')
+    compile files('libs/core-3.2.1.jar')
 }

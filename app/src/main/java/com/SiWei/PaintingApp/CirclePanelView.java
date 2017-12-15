@@ -16,44 +16,66 @@ import android.view.View;
  */
 
 public class CirclePanelView extends View {
-    private int mScrollValue, mColorValue,mOpacityValue,mOpacityRange,mOpacityValueTmpCal;
+    private int mScrollValue, mColorValue, mOpacityValue, mOpacityRange, mOpacityValueTmpCal;
     private float mBrushValue;
     private float mBrushRange;
     private int mOpacityValueTmp, mColorValueTmp, mBrushValueTmp;
-    private float mBrushValueTmpCal ;
+    private int mOpacityValueTmpRec, mColorValueTmpRec, mBrushValueTmpRec;
+    private float mBrushValueTmpCal;
     private int mColorValueTmpCal;
     private int mOpacityCount, mColorCount, mBrushCount;
-    private Bitmap mMainBmp, mOpacBmp, mMainSelectBmp, mOpacSelectBmp, mBrushSelectBmp;
+    private Bitmap mMainBmp, mOpacBmp, mOpacSelectBmp;
+    private Bitmap mMainSelectBmp, mMainSelectBmp02, mMainSelectBmp03;
+    private Bitmap mColorSelectBmp, mColorSelectBmp02, mColorSelectBmp03, mColorSelectBmp04, mColorSelectBmp05, mColorSelectBmp06;
+    private Bitmap mBrushSelectBmp, mBrushSelectBmp02;
     private Matrix mMatrix;
     private MenuMode menuMode, tmpMenuMode;
     private Paint mPaint, mPaintTest;
     private int[] palette;
-    private float centerX, centerY,posX,posY;
-    private float[] mOffset;
+    private float centerX, centerY, posX, posY;
+    private float[] mOffset, mOffsetCenter;
     private boolean isAwake;
     private float[] mGestureCenter, mVectorMoved;
-    private float mAng,mAngIni;
+    private float mAng, mAngIni;
     private boolean isAngleInitialized;
+    public boolean isColorChanged;//画笔颜色有没有由圆盘控件改变
 
     public CirclePanelView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
+        //mPaint.setDither(true);
         mPaintTest = new Paint();
         mPaintTest.setColor(Color.BLACK);                    //设置画笔颜色
         mPaintTest.setStrokeWidth(1.0f);              //线宽
-        mPaintTest.setStyle(Paint.Style.STROKE);
+        mPaintTest.setStyle(Paint.Style.FILL);
+        mPaintTest.setTextAlign(Paint.Align.CENTER);
+        mPaintTest.setTextSize(20);
         mPaintTest.setAntiAlias(true);
 
         mMainBmp = BitmapFactory.decodeResource(getResources(), R.drawable.cir_main, null);
         centerX = mMainBmp.getWidth() / 2;
         centerY = mMainBmp.getHeight() / 2 + 1;
-        mOffset = new float[]{-mMainBmp.getWidth() * 1.5f, -mMainBmp.getHeight()/2};
+        mOffset = new float[]{-mMainBmp.getWidth() * 1.5f, -mMainBmp.getHeight() / 2};
+        mOffsetCenter = new float[]{mMainBmp.getWidth() * 0.5f, mMainBmp.getHeight() / 2};
+
         mMainSelectBmp = BitmapFactory.decodeResource(getResources(), R.drawable.cir_main_select, null);
+        mMainSelectBmp02 = BitmapFactory.decodeResource(getResources(), R.drawable.cir_main_select_02, null);
+        mMainSelectBmp03 = BitmapFactory.decodeResource(getResources(), R.drawable.cir_main_select_03, null);
+
         mOpacBmp = BitmapFactory.decodeResource(getResources(), R.drawable.cir_opacity, null);
         mOpacSelectBmp = BitmapFactory.decodeResource(getResources(), R.drawable.cir_opacity_select, null);
+
+        mColorSelectBmp = BitmapFactory.decodeResource(getResources(), R.drawable.cir_color_select, null).extractAlpha();
+        mColorSelectBmp02 = BitmapFactory.decodeResource(getResources(), R.drawable.cir_color_select_02, null).extractAlpha();
+        mColorSelectBmp03 = BitmapFactory.decodeResource(getResources(), R.drawable.cir_color_select_03, null).extractAlpha();
+        mColorSelectBmp04 = BitmapFactory.decodeResource(getResources(), R.drawable.cir_color_select_04, null).extractAlpha();
+        mColorSelectBmp05 = BitmapFactory.decodeResource(getResources(), R.drawable.cir_color_select_05, null).extractAlpha();
+        mColorSelectBmp06 = BitmapFactory.decodeResource(getResources(), R.drawable.cir_color_select_06, null).extractAlpha();
+
         mBrushSelectBmp = BitmapFactory.decodeResource(getResources(), R.drawable.cir_brush_select, null).extractAlpha();
+        mBrushSelectBmp02 = BitmapFactory.decodeResource(getResources(), R.drawable.cir_brush_select_02, null).extractAlpha();
         //mBrushUnselectBmp = BitmapFactory.decodeResource(getResources(), R.drawable.cir_brush_unselect, null);
         menuMode = MenuMode.DEFAULT;
         mMatrix = new Matrix();
@@ -62,14 +84,15 @@ public class CirclePanelView extends View {
         mColorValueTmp = 0;
         mBrushValueTmp = 0;
         mOpacityCount = 20;
-        mBrushCount = 12;
+        mBrushCount = 8;
         isAwake = false;
         mGestureCenter = null;
         isAngleInitialized = false;
         mVectorMoved = new float[2];
         mOpacityRange = 255;
-        mBrushRange = 6;
-        palette = new int[]{0xff86B32C,
+        mBrushRange = 8.75f;
+        palette = new int[]{
+                0xff86B32C,
                 0xff0C8858,
                 0xff188EB0,
                 0xff2B6BA5,
@@ -86,17 +109,17 @@ public class CirclePanelView extends View {
         mOpacityValue = 255;
         mBrushValue = 1.5f;
         mColorValue = 0xffaaaaaa;
-
+        isColorChanged = false;
     }
 
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mGestureCenter != null) {
-            Log.d("bbbbb", "Center: " + mGestureCenter[0] + "  " + mGestureCenter[1]);
-            canvas.drawText(String.valueOf(mAng),1500,100,mPaintTest);
-            canvas.drawCircle(mGestureCenter[0], mGestureCenter[1], 20, mPaintTest);
-        }
+        //        if (mGestureCenter != null) {
+        //            Log.d("bbbbb", "Center: " + mGestureCenter[0] + "  " + mGestureCenter[1]);
+        //
+        //            canvas.drawCircle(mGestureCenter[0], mGestureCenter[1], 20, mPaintTest);
+        //        }
         switch (menuMode) {
             case MAIN:
                 tmpMenuMode = drawMainMenu(canvas);
@@ -123,12 +146,16 @@ public class CirclePanelView extends View {
             switch (menuMode) {
                 case OPACITY:
                     mOpacityValue = mOpacityValueTmpCal;
+                    mOpacityValueTmpRec = mOpacityValueTmp;
                     break;
                 case COLOR:
                     mColorValue = mColorValueTmpCal;
+                    mColorValueTmpRec = mColorValueTmp;
+                    isColorChanged = true;
                     break;
                 case BRUSH:
                     mBrushValue = mBrushValueTmpCal;
+                    mBrushValueTmpRec = mBrushValueTmp;
                     break;
             }
             menuMode = MenuMode.DEFAULT;
@@ -152,39 +179,23 @@ public class CirclePanelView extends View {
         }
     }
 
-    public void menuScrollNext() {
-        switch (menuMode) {
-            case MAIN:
-                mScrollValue += 1;
-                break;
-            case OPACITY:
-                mOpacityValueTmp = mOpacityValueTmp < mOpacityCount ? mOpacityValueTmp + 1 : mOpacityValueTmp;
-                break;
-            case COLOR:
-                mColorValueTmp = mColorValueTmp < mColorCount - 1 ? mColorValueTmp + 1 : mColorValueTmp;
-                break;
-            case BRUSH:
-                mBrushValueTmp = mBrushValueTmp < mBrushCount - 1 ? mBrushValueTmp + 1 : mBrushValueTmp;//do not need reach 360 deg
-                break;
-        }
-        invalidate();
-    }
-
-    //根据当前手势初始化二级圆盘
+    /**
+     * 根据当前手势初始化二级圆盘
+     */
     public void menuScroll() {
         float f;
         if (!isAngleInitialized) {
-            setInitialAngle( AngleBetween());
+            setInitialAngle(AngleBetween());
             isAngleInitialized = true;
         }
-        mAng = AngleBetween()-mAngIni;
-        if(mAng>180){
-            mAng = 360-mAng;
-        }else if(mAng<=-180){
-            mAng = 360+mAng;
+        mAng = AngleBetween() - mAngIni;
+        if (mAng > 180) {
+            mAng = 360 - mAng;
+        } else if (mAng <= -180) {
+            mAng = 360 + mAng;
         }
         Log.i("angleeee", String.valueOf(mAng));
-        f=-mAng;
+        f = -mAng;
 
         switch (menuMode) {
             case MAIN:
@@ -199,37 +210,79 @@ public class CirclePanelView extends View {
                 break;
             case COLOR:
                 if (f < 0) {
-                    mColorValueTmp = mColorCount-1 - (-(int) (f / (60 / mColorCount)) < mColorCount-1 ? -(int) (f / (60 / mColorCount)) : mColorCount-1);
+                    mColorValueTmp = mColorCount - 1 - (-(int) (f / (60 / mColorCount)) < mColorCount - 1 ? -(int) (f / (60 / mColorCount)) : mColorCount - 1);
                 } else {
-                    mColorValueTmp = (int) (f / (60 / mColorCount)) < mColorCount-1 ? (int) (f / (60 / mColorCount)) : mColorCount-1;
+                    mColorValueTmp = (int) (f / (60 / mColorCount)) < mColorCount - 1 ? (int) (f / (60 / mColorCount)) : mColorCount - 1;
                 }
                 break;
             case BRUSH:
                 if (f < 0) {
                     mBrushValueTmp = 0;
                 } else {
-                    mBrushValueTmp = (int) (f / (60 / mBrushCount)) < mBrushCount ? (int) (f / (60 / mBrushCount)) : mBrushCount;
+                    mBrushValueTmp = (int) (f / (60 / mBrushCount)) < mBrushCount - 1 ? (int) (f / (60 / mBrushCount)) : mBrushCount - 1;
                 }
                 break;
         }
         invalidate();
     }
 
-    //使用暂存数据初始化二级圆盘
-    public void menuScrollT(float f) {
+    /**
+     * 使用暂存数据初始化二级圆盘
+     */
+    public void menuScrollT() {
+        float f;
+        if (!isAngleInitialized) {
+            setInitialAngle(AngleBetween());
+            isAngleInitialized = true;
+        }
+        mAng = AngleBetween() - mAngIni;
+        if (mAng > 180) {
+            mAng = 360 - mAng;
+        } else if (mAng <= -180) {
+            mAng = 360 + mAng;
+        }
+        Log.i("angleeee", String.valueOf(mAng));
+        f = -mAng;
+
         switch (menuMode) {
             case MAIN:
-                mScrollValue = (int) f / 15;
+                mScrollValue = (int) f / 25;
                 break;
-            //            case OPACITY:
-            //                mOpacityValueTmp = mOpacityValueTmp + (int) (f / mColorCount) < mOpacityCount ? mOpacityValueTmp + i : mOpacityCount;
-            //                break;
-            //            case COLOR:
-            //                mColorValueTmp = mColorValueTmp + i < mColorCount - 1 ? mColorValueTmp + i : mColorCount - 1;
-            //                break;
-            //            case BRUSH:
-            //                mBrushValueTmp = mBrushValueTmp + i < mBrushCount - 1 ? mBrushValueTmp + i : mBrushCount - 1;//do not need reach 360 deg
-            //                break;
+            case OPACITY:
+                if (f < 0) {
+                    mOpacityValueTmp = (mOpacityValueTmpRec + (int) (f / (60 / mOpacityCount))) > 0 ? mOpacityValueTmpRec + (int) (f / (60 / mOpacityCount)) : 0;
+                } else {
+                    mOpacityValueTmp = (mOpacityValueTmpRec + (int) (f / (60 / mOpacityCount))) < mOpacityCount ? mOpacityValueTmpRec + (int) (f / (60 / mOpacityCount)) : mOpacityCount;
+                }
+                break;
+            case COLOR:
+                mColorValueTmp = mColorValueTmpRec + (int) (f / (60 / mColorCount));
+                break;
+            case BRUSH:
+                if (f < 0) {
+                    mBrushValueTmp = (mBrushValueTmpRec + (int) (f / (60 / mBrushCount))) > 0 ? mBrushValueTmpRec + (int) (f / (60 / mBrushCount)) : 0;
+                } else {
+                    mBrushValueTmp = (mBrushValueTmpRec + (int) (f / (60 / mBrushCount))) < mBrushCount - 1 ? mBrushValueTmpRec + (int) (f / (60 / mBrushCount)) : mBrushCount - 1;
+                }
+                break;
+        }
+        invalidate();
+    }
+
+    public void menuScrollNext() {
+        switch (menuMode) {
+            case MAIN:
+                mScrollValue += 1;
+                break;
+            case OPACITY:
+                mOpacityValueTmp = mOpacityValueTmp < mOpacityCount ? mOpacityValueTmp + 1 : mOpacityValueTmp;
+                break;
+            case COLOR:
+                mColorValueTmp = mColorValueTmp < mColorCount - 1 ? mColorValueTmp + 1 : mColorValueTmp;
+                break;
+            case BRUSH:
+                mBrushValueTmp = mBrushValueTmp < mBrushCount - 1 ? mBrushValueTmp + 1 : mBrushValueTmp;//do not need reach 360 deg
+                break;
         }
         invalidate();
     }
@@ -253,6 +306,13 @@ public class CirclePanelView extends View {
     }
 
     public void awake() {
+
+        if (mGestureCenter == null) {
+            mGestureCenter = new float[2];
+            mGestureCenter[0] = 600;
+            mGestureCenter[1] = 200;
+        }
+isColorChanged = false;
         setPosition();
         mScrollValue = 0;
         menuMode = MenuMode.MAIN;
@@ -273,7 +333,7 @@ public class CirclePanelView extends View {
     {
         mGestureCenter = new float[2];
         mGestureCenter[0] = x;
-        mGestureCenter[1] = y+20;
+        mGestureCenter[1] = y + 20;
 
     }
 
@@ -310,11 +370,26 @@ public class CirclePanelView extends View {
     }
 
     /**
+     * 控件外设置颜色时，存入圆盘暂存数值
+     */
+    public void setColorValueTmpRec(int v) {
+        mColorValueTmpRec = v;
+    }
+
+    public int[] getPaletteRequired(int[] index) {
+        int[] paletteReq = new int[index.length];
+        for (int i = 0; i < index.length; i++) {
+            paletteReq[i] = palette[index[i]];
+        }
+        return paletteReq;
+    }
+
+    /**
      * 设置圆盘在手势左边
      */
     public void setPosition() {
-        posX=mGestureCenter[0] + mOffset[0];
-        posY=mGestureCenter[1] + mOffset[1];
+        posX = mGestureCenter[0] + mOffset[0];
+        posY = mGestureCenter[1] + mOffset[1];
     }
 
     private MenuMode drawMainMenu(Canvas canvas) {
@@ -322,25 +397,29 @@ public class CirclePanelView extends View {
         canvas.drawBitmap(mMainBmp, posX, posY, mPaint);
         int i = mScrollValue % 3;
         MenuMode selectedMode = MenuMode.MAIN;
-        mMatrix.setRotate(-120 * i, centerX, centerY);
-        mMatrix.postTranslate(posX,posY);
-        canvas.drawBitmap(mMainSelectBmp, mMatrix, mPaint);
+        //        mMatrix.setRotate(-120 * i, centerX, centerY);
+        //        mMatrix.postTranslate(posX,posY);
+
         switch (i) {
             case 0:
                 selectedMode = MenuMode.OPACITY;
+                canvas.drawBitmap(mMainSelectBmp, posX, posY, mPaint);
                 break;
             case 1:
                 selectedMode = MenuMode.COLOR;
+                canvas.drawBitmap(mMainSelectBmp02, posX, posY, mPaint);
                 break;
-
             case 2:
                 selectedMode = MenuMode.BRUSH;
+                canvas.drawBitmap(mMainSelectBmp03, posX, posY, mPaint);
                 break;
             case -1:
                 selectedMode = MenuMode.BRUSH;
+                canvas.drawBitmap(mMainSelectBmp03, posX, posY, mPaint);
                 break;
             case -2:
                 selectedMode = MenuMode.COLOR;
+                canvas.drawBitmap(mMainSelectBmp02, posX, posY, mPaint);
                 break;
         }
         return selectedMode;
@@ -350,46 +429,105 @@ public class CirclePanelView extends View {
         canvas.drawBitmap(mOpacBmp, posX, posY, mPaint);
         int i = mOpacityValueTmp;
         mMatrix.setRotate(-i * 360 / mOpacityCount, centerX, centerY);
-        mMatrix.postTranslate(posX,posY);
-        mOpacityValueTmpCal = mOpacityRange-mOpacityRange/mOpacityCount*mOpacityValueTmp;
+        mMatrix.postTranslate(posX, posY);
+        mOpacityValueTmpCal = mOpacityRange - mOpacityRange / mOpacityCount * mOpacityValueTmp;
         canvas.drawBitmap(mOpacSelectBmp, mMatrix, mPaint);
+        canvas.drawText(String.valueOf((mOpacityCount - mOpacityValueTmp) * 5) + "%", posX + mOffsetCenter[0], posY + mOffsetCenter[1] + 10, mPaintTest);
     }
 
     private void drawBrushMenu(Canvas canvas) {
-        canvas.drawBitmap(mMainBmp, posX,posY, mPaint);
+        canvas.drawBitmap(mMainBmp, posX, posY, mPaint);
         int i = mBrushValueTmp;
         mPaint.setColor(0xff000000);
+        int p, q;
         for (int n = 0; n <= i; n++) {
-            mMatrix.setRotate(-n * 360 / mBrushCount, centerX, centerY);
-            mMatrix.postTranslate(posX,posY);
-            canvas.drawBitmap(mBrushSelectBmp, mMatrix, mPaint);
+            p = (int) Math.floor(n / 2);
+            q = n % 2;
+            mMatrix.setRotate(-p * 360 / mBrushCount * 2, centerX, centerY);
+            mMatrix.postTranslate(posX, posY);
+            switch (q) {
+                case 0:
+                    canvas.drawBitmap(mBrushSelectBmp, mMatrix, mPaint);
+                    break;
+                case 1:
+                    canvas.drawBitmap(mBrushSelectBmp02, mMatrix, mPaint);
+                    break;
+            }
+
         }
         mPaint.setColor(0xffC9C9CA);
-        for (int t = 1; t < mBrushCount - i; t++) {
-            mMatrix.setRotate(t * 360 / mBrushCount, centerX, centerY);
-            mMatrix.postTranslate(posX,posY);
-            canvas.drawBitmap(mBrushSelectBmp, mMatrix, mPaint);
+
+        for (int t = i + 1; t < mBrushCount; t++) {
+            q = t % 2;
+            p = (int) Math.floor(t / 2);
+            mMatrix.setRotate(-p * 360 / mBrushCount * 2, centerX, centerY);
+            mMatrix.postTranslate(posX, posY);
+            switch (q) {
+                case 0:
+                    canvas.drawBitmap(mBrushSelectBmp, mMatrix, mPaint);
+                    break;
+                case 1:
+                    canvas.drawBitmap(mBrushSelectBmp02, mMatrix, mPaint);
+                    break;
+            }
         }
-        mBrushValueTmpCal = mBrushRange/mBrushCount*mBrushValueTmp;
+
+        mBrushValueTmpCal = mBrushRange / (mBrushCount - 1) * mBrushValueTmp + 0.25f;
+        canvas.drawText(String.valueOf(mBrushValueTmpCal), posX + mOffsetCenter[0], posY + mOffsetCenter[1] + 10, mPaintTest);
+
 
     }
 
     private void drawColorMenu(Canvas canvas) {
         canvas.drawBitmap(mMainBmp, posX, posY, mPaint);
-        int i = mColorValueTmp;
+        int i;
+        if (mColorValueTmp >= 0) {
+            i = mColorValueTmp % 12;
+        } else if (mColorValueTmp % 12 != 0) {
+            i = 12 + mColorValueTmp % 12;
+        } else {
+            i = 0;
+        }
+        Log.i("ceshi", "drawColorMenu: " + i);
+        int p, q;
         for (int n = 0; n < mColorCount; n++) {
+            p = (int) Math.floor(n / 3);
+            q = n % 3;
             mPaint.setColor(palette[n]);
-            mMatrix.setRotate(-n * 360 / mColorCount, centerX, centerY);
-            mMatrix.postTranslate(posX,posY);
-            canvas.drawBitmap(mBrushSelectBmp, mMatrix, mPaint);
+            mMatrix.setRotate(-p * 360 / mColorCount * 3, centerX, centerY);
+            mMatrix.postTranslate(posX, posY);
+            switch (q) {
+                case 0:
+                    canvas.drawBitmap(mColorSelectBmp, mMatrix, mPaint);
+                    break;
+                case 1:
+                    canvas.drawBitmap(mColorSelectBmp02, mMatrix, mPaint);
+                    break;
+                case 2:
+                    canvas.drawBitmap(mColorSelectBmp03, mMatrix, mPaint);
+                    break;
+            }
         }
 
-        mMatrix.setScale(1.1f, 1.1f, centerX, centerY);
-        mMatrix.postRotate(-i * 360 / mColorCount, centerX, centerY);
-        mMatrix.postTranslate(posX,posY);
+        //mMatrix.setScale(1.0f, 1.0f, centerX, centerY);
+        p = (int) Math.floor(i / 3);
+        mMatrix.setRotate(-p * 360 / mColorCount * 3, centerX, centerY);
+        mMatrix.postTranslate(posX, posY);
         mPaint.setColor(palette[i]);
-        canvas.drawBitmap(mBrushSelectBmp, mMatrix, mPaint);
-        mColorValueTmpCal = palette[mColorValueTmp];
+        q = i % 3;
+        switch (q) {
+            case 0:
+                canvas.drawBitmap(mColorSelectBmp04, mMatrix, mPaint);
+                break;
+            case 1:
+                canvas.drawBitmap(mColorSelectBmp05, mMatrix, mPaint);
+                break;
+            case 2:
+                canvas.drawBitmap(mColorSelectBmp06, mMatrix, mPaint);
+                break;
+        }
+
+        mColorValueTmpCal = palette[i];
     }
 
     public void setVectorMoved(float x, float y) {
