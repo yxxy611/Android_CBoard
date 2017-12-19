@@ -434,6 +434,16 @@ public class PaletteView extends View {
         Log.e("Lilith", "mPSIndex=" + mPSIndex);
     }
 
+    private void clearCacheByIndex(int index){
+        mChangeRecordList.clear();
+        for(int i=mPathStack.size()-1;i>=0;i--){
+            if(mPathStack.get(i).mPageIndex == index){
+                mPathStack.remove(i);
+            }
+        }
+        mPSIndex = mPathStack.size() - 1;
+    }
+
     private void BuildLassoArea() {
         if (mAreaPathsList.size() == 0) {
             return;
@@ -569,17 +579,12 @@ public class PaletteView extends View {
             }
         }
         if(changed){
+            clearCacheByIndex(tempIndex);
             mBitmapCanvas.setBitmap(mBitmaps[mPageIndexNow]);
             mBitmaps[tempIndex].recycle();
             mPageRealCount --;
             calculatePageNumber();
             invalidate();
-        }
-    }
-
-    private void clearCache(){
-        for(int i=0;i<mPathStack.size();i++){
-
         }
     }
 
@@ -639,6 +644,7 @@ public class PaletteView extends View {
     public void setPageIndexNow(int pageIndex){
         mPageIndexNow = pageIndex;
         mBitmapCanvas.setBitmap(mBitmaps[mPageIndexNow]);
+        calculatePageNumber();
         invalidate();
     }
 
