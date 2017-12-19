@@ -252,7 +252,7 @@ public class PaletteView extends View {
         //初始化画布Bitmap
         mBitmaps[mPageIndexNow] = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
         mBitmapCanvas = new Canvas(mBitmaps[mPageIndexNow]);
-        Bitmap tempBitmap = Bitmap.createBitmap(mBitmaps[mPageIndexNow]);
+        //Bitmap tempBitmap = Bitmap.createBitmap(mBitmaps[mPageIndexNow]);
         initCache();
         //初始化橡皮擦图片
         //mEraserBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.eraserimg100);
@@ -554,6 +554,7 @@ public class PaletteView extends View {
             if(i != mPageIndexNow){
                 if(mBitmaps[i] == null || mBitmaps[i].isRecycled()){
                     mPageIndexNow = i;
+                    Log.e("Lilith", "crateNewPage: index" + mPageIndexNow );
                     changed = true;
                     break;
                 }
@@ -568,7 +569,7 @@ public class PaletteView extends View {
         }
     }
 
-    public void removePage(int index) {
+    public void removePage() {
         boolean changed = false;
         int tempIndex = mPageIndexNow;
         for(int i=0;i<mMaxPage;i++){
