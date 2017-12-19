@@ -435,12 +435,13 @@ public class PaletteView extends View {
     }
 
     private void clearCacheByIndex(int index){
-        mChangeRecordList.clear();
+        //mChangeRecordList = new ArrayList<>();
         for(int i=mPathStack.size()-1;i>=0;i--){
             if(mPathStack.get(i).mPageIndex == index){
                 mPathStack.remove(i);
             }
         }
+        //mCRIndex = 0;
         mPSIndex = mPathStack.size() - 1;
     }
 
@@ -580,9 +581,9 @@ public class PaletteView extends View {
             }
         }
         if(changed){
-            //clearCacheByIndex(tempIndex);
             mBitmapCanvas.setBitmap(mBitmaps[mPageIndexNow]);
             mBitmaps[tempIndex].recycle();
+            clearCacheByIndex(tempIndex);
             mPageRealCount --;
             calculatePageNumber();
             invalidate();

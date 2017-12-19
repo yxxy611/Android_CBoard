@@ -503,6 +503,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                         b.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+                                mPaletteView.setPageIndexNow(b.getIndex());
                                 Log.i("deng", "onClick: " + b.getIndex());
                             }
                         });
