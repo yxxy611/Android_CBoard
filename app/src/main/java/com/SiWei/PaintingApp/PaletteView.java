@@ -562,7 +562,7 @@ public class PaletteView extends View {
         boolean changed = false;
         int tempIndex = mPageIndexNow;
         for(int i=0;i<mMaxPage;i++){
-            if(i != mPageIndexNow && mBitmaps[i] != null){
+            if(i != mPageIndexNow && mBitmaps[i] != null && !mBitmaps[i].isRecycled()){
                 mPageIndexNow = i;
                 changed = true;
                 break;
