@@ -580,7 +580,7 @@ public class PaletteView extends View {
             }
         }
         if(changed){
-            clearCacheByIndex(tempIndex);
+            //clearCacheByIndex(tempIndex);
             mBitmapCanvas.setBitmap(mBitmaps[mPageIndexNow]);
             mBitmaps[tempIndex].recycle();
             mPageRealCount --;

@@ -477,7 +477,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 //                        Log.i("deng", "onClick: " + 12321321);
 //                    }
 //                });
-//                break;
+                break;
             case R.id.prev_page_button:
                 mPaletteView.prevPage();
                 break;
@@ -485,7 +485,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 mPaletteView.nextPage();
                 break;
             case R.id.remove_page_button:
-                mPaletteView.removePage(0);
+                mPaletteView.removePage();
                 //mButtonContainer.removeView(0);
                 //mCirclePanelView.dismiss();
                 break;
