@@ -2,6 +2,7 @@ package com.SiWei.PaintingApp;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.v7.widget.AppCompatImageButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
@@ -45,5 +46,47 @@ public class ButtonContainer {
 
     public void setLayout(LinearLayout l) {
         mLayout = l;
+    }
+
+    public ArrayList<ImageIndexedButton> initButtons(Bitmap[] imgs) {
+        ArrayList<ImageIndexedButton> imgBtns = new ArrayList<>();
+        for (int i = 0; i < imgs.length; i++
+                ) {
+            if (imgs[i] != null) {
+                ImageIndexedButton button = new ImageIndexedButton(mContext);
+                button.setImageBitmap(imgs[i]);
+                button.setMaxWidth(240);
+                button.setMinimumWidth(240);
+                button.setMaxHeight(135);
+                button.setMinimumHeight(135);
+                button.setIndex(i);
+                imgBtns.add(button);
+                mButtons.add(button);
+                mButtonIndex++;
+                mLayout.addView(button);
+            }
+        }
+        return imgBtns;
+    }
+    public void removeButtons(){
+        mLayout.removeAllViews();
+    }
+
+    /**
+     * Created by yxxy6 on 12/19/2017.
+     */
+
+    public static class ImageIndexedButton extends AppCompatImageButton {
+        private int buttonIndex;
+        public ImageIndexedButton(Context context) {
+            super(context);
+            buttonIndex = -1;
+        }
+        public void setIndex(int index){
+            buttonIndex = index;
+        }
+        public int getIndex(){
+            return buttonIndex;
+        }
     }
 }
