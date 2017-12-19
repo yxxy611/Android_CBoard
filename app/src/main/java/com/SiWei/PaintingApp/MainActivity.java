@@ -41,6 +41,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import cn.forward.androids.utils.ImageUtils;
 import cn.forward.androids.utils.LogUtil;
@@ -139,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private ButtonContainer mButtonContainer;
     private LinearLayout mButtonContainerLayout;
     private GridLayout mBackgroundMenu;
+    private int mThumbnailIndex;
 
     public enum TouchMode {
         Move,
@@ -233,8 +235,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         mButtonContainerLayout = (LinearLayout) findViewById(R.id.thumbnail_container);
         mButtonContainerLayout.setVisibility(View.INVISIBLE);
         mButtonContainer.setLayout(mButtonContainerLayout);
-        Bitmap bitmap1 = new BitmapFactory().decodeResource(getResources(), R.drawable.ic_add);
-        mButtonContainer.addView(bitmap1);
+//        Bitmap bitmap1 = new BitmapFactory().decodeResource(getResources(), R.drawable.ic_add);
+//        mButtonContainer.addView(bitmap1);
 
         //sendMailByIntent();
         //sendMailByJavaMail();
@@ -468,14 +470,14 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 break;
             case R.id.new_page_button:
                 mPaletteView.crateNewPage();
-                ImageButton button = mButtonContainer.addView(new BitmapFactory().decodeResource(getResources(), R.drawable.ic_add));
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Log.i("deng", "onClick: " + 12321321);
-                    }
-                });
-                break;
+//                ImageButton button = mButtonContainer.addView(new BitmapFactory().decodeResource(getResources(), R.drawable.ic_add));
+//                button.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        Log.i("deng", "onClick: " + 12321321);
+//                    }
+//                });
+//                break;
             case R.id.prev_page_button:
                 mPaletteView.prevPage();
                 break;
@@ -488,10 +490,26 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 //mCirclePanelView.dismiss();
                 break;
             case R.id.page_count_button:
+
+
+
+
                 if (mButtonContainerLayout.getVisibility() == View.INVISIBLE) {
                     mButtonContainerLayout.setVisibility(View.VISIBLE);
+                    ArrayList<ButtonContainer.ImageIndexedButton>btns = mButtonContainer.initButtons(mergePagePreview(mPaletteView.getPagePreview()));
+                    Iterator it = btns.iterator();
+                    while (it.hasNext()){
+                        final ButtonContainer.ImageIndexedButton b = (ButtonContainer.ImageIndexedButton) it.next();
+                        b.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Log.i("deng", "onClick: " + b.getIndex());
+                            }
+                        });
+                    }
                 } else {
                     mButtonContainerLayout.setVisibility(View.INVISIBLE);
+                    mButtonContainer.removeButtons();
                 }
                 v.setSelected(!v.isSelected());
                 break;
@@ -694,15 +712,16 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         return bitmap;
     }
 
-    public void mergePagePreview(Bitmap[] pagePreview){
+    public Bitmap[] mergePagePreview(Bitmap[] pagePreview){
         Matrix matrix = new Matrix();
         matrix.postScale(0.125f,0.125f);
         for(int i=0;i<pagePreview.length;i++){
             if(pagePreview[i] != null){
-                pagePreview[i] = mergeBitmap(mBackgroundBitmap,pagePreview[i]);
+//                pagePreview[i] = mergeBitmap(mBackgroundBitmap,pagePreview[i]);
                 pagePreview[i] = Bitmap.createBitmap(pagePreview[i],0,0,pagePreview[i].getWidth(),pagePreview[i].getHeight(),matrix,true);
             }
         }
+        return pagePreview;
     }
 
     public File onSaved(Bitmap bitmap) { // 保存图片
