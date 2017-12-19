@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,29 +12,153 @@
 
     <com.SiWei.PaintingApp.PaletteView
         android:id="@+id/palette"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@color/colorPrimaryDark"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
+        android:background="@drawable/bg_01">
 
     </com.SiWei.PaintingApp.PaletteView>
+
     <LinearLayout
 
-        android:layout_width="match_parent" android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-       <com.SiWei.PaintingApp.CirclePanelView
-           android:id="@+id/circlePanel"
-           android:layout_width="match_parent"
-           android:layout_height="match_parent"/>
+        <com.SiWei.PaintingApp.CirclePanelView
+            android:id="@+id/circlePanel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
     </LinearLayout>
 
-    <include android:id = "@+id/bottom_bar"
-    layout="@layout/bottom_ui_layout"/>
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:id="@+id/QRLayout"
+        style="@style/buttonIconStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:visibility="gone">
+
+        <com.SiWei.PaintingApp.QRShareView
+            android:id="@+id/QRView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            custom:image="@drawable/ic_clear"
+            custom:imageScaleType="center"
+            custom:titleText="hello andorid ! "
+            custom:titleTextColor="#ff0000"
+            custom:titleTextSize="30sp"/>
+
+        <Switch
+            android:id="@+id/pwd_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:switchMinWidth="20dp"
+            android:text="加密"
+            android:textColor="#555555"
+            android:textOff=""
+            android:textOn=""
+            android:textSize="12sp"
+            android:thumb="@drawable/thumb"
+            android:track="@drawable/track"/>
+
+    </LinearLayout>
+
+    <include
+        android:id="@+id/bottom_bar"
+        layout="@layout/bottom_ui_layout"/>
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_marginBottom="113dp"-->
+        <!--android:layout_marginEnd="209dp">-->
+
+        <!--<ImageButton-->
+            <!--android:id="@+id/testButton_01"-->
+            <!--style="@style/buttonIconStyle"-->
+            <!--android:src="@drawable/pen_01"/>-->
+
+        <!--<ImageButton-->
+            <!--android:id="@+id/testButton_02"-->
+            <!--style="@style/buttonIconStyle"-->
+            <!--android:src="@drawable/erase_01"/>-->
+
+        <!--<ImageButton-->
+            <!--android:id="@+id/testButton_03"-->
+            <!--style="@style/buttonIconStyle"/>-->
+
+        <!--<ImageButton-->
+            <!--android:id="@+id/testButton_04"-->
+            <!--style="@style/buttonIconStyle"-->
+            <!--android:src="@drawable/undo_01"/>-->
+    <!--</LinearLayout>-->
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/pwd_layout"
+                    style="@style/buttonIconStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:visibility="gone">
+
+
+        <TextView
+            android:id="@+id/trader_pwd_set_tips_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25dip"
+            android:text="请输入密码"
+            android:textColor="#999999"
+            android:textSize="12dp"/>
+
+
+        <com.SiWei.PaintingApp.PasswordInputView
+            android:id="@+id/trader_pwd_set_pwd_edittext"
+            android:layout_width="180dp"
+            android:layout_height="30dp"
+            android:layout_below="@+id/trader_pwd_set_tips_textview"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="10dp"
+            android:background="@drawable/edittext_bg"
+            android:maxLength="6"/>
+
+
+        <Button
+            android:id="@+id/trader_pwd_set_next_button"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/trader_pwd_set_pwd_edittext"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="25dp"
+            android:layout_marginTop="10dp"
+            android:onClick="onClick"
+            android:text="确定"
+            android:textSize="12dp"/>
+
+        <android.inputmethodservice.KeyboardView
+            android:id="@+id/keyboard_view"
+            android:layout_width="300dp"
+            android:layout_height="240dp"
+            android:layout_below="@+id/trader_pwd_set_next_button"
+            android:layout_centerHorizontal="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:keyBackground="@color/colorWhite"
+            android:keyTextColor="#888888"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            android:paddingTop="0dip"
+            android:shadowRadius="0.0"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+</RelativeLayout>

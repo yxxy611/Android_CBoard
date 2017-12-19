@@ -1,8 +1,10 @@
 <resources>
-    <string name="app_name">CBboard</string>
+    <string name="app_name">Xboard</string>
     <string name="hint">滑动擦除</string>
 
     <string name="graffiti_moving_pic">单指移动、双指缩放</string>
+    <string name="graffiti_moving_pic_cancel">移动、缩放模式结束</string>
+
     <string name="graffiti_clear_screen">清屏</string>
     <string name="graffiti_cant_undo_after_clearing">清屏后不可撤销</string>
     <string name="graffiti_saving_picture">保存图片</string>
@@ -15,5 +17,15 @@
     <string name="graffiti_remove">移除</string>
     <string name="graffiti_top">置顶</string>
 
+    <string name="menu_encrypt">加密</string>
+    <string name="menu_save">保存</string>
+    <string name="menu_share">扫码分享</string>
+    <string name="menu_email">邮件发送</string>
+    <string name="menu_background">背景</string>
+    <string name="menu_insert_img">插入图片</string>
+    <string name="menu_close">关闭</string>
+
+
+    <string name="hint_save_succeed">保存成功！</string>
 </resources>
 

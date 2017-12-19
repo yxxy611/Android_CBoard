@@ -28,11 +28,18 @@
         <item name="android:onClick">onClick</item>
         <item name="android:scaleType">center</item>
     </style>
+    <style name="buttonIconStyle2">
+        <item name="android:layout_width">72dp</item>
+        <item name="android:layout_height">72dp</item>
+        <item name="android:background">@drawable/button_shape</item>
+        <item name="android:onClick">onClick</item>
+        <item name="android:scaleType">center</item>
+    </style>
 
     <style name="buttonLayoutStyle">
         <item name="android:layout_width">50dp</item>
         <item name="android:layout_height">50dp</item>
-        <item name="android:layout_margin">0dp</item>
+        <item name="android:layout_margin">5dp</item>
         <item name="android:orientation">vertical</item>
         <item name="android:gravity">center</item>
 

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Android_CBoard_v0.32.iml" filepath="$PROJECT_DIR$/Android_CBoard_v0.32.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Android_CBoard_v0.94.iml" filepath="$PROJECT_DIR$/Android_CBoard_v0.94.iml" />
       <module fileurl="file://$PROJECT_DIR$/AndroidsLib-release/AndroidsLib-release.iml" filepath="$PROJECT_DIR$/AndroidsLib-release/AndroidsLib-release.iml" />
       <module fileurl="file://$PROJECT_DIR$/ImageSelctorLib-release/ImageSelctorLib-release.iml" filepath="$PROJECT_DIR$/ImageSelctorLib-release/ImageSelctorLib-release.iml" />
       <module fileurl="file://$PROJECT_DIR$/ImageSelector/ImageSelector.iml" filepath="$PROJECT_DIR$/ImageSelector/ImageSelector.iml" />

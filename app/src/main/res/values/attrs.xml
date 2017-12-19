@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <attr name="titleText" format="string" />
+    <attr name="titleTextSize" format="dimension" />
+    <attr name="titleTextColor" format="color" />
+    <attr name="image" format="reference" />
+    <attr name="imageScaleType">
+        <enum name="fillXY" value="0" />
+        <enum name="center" value="1" />
+    </attr>
 
     <!-- 滑动解锁控件 xml配置属性 -->
     <declare-styleable name="SlideToUnlockView">
@@ -13,6 +20,28 @@
         <attr name="textColorResId" format="color"/><!-- 文本字色 -->
         <attr name="slideThreshold" format="float"/><!-- 滑动阈值,默认是0.5,当右滑距离不满整个控件宽度的0.5,就会回弹至左边 -->
     </declare-styleable>
+
+    <declare-styleable name="QRShareView">
+        <attr name="titleText" />
+        <attr name="titleTextSize" />
+        <attr name="titleTextColor" />
+        <attr name="image" />
+        <attr name="imageScaleType" />
+    </declare-styleable>
+    <!-- 支付密码输入框 -->
+    <declare-styleable name="PasswordInputView">
+        <attr name="borderWidth" format="dimension"/>
+        <attr name="borderColor" format="color"/>
+        <attr name="borderRadius" format="dimension"/>
+        <attr name="passwordLength" format="integer"/>
+        <attr name="passwordWidth" format="dimension"/>
+        <attr name="passwordColor" format="color"/>
+        <attr name="passwordRadius" format="dimension"/>
+    </declare-styleable>
+    <dimen name="dimen_1px">1px</dimen>
+    <dimen name="dimen_6">6px</dimen>
+    <dimen name="dimen_12dp">18dp</dimen>
+
 
 
 </resources>

@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Xboard</string>
+    <string name="hint">Slide to clean</string>
+
+    <string name="graffiti_moving_pic">Single finger pan/Double fingers zoom</string>
+    <string name="graffiti_moving_pic_cancel">Pan/Zoom cancelled</string>
+    <string name="graffiti_clear_screen">Clear Screen</string>
+    <string name="graffiti_cant_undo_after_clearing">清屏后不可撤销</string>
+    <string name="graffiti_saving_picture">Saving picture</string>
+    <string name="graffiti_enter">Enter</string>
+    <string name="graffiti_cancel">Cancel</string>
+    <string name="graffiti_success">Success</string>
+    <string name="graffiti_failed">Failed</string>
+
+    <string name="graffiti_edit">Edit</string>
+    <string name="graffiti_remove">Remove</string>
+    <string name="graffiti_top">Top</string>
+
+    <string name="menu_encrypt">Encrypt</string>
+    <string name="menu_save">Save</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_email">E-mail</string>
+    <string name="menu_background">Background</string>
+    <string name="menu_insert_img">Image</string>
+    <string name="menu_close">Close</string>
+
+
+    <string name="hint_save_succeed">Saving succeed!</string>
+</resources>
+
