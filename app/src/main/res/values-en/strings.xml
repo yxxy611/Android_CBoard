@@ -24,6 +24,10 @@
     <string name="menu_insert_img">Image</string>
     <string name="menu_close">Close</string>
 
+    <string name="image_title">Select Image</string>
+    <string name="image_back">Back</string>
+    <string name="image_enter">Enter</string>
+
 
     <string name="hint_save_succeed">Saving succeed!</string>
 </resources>

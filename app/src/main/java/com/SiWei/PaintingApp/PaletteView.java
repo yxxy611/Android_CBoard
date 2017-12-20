@@ -276,7 +276,7 @@ public class PaletteView extends View {
     private void setEraserBitmap(int num){
         float scale;
         mEraserBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.eraserimg100);
-        scale = mTouchSize * num * 10;
+        scale = mTouchSize * num * 7;
         Log.e("Lilith", "scale="+scale);
         Matrix matrix = new Matrix();
         matrix.postScale(scale,scale);

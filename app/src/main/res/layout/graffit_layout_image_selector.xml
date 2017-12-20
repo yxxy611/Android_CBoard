@@ -23,21 +23,19 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
                 android:gravity="center_vertical"
-                android:text="返回"
+                android:text="@string/image_back"
                 android:textColor="#000000"
-                android:textSize="16dp"
-                />
+                android:textSize="16dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="45dp"
                 android:layout_centerInParent="true"
                 android:gravity="center"
-                android:text="选择图片"
+                android:text="@string/image_title"
                 android:textColor="@android:color/black"
                 android:textSize="18dp"
-                android:textStyle="normal"
-                />
+                android:textStyle="normal" />
 
             <TextView
                 android:id="@+id/btn_enter"
@@ -46,12 +44,11 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"
                 android:gravity="center"
-                android:text="确定"
+                android:text="@string/image_enter"
                 android:textColor="@android:color/black"
                 android:textSize="16dp"
                 android:textStyle="normal"
-                android:visibility="visible"
-                />
+                android:visibility="visible" />
         </RelativeLayout>
     </RelativeLayout>
 

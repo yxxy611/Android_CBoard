@@ -25,6 +25,10 @@
     <string name="menu_insert_img">插入图片</string>
     <string name="menu_close">关闭</string>
 
+    <string name="image_title">选择图片</string>
+    <string name="image_back">返回</string>
+    <string name="image_enter">确定</string>
+
 
     <string name="hint_save_succeed">保存成功！</string>
 </resources>
