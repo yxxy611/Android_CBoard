@@ -976,31 +976,29 @@ public class PaletteView extends View {
     protected void onDraw(Canvas canvas) {
         Log.e("Lilith", "onDraw: 出发啦！！！！！！！");
         Log.e("Lilith", "mPageIndexNow=" + mPageIndexNow);
-        if (!isCircleOpen) {
-            float left = (mCentreTranX + mTransX) / (mPrivateScale * mScale);
-            float top = (mCentreTranY + mTransY) / (mPrivateScale * mScale);
-            // 画布和图片共用一个坐标系，只需要处理屏幕坐标系到图片（画布）坐标系的映射关系
-            canvas.scale(mPrivateScale * mScale, mPrivateScale * mScale); // 缩放画布
+        float left = (mCentreTranX + mTransX) / (mPrivateScale * mScale);
+        float top = (mCentreTranY + mTransY) / (mPrivateScale * mScale);
+        // 画布和图片共用一个坐标系，只需要处理屏幕坐标系到图片（画布）坐标系的映射关系
+        canvas.scale(mPrivateScale * mScale, mPrivateScale * mScale); // 缩放画布
             /*Log.e("Lilith", "mCenterTanX=" + mCentreTranX);
             Log.e("Lilith", "mCentreTranY=" + mCentreTranY);
             Log.e("Lilith", "mTransX=" + mTransX);
             Log.e("Lilith", "mTransY=" + mTransY);*/
-            canvas.translate(left, top); // 偏移画布
-            canvas.drawBitmap(mBitmaps[mPageIndexNow], 0, 0, null);
-            if (mIsLassoMove) {
-                MoveLasso(canvas);
+        canvas.translate(left, top); // 偏移画布
+        canvas.drawBitmap(mBitmaps[mPageIndexNow], 0, 0, null);
+        if (mIsLassoMove) {
+            MoveLasso(canvas);
+        }
+        if (mPen == Pen.HAND) {
+            if (mPointerIDs[0] != -1) {
+                canvas.drawPath(mCurrPaths[0], mPaint);
             }
-            if (mPen == Pen.HAND) {
-                if (mPointerIDs[0] != -1) {
-                    canvas.drawPath(mCurrPaths[0], mPaint);
-                }
-                if (mPointerIDs[1] != -1) {
-                    canvas.drawPath(mCurrPaths[1], mPaint);
-                }
+            if (mPointerIDs[1] != -1) {
+                canvas.drawPath(mCurrPaths[1], mPaint);
             }
-            if(mPen == Pen.ERASER  && !mEraserBitmap.isRecycled()){
-                canvas.drawBitmap(mEraserBitmap,mTouchXs[0] - mEraserBitmap.getWidth() / 2,mTouchYs[0] - mEraserBitmap.getHeight() / 2,null);
-            }
+        }
+        if(!isCircleOpen && mPen == Pen.ERASER && !mEraserBitmap.isRecycled()){
+            canvas.drawBitmap(mEraserBitmap,mTouchXs[0] - mEraserBitmap.getWidth() / 2,mTouchYs[0] - mEraserBitmap.getHeight() / 2,null);
         }
         //canvas.drawBitmap(mBitmaps[mPageIndexNow], 0, 0, null);
 /*        if (mBitmap.isRecycled() || mBitmaps[mPageIndexNow].isRecycled()) {
@@ -1083,45 +1081,47 @@ public class PaletteView extends View {
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
                     mTouchMode = 0;
-                    mLastTouchXs[0] = mTouchXs[0];
-                    mLastTouchYs[0] = mTouchYs[0];
-                    mTouchXs[0] = event.getX();
-                    mTouchYs[0] = event.getY();
-                    if (mIsLassoMove && !isCircleOpen) {
-                        initCanvas();
-                        //flag:
-                        for (int i = 0; i <= mPSIndex; i++) {
-                            mPaintDrawTemp.setStrokeWidth(mPathStack.get(i).mStrokeWidth);
-                            mPaintDrawTemp.setColor(mPathStack.get(i).mColor);
-                            if (mPathStack.get(i).mPageIndex == mPageIndexNow) {
-                                mBitmapCanvas.drawPath(mPathStack.get(i).mPath, mPaintDrawTemp);
+                    if(!isCircleOpen){
+                        mLastTouchXs[0] = mTouchXs[0];
+                        mLastTouchYs[0] = mTouchYs[0];
+                        mTouchXs[0] = event.getX();
+                        mTouchYs[0] = event.getY();
+                        if (mIsLassoMove) {
+                            initCanvas();
+                            //flag:
+                            for (int i = 0; i <= mPSIndex; i++) {
+                                mPaintDrawTemp.setStrokeWidth(mPathStack.get(i).mStrokeWidth);
+                                mPaintDrawTemp.setColor(mPathStack.get(i).mColor);
+                                if (mPathStack.get(i).mPageIndex == mPageIndexNow) {
+                                    mBitmapCanvas.drawPath(mPathStack.get(i).mPath, mPaintDrawTemp);
+                                }
                             }
-                        }
-                        invalidate();
-                        saveMoveChanged();
-                        mIsLassoMove = false;
-                        mSelectedPaths.clear();
-                        mSelectedAreaPaths.clear();
-                        mSelectedPathsIndex.clear();
-                        mSelectedPathsIndex = new ArrayList<>();
-                        mDXS = mDYS = 0;
-                        if (lassoBtn != null) {
-                            lassoBtn.setSelected(false);
-                        }
-                        setPen(Pen.HAND);
-                    } else if (!mIsLassoMove && !isCircleOpen) {
+                            invalidate();
+                            saveMoveChanged();
+                            mIsLassoMove = false;
+                            mSelectedPaths.clear();
+                            mSelectedAreaPaths.clear();
+                            //mSelectedPathsIndex.clear();
+                            mSelectedPathsIndex = new ArrayList<>();
+                            mDXS = mDYS = 0;
+                            if (lassoBtn != null) {
+                                lassoBtn.setSelected(false);
+                            }
+                            setPen(Pen.HAND);
+                        } else {
                         /*mCurrPaths[0].quadTo(
                                 toX(mLastTouchXs[0]),
                                 toY(mLastTouchYs[0]),
                                 toX((mTouchXs[0] + mLastTouchXs[0]) / 2),
                                 toY((mTouchYs[0] + mLastTouchYs[0]) / 2));*/
-                        mCurrPaths[0].lineTo(mLastTouchXs[0], mLastTouchYs[0]);
-                        //Log.e("lilith","lalalalalala" + getPen());
-                        initCanvas();
-                        draw(mBitmapCanvas, mPathStack, mPSIndex);
-                        BuildLassoArea();
-                        mIsLassoMove = true;
-                        mLassoArea = new RectF();
+                            mCurrPaths[0].lineTo(mLastTouchXs[0], mLastTouchYs[0]);
+                            //Log.e("lilith","lalalalalala" + getPen());
+                            initCanvas();
+                            draw(mBitmapCanvas, mPathStack, mPSIndex);
+                            BuildLassoArea();
+                            mIsLassoMove = true;
+                            mLassoArea = new RectF();
+                        }
                     }
                     isCircleOpen = false;
                     return true;
@@ -1138,49 +1138,53 @@ public class PaletteView extends View {
             //单指，双指书写
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_DOWN:
-                    mTouchMode = 1;
-                    //电视触摸面积：0.005，手机触摸面积：0.02
-                    mTouchSize = event.getSize(0);
-                    Log.e("Lilith", "TouchSize=" + mTouchSize);
-                    if (mTouchSize > 0.005) {
-                        setPen(Pen.ERASER);
-                        if (mTouchSize > 0.01) {
-                            mPaintEraserSize = mTouchSize * 1000 * 6;
-                            setEraserBitmap(6);
+                    if(!isCircleOpen){
+                        mTouchMode = 1;
+                        //电视触摸面积：0.005，手机触摸面积：0.02
+                        mTouchSize = event.getSize(0);
+                        Log.e("Lilith", "TouchSize=" + mTouchSize);
+                        if (mTouchSize > 0.005) {
+                            setPen(Pen.ERASER);
+                            if (mTouchSize > 0.01) {
+                                mPaintEraserSize = mTouchSize * 1000 * 6;
+                                setEraserBitmap(6);
+                            } else {
+                                mPaintEraserSize = mTouchSize * 1000 * 13;
+                                setEraserBitmap(13);
+                            }
+                            mPaint.setStrokeWidth(mPaintEraserSize);
                         } else {
-                            mPaintEraserSize = mTouchSize * 1000 * 13;
-                            setEraserBitmap(13);
+                            setPen(Pen.HAND);
                         }
-                        mPaint.setStrokeWidth(mPaintEraserSize);
-                    } else {
-                        setPen(Pen.HAND);
+                        mPointerIDs[0] = event.getPointerId(0);
+                        //Log.e("Lilith", "Action_DownID" + mPointerIDs[0]);
+                        //Log.e("Lilith", "pointerID" + mPointerIDs[0]);
+                        doTouchDown(event, mPointerIDs[0]);
+                        //invalidate();
                     }
-                    mPointerIDs[0] = event.getPointerId(0);
-                    //Log.e("Lilith", "Action_DownID" + mPointerIDs[0]);
-                    //Log.e("Lilith", "pointerID" + mPointerIDs[0]);
-                    doTouchDown(event, mPointerIDs[0]);
-                    invalidate();
                     break;
                 //return true;
                 case MotionEvent.ACTION_MOVE:
-                    moveID = event.getPointerId(event.getActionIndex());
+                    if(!isCircleOpen){
+                        moveID = event.getPointerId(event.getActionIndex());
                     /*if(mPointerIDs[0] == moveID){
                         doTouchMove(event,mPointerIDs[0]);
                     }else{
                         doTouchMove(event,mPointerIDs[1]);
                     }*/
-                    if (mTouchMode < 2) {
-                        for (int i = 0; i < 2; i++) {
-                            if (mPointerIDs[i] == moveID) {
+                        if (mTouchMode < 2) {
+                            for (int i = 0; i < 2; i++) {
+                                if (mPointerIDs[i] == moveID) {
+                                    doTouchMove(event, mPointerIDs[i]);
+                                }
+                            }
+                        } else {
+                            for (int i = 0; i < 2; i++) {
                                 doTouchMove(event, mPointerIDs[i]);
                             }
                         }
-                    } else {
-                        for (int i = 0; i < 2; i++) {
-                            doTouchMove(event, mPointerIDs[i]);
-                        }
+                        invalidate();
                     }
-                    invalidate();
                     break;
                 //return true;
                 case MotionEvent.ACTION_UP:
@@ -1212,27 +1216,29 @@ public class PaletteView extends View {
                     break;
                 //return true;
                 case MotionEvent.ACTION_POINTER_DOWN:
-                    mTouchMode += 1;
-                    if (mTouchMode > 2) {
+                    if(!isCircleOpen){
+                        mTouchMode += 1;
+                    /*if (mTouchMode > 2) {
                         return false;
-                    }
-                    downID = event.getPointerId(event.getActionIndex());
-                    for (int i = 0; i < 2; i++) {
-                        if (mPointerIDs[i] == -1) {
-                            mPointerIDs[i] = downID;
-                            doTouchDown(event, mPointerIDs[i]);
+                    }*/
+                        downID = event.getPointerId(event.getActionIndex());
+                        for (int i = 0; i < 2; i++) {
+                            if (mPointerIDs[i] == -1) {
+                                mPointerIDs[i] = downID;
+                                doTouchDown(event, mPointerIDs[i]);
+                            }
                         }
+                        //Log.e("Lilith", "现在有" + mTouchMode + "个手指按下" );
+                        invalidate();
                     }
-                    //Log.e("Lilith", "现在有" + mTouchMode + "个手指按下" );
-                    invalidate();
                     break;
                 //return true;
                 case MotionEvent.ACTION_POINTER_UP:
                     if(!isCircleOpen){
                         mTouchMode -= 1;
-                        if (mTouchMode > 2) {
+                        /*if (mTouchMode > 2) {
                             break;
-                        }
+                        }*/
                         upID = event.getPointerId(event.getActionIndex());
                         for (int i = 0; i < 2; i++) {
                             if (mPointerIDs[i] != -1 && mPointerIDs[i] == upID) {
@@ -1282,7 +1288,7 @@ public class PaletteView extends View {
                 //mCurrPaths[id].lineTo(mLastTouchXs[id],mLastTouchYs[id]);
                 //mCurrPaths[id].lineTo(mTouchXs[id],mTouchYs[id]);
                 mAreaPaths[id].addRect(new RectF(toX(mLastTouchXs[id]), toY(mLastTouchYs[id]), toX(mTouchXs[id]), toY(mTouchYs[id])), Path.Direction.CCW);
-                if (mPen == Pen.ERASER) {
+                if (mPen == Pen.ERASER && !isCircleOpen) {
                     mBitmapCanvas.drawPath(mCurrPaths[id], mPaint);
                 }
                 //if(mLastTouchXs[id] != mTouchXs[id] && mLastTouchYs[id] != mTouchYs[id]){
