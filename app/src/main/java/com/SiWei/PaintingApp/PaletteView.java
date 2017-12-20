@@ -1029,7 +1029,7 @@ public class PaletteView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mPen == Pen.LASSO && !isCircleOpen) {
+        if (mPen == Pen.LASSO) {
             //套索工具
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_DOWN:
@@ -1087,7 +1087,7 @@ public class PaletteView extends View {
                     mLastTouchYs[0] = mTouchYs[0];
                     mTouchXs[0] = event.getX();
                     mTouchYs[0] = event.getY();
-                    if (mIsLassoMove) {
+                    if (mIsLassoMove && !isCircleOpen) {
                         initCanvas();
                         //flag:
                         for (int i = 0; i <= mPSIndex; i++) {
@@ -1109,7 +1109,7 @@ public class PaletteView extends View {
                             lassoBtn.setSelected(false);
                         }
                         setPen(Pen.HAND);
-                    } else {
+                    } else if (!mIsLassoMove && !isCircleOpen) {
                         /*mCurrPaths[0].quadTo(
                                 toX(mLastTouchXs[0]),
                                 toY(mLastTouchYs[0]),
@@ -1123,7 +1123,7 @@ public class PaletteView extends View {
                         mIsLassoMove = true;
                         mLassoArea = new RectF();
                     }
-                    invalidate();
+                    isCircleOpen = false;
                     return true;
                 case MotionEvent.ACTION_POINTER_UP:
                     mTouchMode -= 1;
@@ -1134,15 +1134,15 @@ public class PaletteView extends View {
                     invalidate();
                     return true;
             }
-        } else if (!isCircleOpen) {
+        } else {
             //单指，双指书写
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_DOWN:
                     mTouchMode = 1;
-                    //电视触摸面积：0.003，手机触摸面积：0.02
+                    //电视触摸面积：0.005，手机触摸面积：0.02
                     mTouchSize = event.getSize(0);
                     Log.e("Lilith", "TouchSize=" + mTouchSize);
-                    if (mTouchSize > 0.02) {
+                    if (mTouchSize > 0.005) {
                         setPen(Pen.ERASER);
                         if (mTouchSize > 0.01) {
                             mPaintEraserSize = mTouchSize * 1000 * 6;
@@ -1184,26 +1184,29 @@ public class PaletteView extends View {
                     break;
                 //return true;
                 case MotionEvent.ACTION_UP:
-                    mTouchMode = 0;
-                    upID = event.getPointerId(event.getActionIndex());
-                    //mTouchID1 += 1;
-                    //Log.e("Lilith", "action up num" + mTouchID1);
+                    if(!isCircleOpen){
+                        mTouchMode = 0;
+                        upID = event.getPointerId(event.getActionIndex());
+                        //mTouchID1 += 1;
+                        //Log.e("Lilith", "action up num" + mTouchID1);
                     /*for(int i = 0;i<2;i++){
                         if(mPointerIDs[i] != -1 && mPointerIDs[i] == upID){
                             doTouchUp(event,mPointerIDs[i]);
                         }
                     }*/
-                    if(mPen == Pen.ERASER){
-                        mEraserBitmap.recycle();
-                    }
-                    if (mPointerIDs[0] != -1) {
-                        doTouchUp(event, mPointerIDs[0]);
-                    }
-                    if (mPointerIDs[1] != -1) {
-                        doTouchUp(event, mPointerIDs[1]);
+                        if(mPen == Pen.ERASER){
+                            mEraserBitmap.recycle();
+                        }
+                        if (mPointerIDs[0] != -1) {
+                            doTouchUp(event, mPointerIDs[0]);
+                        }
+                        if (mPointerIDs[1] != -1) {
+                            doTouchUp(event, mPointerIDs[1]);
+                        }
                     }
                     invalidate();
                     mPointerIDs[0] = mPointerIDs[1] = downID = moveID = upID = -1;
+                    isCircleOpen = false;
                     break;
                 case MotionEvent.ACTION_CANCEL:
                     break;
@@ -1225,18 +1228,20 @@ public class PaletteView extends View {
                     break;
                 //return true;
                 case MotionEvent.ACTION_POINTER_UP:
-                    mTouchMode -= 1;
-                    if (mTouchMode > 2) {
-                        break;
-                    }
-                    upID = event.getPointerId(event.getActionIndex());
-                    for (int i = 0; i < 2; i++) {
-                        if (mPointerIDs[i] != -1 && mPointerIDs[i] == upID) {
-                            doTouchUp(event, mPointerIDs[i]);
-                            mPointerIDs[i] = -1;
+                    if(!isCircleOpen){
+                        mTouchMode -= 1;
+                        if (mTouchMode > 2) {
+                            break;
                         }
+                        upID = event.getPointerId(event.getActionIndex());
+                        for (int i = 0; i < 2; i++) {
+                            if (mPointerIDs[i] != -1 && mPointerIDs[i] == upID) {
+                                doTouchUp(event, mPointerIDs[i]);
+                                mPointerIDs[i] = -1;
+                            }
+                        }
+                        invalidate();
                     }
-                    invalidate();
                     break;
                 //return true;
             }

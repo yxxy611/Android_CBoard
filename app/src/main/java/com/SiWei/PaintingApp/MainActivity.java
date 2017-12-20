@@ -871,7 +871,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                         break;
                     case MotionEvent.ACTION_UP:
                         mCirclePanelView.dismiss();
-                        mPaletteView.setCircleState(false);
+                        //mPaletteView.setCircleState(false);
                         Log.e("asdf", "最后1个手指抬起");
                         break;
                     case MotionEvent.ACTION_POINTER_DOWN:
