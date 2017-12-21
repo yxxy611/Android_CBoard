@@ -26,6 +26,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
@@ -138,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private ImageButton[] mBgBtns;
 
     private ButtonContainer mButtonContainer;
+    private PageButtonConfig pbc;
     private LinearLayout mButtonContainerLayout;
     private GridLayout mBackgroundMenu;
     private int mThumbnailIndex;
@@ -235,8 +237,12 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         mButtonContainerLayout = (LinearLayout) findViewById(R.id.thumbnail_container);
         mButtonContainerLayout.setVisibility(View.INVISIBLE);
         mButtonContainer.setLayout(mButtonContainerLayout);
-//        Bitmap bitmap1 = new BitmapFactory().decodeResource(getResources(), R.drawable.ic_add);
-//        mButtonContainer.addView(bitmap1);
+        //页码相关
+        pbc = new PageButtonConfig((Button) findViewById(R.id.page_count_button_test), mPaletteView);
+
+
+        //        Bitmap bitmap1 = new BitmapFactory().decodeResource(getResources(), R.drawable.ic_add);
+        //        mButtonContainer.addView(bitmap1);
 
         //sendMailByIntent();
         //sendMailByJavaMail();
@@ -245,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     public int sendMailByIntent() {
         File file = onSaved(mergeBitmap(mBackgroundBitmap, mPaletteView.getmGraffitiBitmap()));
         Intent intent = new Intent(Intent.ACTION_SEND);
-        String[] tos = { "xiao.dw.yao@163.com" };
+        String[] tos = {"xiao.dw.yao@163.com"};
         //String[] ccs = { "way.ping.li@gmail.com" };
         //String[] bccs = {"way.ping.li@gmail.com"};
         intent.putExtra(Intent.EXTRA_EMAIL, tos);
@@ -470,41 +476,44 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 break;
             case R.id.new_page_button:
                 mPaletteView.crateNewPage();
-//                ImageButton button = mButtonContainer.addView(new BitmapFactory().decodeResource(getResources(), R.drawable.ic_add));
-//                button.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        Log.i("deng", "onClick: " + 12321321);
-//                    }
-//                });
+                updatePages();
+                //                ImageButton button = mButtonContainer.addView(new BitmapFactory().decodeResource(getResources(), R.drawable.ic_add));
+                //                button.setOnClickListener(new View.OnClickListener() {
+                //                    @Override
+                //                    public void onClick(View view) {
+                //                        Log.i("deng", "onClick: " + 12321321);
+                //                    }
+                //                });
                 break;
             case R.id.prev_page_button:
                 mPaletteView.prevPage();
+                updatePages();
                 break;
             case R.id.next_page_button:
                 mPaletteView.nextPage();
+                updatePages();
                 break;
             case R.id.remove_page_button:
                 mPaletteView.removePage();
-                //mButtonContainer.removeView(0);
+                //mButtonContainer.removeView(mPaletteView.getPageIndex()+1);
                 //mCirclePanelView.dismiss();
+                updatePages();
                 break;
-            case R.id.page_count_button:
-
-
-
-
+            case R.id.page_count_button_test:
                 if (mButtonContainerLayout.getVisibility() == View.INVISIBLE) {
                     mButtonContainerLayout.setVisibility(View.VISIBLE);
-                    ArrayList<ButtonContainer.ImageIndexedButton>btns = mButtonContainer.initButtons(mergePagePreview(mPaletteView.getPagePreview()));
+                    mButtonContainer.removeButtons();
+                    ArrayList<ButtonContainer.ImageIndexedButton> btns = mButtonContainer.initButtons(mergePagePreview(mPaletteView.getPagePreview()));
                     Iterator it = btns.iterator();
-                    while (it.hasNext()){
+                    while (it.hasNext()) {
                         final ButtonContainer.ImageIndexedButton b = (ButtonContainer.ImageIndexedButton) it.next();
                         b.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 mPaletteView.setPageIndexNow(b.getIndex());
                                 Log.i("deng", "onClick: " + b.getIndex());
+                                updatePages();
+                                pbc.update();
                             }
                         });
                     }
@@ -573,37 +582,37 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             case R.id.bg01:
                 setSelectedBtn(mBgBtns, 0);
                 //mBitmap = ImageUtils.createBitmapFromPath(imgPath, 1920, 1080);
-                mBackgroundBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.bg_01);
+                mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_01);
                 Drawable bg01 = new BitmapDrawable(mBitmap);
                 mPaletteView.setBackground(bg01);
                 break;
             case R.id.bg02:
                 setSelectedBtn(mBgBtns, 1);
-                mBackgroundBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.bg_02);
+                mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_02);
                 Drawable bg02 = new BitmapDrawable(mBackgroundBitmap);
                 mPaletteView.setBackground(bg02);
                 break;
             case R.id.bg03:
                 setSelectedBtn(mBgBtns, 2);
-                mBackgroundBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.bg_03);
+                mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_03);
                 Drawable bg03 = new BitmapDrawable(mBackgroundBitmap);
                 mPaletteView.setBackground(bg03);
                 break;
             case R.id.bg04:
                 setSelectedBtn(mBgBtns, 3);
-                mBackgroundBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.bg_04);
+                mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_04);
                 Drawable bg04 = new BitmapDrawable(mBackgroundBitmap);
                 mPaletteView.setBackground(bg04);
                 break;
             case R.id.bg05:
                 setSelectedBtn(mBgBtns, 4);
-                mBackgroundBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.bg_05);
+                mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_05);
                 Drawable bg05 = new BitmapDrawable(mBackgroundBitmap);
                 mPaletteView.setBackground(bg05);
                 break;
             case R.id.bg06:
                 setSelectedBtn(mBgBtns, 5);
-                mBackgroundBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.bg_06);
+                mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_06);
                 Drawable bg06 = new BitmapDrawable(mBackgroundBitmap);
                 mPaletteView.setBackground(bg06);
                 break;
@@ -640,7 +649,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                             break;
                         case 1:
                             mBitmap = ImageUtils.createBitmapFromPath(imgPath, 1500, 800);
-                            mPaletteView.insertImage(mBitmap,imgPath);
+                            mPaletteView.insertImage(mBitmap, imgPath);
                             Toast.makeText(getApplicationContext(), "图片插入成功", Toast.LENGTH_SHORT).show();
                             break;
                     }
@@ -698,7 +707,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         selectorContainer.addView(selectorView);
     }*/
 
-   //背景和bitmap合成
+    //背景和bitmap合成
     public static Bitmap mergeBitmap(Bitmap backBitmap, Bitmap frontBitmap) {
         if (backBitmap == null || backBitmap.isRecycled()
                 || frontBitmap == null || frontBitmap.isRecycled()) {
@@ -713,13 +722,13 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         return bitmap;
     }
 
-    public Bitmap[] mergePagePreview(Bitmap[] pagePreview){
+    public Bitmap[] mergePagePreview(Bitmap[] pagePreview) {
         Matrix matrix = new Matrix();
-        matrix.postScale(0.125f,0.125f);
-        for(int i=0;i<pagePreview.length;i++){
-            if(pagePreview[i] != null){
-//                pagePreview[i] = mergeBitmap(mBackgroundBitmap,pagePreview[i]);
-                pagePreview[i] = Bitmap.createBitmap(pagePreview[i],0,0,pagePreview[i].getWidth(),pagePreview[i].getHeight(),matrix,true);
+        matrix.postScale(0.125f, 0.125f);
+        for (int i = 0; i < pagePreview.length; i++) {
+            if (pagePreview[i] != null) {
+                //                pagePreview[i] = mergeBitmap(mBackgroundBitmap,pagePreview[i]);
+                pagePreview[i] = Bitmap.createBitmap(pagePreview[i], 0, 0, pagePreview[i].getWidth(), pagePreview[i].getHeight(), matrix, true);
             }
         }
         return pagePreview;
@@ -887,7 +896,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                             if (mCirclePanelView.isColorChanged) {
                                 mPaletteView.setPaintColor(mCirclePanelView.getmColorValue());
                                 mPaletteView.setPaintOpacity(mCirclePanelView.getmOpacityValue());
-                                setSelectedBtn(mColorBtns,-1);
+                                setSelectedBtn(mColorBtns, -1);
                             } else {
                                 mPaletteView.setPaintOpacity(mCirclePanelView.getmOpacityValue());
                             }
@@ -1033,4 +1042,24 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         }
     }
 
+    private void updatePages() {
+        pbc.update();
+        if (mButtonContainerLayout.getVisibility() == View.VISIBLE) {
+            mButtonContainer.removeButtons();
+            ArrayList<ButtonContainer.ImageIndexedButton> btns = mButtonContainer.initButtons(mergePagePreview(mPaletteView.getPagePreview()));
+            Iterator it = btns.iterator();
+            while (it.hasNext()) {
+                final ButtonContainer.ImageIndexedButton b = (ButtonContainer.ImageIndexedButton) it.next();
+                b.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mPaletteView.setPageIndexNow(b.getIndex());
+                        Log.i("deng", "onClick: " + b.getIndex());
+                        updatePages();
+                        pbc.update();
+                    }
+                });
+            }
+        }
+    }
 }
