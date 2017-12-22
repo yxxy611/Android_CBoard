@@ -189,8 +189,8 @@ public class PaletteView extends View {
         mPaintDraw.setFilterBitmap(true);
         mPaintDraw.setStrokeWidth(mPaintDrawSize);
         mPaintDraw.setColor(mPaintColor);
-        //mPaintDraw.setAntiAlias(true);
-        //mPaintDraw.setDither(true);
+        mPaintDraw.setAntiAlias(true);
+        mPaintDraw.setDither(true);
         mPaintDraw.setStrokeJoin(Paint.Join.ROUND);
         mPaintDraw.setStrokeCap(Paint.Cap.ROUND);// 圆滑
         mPaintDraw.setPathEffect(new CornerPathEffect(30));
@@ -1276,7 +1276,8 @@ public class PaletteView extends View {
             mLastTouchYs[id] = mTouchYs[id];
             mTouchXs[id] = event.getX(event.findPointerIndex(id));
             mTouchYs[id] = event.getY(event.findPointerIndex(id));
-            if (Math.abs(mLastTouchXs[id] - mTouchXs[id]) > 1 || Math.abs(mLastTouchYs[id] - mTouchYs[id]) > 1) {
+            //解决慢速划线有延迟问题
+            if (Math.abs(mLastTouchXs[id] - mTouchXs[id]) > 0.3f || Math.abs(mLastTouchYs[id] - mTouchYs[id]) > 0.3f) {
                 mCurrPaths[id].quadTo(
                         toX(mLastTouchXs[id]),
                         toY(mLastTouchYs[id]),
@@ -1328,6 +1329,8 @@ public class PaletteView extends View {
             //解决快速双指划线有时会连线的问题
             mTouchDownXs[id] = mTouchXs[id] = mLastTouchXs[id] = event.getX(event.findPointerIndex(mPointerIDs[id]));
             mTouchDownYs[id] = mTouchYs[id] = mLastTouchYs[id] = event.getY(event.findPointerIndex(mPointerIDs[id]));
+            //mTouchDownXs[id] = mTouchXs[id] = mLastTouchXs[id] = event.getX(event.findPointerIndex(mPointerIDs[id]));
+            //mTouchDownYs[id] = mTouchYs[id] = mLastTouchYs[id] = event.getY(event.findPointerIndex(mPointerIDs[id]));
             //mCurrPaths[id].lineTo(mLastTouchXs[id],mLastTouchYs[id]);
             //mCurrPaths[id].lineTo(mLastTouchXs[id],mLastTouchYs[id]);
             mPSIndex++;

@@ -263,9 +263,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         Log.e("Lilith", "Color= " + color);
         Log.e("Lilith", "StrokeWidth= " + strokeWidth);
         setBoardBackground(background);
-        mPaletteView.setPaintColor(sp.getInt("Color",0xffbbbbbb));
-        mPaletteView.setPaintSize(sp.getFloat("StrokeWidth",4.5f));
-
+        mPaletteView.setPaintColor(color);
+        mPaletteView.setPaintSize(strokeWidth);
     }
 
     public int sendMailByIntent() {
