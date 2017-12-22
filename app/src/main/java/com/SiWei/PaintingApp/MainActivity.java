@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private String mImagePath;
     private Bitmap mBitmap;
     private Bitmap mBackgroundBitmap;
+    private int mBackgroundPath;
 
     public static final int REQ_CODE_SELECT_IMAGE = 100;
     public static final int REQ_CODE_GRAFFITI = 101;
@@ -143,6 +145,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private LinearLayout mButtonContainerLayout;
     private GridLayout mBackgroundMenu;
     private int mThumbnailIndex;
+
+    //配置文件相关变量
+    private SharedPreferences sp;
+    private SharedPreferences.Editor editor;
 
     public enum TouchMode {
         Move,
@@ -246,6 +252,20 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
         //sendMailByIntent();
         //sendMailByJavaMail();
+
+        //用户配置文件相关
+        sp = getSharedPreferences("XBoard_Config", Context.MODE_PRIVATE);
+        editor = sp.edit();
+        int background = sp.getInt("Background",R.drawable.bg_01);
+        int color = sp.getInt("Color",0xffbbbbbb);
+        float strokeWidth = sp.getFloat("StrokeWidth",4.5f);
+        Log.e("Lilith", "Background= " + background);
+        Log.e("Lilith", "Color= " + color);
+        Log.e("Lilith", "StrokeWidth= " + strokeWidth);
+        setBoardBackground(background);
+        mPaletteView.setPaintColor(sp.getInt("Color",0xffbbbbbb));
+        mPaletteView.setPaintSize(sp.getFloat("StrokeWidth",4.5f));
+
     }
 
     public int sendMailByIntent() {
@@ -543,6 +563,13 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 v.setSelected(true);
                 break;
             case R.id.close_button:
+                editor.putInt("Background", mBackgroundPath);
+                editor.putInt("Color", mPaletteView.getPaintColor());
+                editor.putFloat("StrokeWidth", mPaletteView.getPaintSize());
+                editor.commit();
+                Log.e("Lilith", "Background=" + mBackgroundPath);
+                Log.e("Lilith", "Color=" + mPaletteView.getPaintColor());
+                Log.e("Lilith", "StrokeWidth=" + mPaletteView.getPaintSize());
                 this.finish();
                 break;
             case R.id.save_button:
@@ -582,39 +609,27 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             case R.id.bg01:
                 setSelectedBtn(mBgBtns, 0);
                 //mBitmap = ImageUtils.createBitmapFromPath(imgPath, 1920, 1080);
-                mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_01);
-                Drawable bg01 = new BitmapDrawable(mBitmap);
-                mPaletteView.setBackground(bg01);
+                setBoardBackground(R.drawable.bg_01);
                 break;
             case R.id.bg02:
                 setSelectedBtn(mBgBtns, 1);
-                mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_02);
-                Drawable bg02 = new BitmapDrawable(mBackgroundBitmap);
-                mPaletteView.setBackground(bg02);
+                setBoardBackground(R.drawable.bg_02);
                 break;
             case R.id.bg03:
                 setSelectedBtn(mBgBtns, 2);
-                mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_03);
-                Drawable bg03 = new BitmapDrawable(mBackgroundBitmap);
-                mPaletteView.setBackground(bg03);
+                setBoardBackground(R.drawable.bg_03);
                 break;
             case R.id.bg04:
                 setSelectedBtn(mBgBtns, 3);
-                mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_04);
-                Drawable bg04 = new BitmapDrawable(mBackgroundBitmap);
-                mPaletteView.setBackground(bg04);
+                setBoardBackground(R.drawable.bg_04);
                 break;
             case R.id.bg05:
                 setSelectedBtn(mBgBtns, 4);
-                mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_05);
-                Drawable bg05 = new BitmapDrawable(mBackgroundBitmap);
-                mPaletteView.setBackground(bg05);
+                setBoardBackground(R.drawable.bg_05);
                 break;
             case R.id.bg06:
                 setSelectedBtn(mBgBtns, 5);
-                mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.bg_06);
-                Drawable bg06 = new BitmapDrawable(mBackgroundBitmap);
-                mPaletteView.setBackground(bg06);
+                setBoardBackground(R.drawable.bg_06);
                 break;
             case R.id.email_button:
                 sendMailByIntent();
@@ -706,6 +721,14 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         });
         selectorContainer.addView(selectorView);
     }*/
+
+    private void setBoardBackground(int background){
+        mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), background);
+        Drawable bg = new BitmapDrawable(mBackgroundBitmap);
+        mPaletteView.setBackground(bg);
+        mBackgroundPath = background;
+        Log.e("Lilith", "setBackground: mBackgroundPath= " + mBackgroundPath);
+    }
 
     //背景和bitmap合成
     public static Bitmap mergeBitmap(Bitmap backBitmap, Bitmap frontBitmap) {

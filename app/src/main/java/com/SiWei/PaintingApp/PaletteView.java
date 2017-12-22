@@ -1216,7 +1216,8 @@ public class PaletteView extends View {
                     break;
                 //return true;
                 case MotionEvent.ACTION_POINTER_DOWN:
-                    if(!isCircleOpen){
+                    //解决橡皮擦跳动的问题
+                    if(!isCircleOpen && mPen != Pen.ERASER){
                         mTouchMode += 1;
                     /*if (mTouchMode > 2) {
                         return false;
@@ -1324,6 +1325,9 @@ public class PaletteView extends View {
                     toY(mLastTouchYs[id]),
                     toX((mTouchXs[id] + mLastTouchXs[id]) / 2),
                     toY((mTouchYs[id] + mLastTouchYs[id]) / 2));
+            //解决快速双指划线有时会连线的问题
+            mTouchDownXs[id] = mTouchXs[id] = mLastTouchXs[id] = event.getX(event.findPointerIndex(mPointerIDs[id]));
+            mTouchDownYs[id] = mTouchYs[id] = mLastTouchYs[id] = event.getY(event.findPointerIndex(mPointerIDs[id]));
             //mCurrPaths[id].lineTo(mLastTouchXs[id],mLastTouchYs[id]);
             //mCurrPaths[id].lineTo(mLastTouchXs[id],mLastTouchYs[id]);
             mPSIndex++;
