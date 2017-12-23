@@ -943,7 +943,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                     case MotionEvent.ACTION_MOVE:
 
                         if (event.getPointerCount() == 5 && mCirclePanelView.isAwake()) {
-                            mCirclePanelView.setVectorMoved(event.getX(1), event.getY(1));
+                            mCirclePanelView.setVectorMoved(event.getX(1), event.getY(1),event.getX(2),event.getY(2));
                             mCirclePanelView.menuScrollT();
                         }
                         break;

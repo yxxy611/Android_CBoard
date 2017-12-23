@@ -38,7 +38,7 @@ public class CirclePanelView extends View {
     private float centerX, centerY, posX, posY;
     private float[] mOffset, mOffsetCenter;
     private boolean isAwake;
-    private float[] mGestureCenter, mVectorMoved;
+    private float[] mGestureCenter, mVectorMoved,mVectorMoved02;
     private float mAng, mAngIni;
     private boolean isAngleInitialized;
     public boolean isColorChanged;//画笔颜色有没有由圆盘控件改变
@@ -107,6 +107,7 @@ public class CirclePanelView extends View {
         mGestureCenter = null;
         isAngleInitialized = false;
         mVectorMoved = new float[2];
+        mVectorMoved02 = new float[2];
         mOpacityRange = 255;
         mBrushRange = 8.75f;
         palette = new int[]{
@@ -588,10 +589,15 @@ public class CirclePanelView extends View {
         mVectorMoved[0] = x;
         mVectorMoved[1] = y;
     }
-
+    public void setVectorMoved(float x, float y,float x2, float y2) {
+        mVectorMoved[0] = x;
+        mVectorMoved[1] = y;
+        mVectorMoved02[0]= x2;
+        mVectorMoved02[1] = y2;
+    }
     public float AngleBetween() {
-        float detaX = mVectorMoved[0] - mGestureCenter[0];
-        float detaY = mVectorMoved[1] - mGestureCenter[1];
+        float detaX = mVectorMoved[0] - mVectorMoved02[0];
+        float detaY = mVectorMoved[1] - mVectorMoved02[1];
         double d;
         //坐标在四个象限里
         if (detaX != 0) {
