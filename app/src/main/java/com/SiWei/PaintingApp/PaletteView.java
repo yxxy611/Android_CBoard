@@ -135,6 +135,8 @@ public class PaletteView extends View {
     private ArrayList<Path> mSelectedPaths = new ArrayList<>();
     private ArrayList<Path> mSelectedAreaPaths = new ArrayList<>();
     private ArrayList<Bitmap> mInsertBitmaps = new ArrayList<>();
+    private int mPhase = 0;
+    private DashPathEffect mEffect = new DashPathEffect(new float[] {10,10}, mPhase);
 
     //撤销，重做相关
     private float mDXS, mDYS;
@@ -217,6 +219,7 @@ public class PaletteView extends View {
         mPaintEraser.setStrokeCap(Paint.Cap.SQUARE);// 圆滑
         mClearMode = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
         //mClearMode = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
+        //mClearMode = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
         mPaintEraser.setXfermode(mClearMode);
         //初始化临时橡皮擦
         mPaintEraserTemp = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
@@ -237,11 +240,11 @@ public class PaletteView extends View {
         mPaintLasso.setStrokeWidth(5);
         mPaintLasso.setColor(Color.YELLOW);
         mPaintLasso.setAlpha(90);
-        mPaintLasso.setAntiAlias(true);
-        mPaintLasso.setDither(true);
+        //mPaintLasso.setAntiAlias(true);
+        //mPaintLasso.setDither(true);
         mPaintLasso.setStrokeJoin(Paint.Join.ROUND);
         mPaintLasso.setStrokeCap(Paint.Cap.ROUND);// 圆滑
-        mPaintLasso.setPathEffect(new DashPathEffect(new float[]{30, 30}, 10));
+        //mPaintLasso.setPathEffect(new DashPathEffect(new float[]{20, 10}, 10));
 
         mPen = Pen.HAND;
         mPaint = mPaintDraw;
@@ -488,6 +491,7 @@ public class PaletteView extends View {
             }
         }*/
         //mBitmapCanvas.drawColor(Color.WHITE);
+        mPaintLasso.setPathEffect(mEffect);
         mBitmapCanvas.drawPath(lassoAreaPath, mPaintLasso);
         for (int i = 0; i < mSelectedPaths.size(); i++) {
             mBitmapCanvas.drawPath(mSelectedPaths.get(i), mPaintLasso);
@@ -1098,6 +1102,7 @@ public class PaletteView extends View {
                             }
                             invalidate();
                             saveMoveChanged();
+                            mPaintLasso.setPathEffect(null);
                             mIsLassoMove = false;
                             mSelectedPaths.clear();
                             mSelectedAreaPaths.clear();
@@ -1143,8 +1148,9 @@ public class PaletteView extends View {
                         //电视触摸面积：0.005，手机触摸面积：0.02
                         mTouchSize = event.getSize(0);
                         Log.e("Lilith", "TouchSize=" + mTouchSize);
-                        if (mTouchSize > 0.005) {
+                        if (mTouchSize > 0.005f) {
                             setPen(Pen.ERASER);
+                            //mTouchSize = 0.005f;
                             if (mTouchSize > 0.01) {
                                 mPaintEraserSize = mTouchSize * 1000 * 6;
                                 setEraserBitmap(6);
