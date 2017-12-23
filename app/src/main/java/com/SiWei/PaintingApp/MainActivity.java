@@ -633,6 +633,18 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             case R.id.email_button:
                 sendMailByIntent();
                 break;
+            case R.id.testButton_01:
+                mCirclePanelView.awake();
+                break;
+            case R.id.testButton_02:
+                mCirclePanelView.confirm();
+                break;
+            case R.id.testButton_03:
+                mCirclePanelView.menuScrollNext();
+                break;
+            case R.id.testButton_04:
+                mCirclePanelView.dismiss();
+                break;
         }
     }
 

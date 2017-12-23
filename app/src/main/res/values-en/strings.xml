@@ -28,6 +28,9 @@
     <string name="image_back">Back</string>
     <string name="image_enter">Enter</string>
 
+    <string name="opac_ic">Opacity</string>
+    <string name="brush_ic">Brush</string>
+    <string name="color_ic">Color</string>
 
     <string name="hint_save_succeed">Saving succeed!</string>
 </resources>

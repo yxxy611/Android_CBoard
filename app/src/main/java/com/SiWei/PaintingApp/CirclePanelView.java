@@ -1,12 +1,15 @@
 package com.SiWei.PaintingApp;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -30,7 +33,7 @@ public class CirclePanelView extends View {
     private Bitmap mBrushSelectBmp, mBrushSelectBmp02;
     private Matrix mMatrix;
     private MenuMode menuMode, tmpMenuMode;
-    private Paint mPaint, mPaintTest;
+    private Paint mPaint, mPaintTest,mPaintPath;
     private int[] palette;
     private float centerX, centerY, posX, posY;
     private float[] mOffset, mOffsetCenter;
@@ -39,6 +42,8 @@ public class CirclePanelView extends View {
     private float mAng, mAngIni;
     private boolean isAngleInitialized;
     public boolean isColorChanged;//画笔颜色有没有由圆盘控件改变
+    private Path textPath;
+    private String opacName,brushName,colorName;
 
     public CirclePanelView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -49,12 +54,22 @@ public class CirclePanelView extends View {
         mPaintTest = new Paint();
         mPaintTest.setColor(Color.BLACK);                    //设置画笔颜色
         mPaintTest.setStrokeWidth(1.0f);              //线宽
-        mPaintTest.setStyle(Paint.Style.FILL);
+        mPaintTest.setStyle(Paint.Style.STROKE);
         mPaintTest.setTextAlign(Paint.Align.CENTER);
         mPaintTest.setTextSize(20);
         mPaintTest.setAntiAlias(true);
 
-        mMainBmp = BitmapFactory.decodeResource(getResources(), R.drawable.cir_main, null);
+        mPaintPath = new Paint();
+        mPaintPath.setAntiAlias(true);
+        mPaintPath.setColor(Color.BLACK);                    //设置画笔颜色
+        mPaintPath.setStrokeWidth(1.0f);              //线宽
+        mPaintPath.setStyle(Paint.Style.FILL);
+        mPaintPath.setTextAlign(Paint.Align.CENTER);
+        mPaintPath.setTextSize(15);
+        mPaintPath.setAntiAlias(true);
+
+
+        mMainBmp = BitmapFactory.decodeResource(getResources(), R.drawable.cir_main_03, null);
         centerX = mMainBmp.getWidth() / 2;
         centerY = mMainBmp.getHeight() / 2 + 1;
         mOffset = new float[]{-mMainBmp.getWidth() * 1.5f, -mMainBmp.getHeight() / 2};
@@ -110,6 +125,12 @@ public class CirclePanelView extends View {
         mBrushValue = 1.5f;
         mColorValue = 0xffaaaaaa;
         isColorChanged = false;
+        textPath = new Path();
+
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.CirclePanelView);
+        opacName = ta.getString(R.styleable.CirclePanelView_opacity_name);
+        brushName = ta.getString(R.styleable.CirclePanelView_brush_name);
+        colorName = ta.getString(R.styleable.CirclePanelView_color_name);
     }
 
 
@@ -134,7 +155,6 @@ public class CirclePanelView extends View {
                 drawBrushMenu(canvas);
                 break;
         }
-
 
     }
 
@@ -312,7 +332,7 @@ public class CirclePanelView extends View {
             mGestureCenter[0] = 600;
             mGestureCenter[1] = 200;
         }
-isColorChanged = false;
+        isColorChanged = false;
         setPosition();
         mScrollValue = 0;
         menuMode = MenuMode.MAIN;
@@ -396,6 +416,34 @@ isColorChanged = false;
         //mScrollValue = 0;
         canvas.drawBitmap(mMainBmp, posX, posY, mPaint);
         int i = mScrollValue % 3;
+//        canvas.drawText("opacity", posX + mOffsetCenter[0], posY + mOffsetCenter[1] -12, mPaintTest);
+//        canvas.drawText("color", posX + mOffsetCenter[0]-10, posY + mOffsetCenter[1]+12, mPaintTest);
+//        canvas.drawText("brush", posX + mOffsetCenter[0]+10, posY + mOffsetCenter[1]+12, mPaintTest);
+       // textPath.addCircle(posX + mOffsetCenter[0], posY + mOffsetCenter[1], 30, Path.Direction.CW);
+        textPath.addArc(new RectF(posX + mOffsetCenter[0]-30,
+                posY + mOffsetCenter[1]-30,
+                posX + mOffsetCenter[0]+30,
+                posY + mOffsetCenter[1]+30),
+                210,120);
+        canvas.drawTextOnPath(opacName,textPath,0,5,mPaintPath);
+        textPath.reset();
+
+        textPath.addArc(new RectF(posX + mOffsetCenter[0]-30,
+                        posY + mOffsetCenter[1]-30,
+                        posX + mOffsetCenter[0]+30,
+                        posY + mOffsetCenter[1]+30),
+                330,120);
+        canvas.drawTextOnPath(brushName,textPath,0,5,mPaintPath);
+        textPath.reset();
+
+        textPath.addArc(new RectF(posX + mOffsetCenter[0]-30,
+                        posY + mOffsetCenter[1]-30,
+                        posX + mOffsetCenter[0]+30,
+                        posY + mOffsetCenter[1]+30),
+                90,120);
+        canvas.drawTextOnPath(colorName,textPath,0,5,mPaintPath);
+        textPath.reset();
+
         MenuMode selectedMode = MenuMode.MAIN;
         //        mMatrix.setRotate(-120 * i, centerX, centerY);
         //        mMatrix.postTranslate(posX,posY);
@@ -426,6 +474,7 @@ isColorChanged = false;
     }
 
     private void drawOpacMenu(Canvas canvas) {
+        canvas.drawBitmap(mMainBmp, posX, posY, mPaint);
         canvas.drawBitmap(mOpacBmp, posX, posY, mPaint);
         int i = mOpacityValueTmp;
         mMatrix.setRotate(-i * 360 / mOpacityCount, centerX, centerY);

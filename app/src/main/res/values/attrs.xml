@@ -38,6 +38,12 @@
         <attr name="passwordColor" format="color"/>
         <attr name="passwordRadius" format="dimension"/>
     </declare-styleable>
+
+    <declare-styleable name="CirclePanelView">
+        <attr name="opacity_name" format="string" />
+        <attr name="color_name" format="string" />
+        <attr name="brush_name" format="string" />
+    </declare-styleable>
     <dimen name="dimen_1px">1px</dimen>
     <dimen name="dimen_6">6px</dimen>
     <dimen name="dimen_12dp">18dp</dimen>

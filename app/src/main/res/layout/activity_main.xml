@@ -22,12 +22,16 @@
     <LinearLayout
 
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        xmlns:custom="http://schemas.android.com/apk/res/com.SiWei.PaintingApp">
 
         <com.SiWei.PaintingApp.CirclePanelView
             android:id="@+id/circlePanel"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            custom:opacity_name = "@string/opac_ic"
+            custom:color_name = "@string/color_ic"
+            custom:brush_name = "@string/brush_ic"/>
 
     </LinearLayout>
 
@@ -71,33 +75,33 @@
         android:id="@+id/bottom_bar"
         layout="@layout/bottom_ui_layout"/>
 
-    <!--<LinearLayout-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:layout_marginBottom="113dp"-->
-        <!--android:layout_marginEnd="209dp">-->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="113dp"
+        android:layout_marginEnd="209dp">
 
-        <!--<ImageButton-->
-            <!--android:id="@+id/testButton_01"-->
-            <!--style="@style/buttonIconStyle"-->
-            <!--android:src="@drawable/pen_01"/>-->
+        <ImageButton
+            android:id="@+id/testButton_01"
+            style="@style/buttonIconStyle"
+            android:src="@drawable/pen_01"/>
 
-        <!--<ImageButton-->
-            <!--android:id="@+id/testButton_02"-->
-            <!--style="@style/buttonIconStyle"-->
-            <!--android:src="@drawable/erase_01"/>-->
+        <ImageButton
+            android:id="@+id/testButton_02"
+            style="@style/buttonIconStyle"
+            android:src="@drawable/erase_01"/>
 
-        <!--<ImageButton-->
-            <!--android:id="@+id/testButton_03"-->
-            <!--style="@style/buttonIconStyle"/>-->
+        <ImageButton
+            android:id="@+id/testButton_03"
+            style="@style/buttonIconStyle"/>
 
-        <!--<ImageButton-->
-            <!--android:id="@+id/testButton_04"-->
-            <!--style="@style/buttonIconStyle"-->
-            <!--android:src="@drawable/undo_01"/>-->
-    <!--</LinearLayout>-->
+        <ImageButton
+            android:id="@+id/testButton_04"
+            style="@style/buttonIconStyle"
+            android:src="@drawable/undo_01"/>
+    </LinearLayout>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/pwd_layout"
