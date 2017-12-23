@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 //        setBoardBackground(background);
 //        mPaletteView.setPaintColor(color);
 //        mPaletteView.setPaintSize(strokeWidth);
-        initUI();
+        initConfig();
     }
 
     public int sendMailByIntent() {
@@ -311,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
     @Override
     protected void onDestroy() {
-        saveConfig();
+        initConfig();
         super.onDestroy();
         mHandler.removeMessages(MSG_SAVE_FAILED);
         mHandler.removeMessages(MSG_SAVE_SUCCESS);
@@ -1119,7 +1119,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         editor.commit();
 
     }
-    private void initUI(){
+    private void initConfig(){
         sp = getSharedPreferences("XBoard_Config", Context.MODE_PRIVATE);
 
         editor = sp.edit();
