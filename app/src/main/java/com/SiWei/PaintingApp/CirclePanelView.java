@@ -27,13 +27,13 @@ public class CirclePanelView extends View {
     private float mBrushValueTmpCal;
     private int mColorValueTmpCal;
     private int mOpacityCount, mColorCount, mBrushCount;
-    private Bitmap mMainBmp, mOpacBmp, mOpacSelectBmp;
+    private Bitmap mMainBmp,mMainBmp02, mOpacBmp, mOpacSelectBmp;
     private Bitmap mMainSelectBmp, mMainSelectBmp02, mMainSelectBmp03;
     private Bitmap mColorSelectBmp, mColorSelectBmp02, mColorSelectBmp03, mColorSelectBmp04, mColorSelectBmp05, mColorSelectBmp06;
     private Bitmap mBrushSelectBmp, mBrushSelectBmp02;
     private Matrix mMatrix;
     private MenuMode menuMode, tmpMenuMode;
-    private Paint mPaint, mPaintTest,mPaintPath;
+    private Paint mPaint, mPaintTest,mPaintPath,mPaintColor;
     private int[] palette;
     private float centerX, centerY, posX, posY;
     private float[] mOffset, mOffsetCenter;
@@ -52,24 +52,27 @@ public class CirclePanelView extends View {
         mPaint.setAntiAlias(true);
         //mPaint.setDither(true);
         mPaintTest = new Paint();
-        mPaintTest.setColor(Color.BLACK);                    //设置画笔颜色
+        mPaintTest.setColor(Color.WHITE);                    //设置画笔颜色
         mPaintTest.setStrokeWidth(1.0f);              //线宽
-        mPaintTest.setStyle(Paint.Style.STROKE);
+        mPaintTest.setStyle(Paint.Style.FILL);
         mPaintTest.setTextAlign(Paint.Align.CENTER);
         mPaintTest.setTextSize(20);
         mPaintTest.setAntiAlias(true);
 
         mPaintPath = new Paint();
         mPaintPath.setAntiAlias(true);
-        mPaintPath.setColor(Color.BLACK);                    //设置画笔颜色
+        mPaintPath.setColor(Color.WHITE);                    //设置画笔颜色
         mPaintPath.setStrokeWidth(1.0f);              //线宽
         mPaintPath.setStyle(Paint.Style.FILL);
         mPaintPath.setTextAlign(Paint.Align.CENTER);
-        mPaintPath.setTextSize(15);
-        mPaintPath.setAntiAlias(true);
+        mPaintPath.setTextSize(12f);
+
+        mPaintColor = new Paint();
+        mPaintColor.setAntiAlias(true);
 
 
-        mMainBmp = BitmapFactory.decodeResource(getResources(), R.drawable.cir_main_03, null);
+        mMainBmp = BitmapFactory.decodeResource(getResources(), R.drawable.cir_main_02, null);
+        mMainBmp02 =BitmapFactory.decodeResource(getResources(), R.drawable.cir_main_02, null);
         centerX = mMainBmp.getWidth() / 2;
         centerY = mMainBmp.getHeight() / 2 + 1;
         mOffset = new float[]{-mMainBmp.getWidth() * 1.5f, -mMainBmp.getHeight() / 2};
@@ -414,7 +417,7 @@ public class CirclePanelView extends View {
 
     private MenuMode drawMainMenu(Canvas canvas) {
         //mScrollValue = 0;
-        canvas.drawBitmap(mMainBmp, posX, posY, mPaint);
+        canvas.drawBitmap(mMainBmp02, posX, posY, mPaint);
         int i = mScrollValue % 3;
 //        canvas.drawText("opacity", posX + mOffsetCenter[0], posY + mOffsetCenter[1] -12, mPaintTest);
 //        canvas.drawText("color", posX + mOffsetCenter[0]-10, posY + mOffsetCenter[1]+12, mPaintTest);
@@ -425,7 +428,7 @@ public class CirclePanelView extends View {
                 posX + mOffsetCenter[0]+30,
                 posY + mOffsetCenter[1]+30),
                 210,120);
-        canvas.drawTextOnPath(opacName,textPath,0,5,mPaintPath);
+        canvas.drawTextOnPath(opacName,textPath,0,12,mPaintPath);
         textPath.reset();
 
         textPath.addArc(new RectF(posX + mOffsetCenter[0]-30,
@@ -433,7 +436,7 @@ public class CirclePanelView extends View {
                         posX + mOffsetCenter[0]+30,
                         posY + mOffsetCenter[1]+30),
                 330,120);
-        canvas.drawTextOnPath(brushName,textPath,0,5,mPaintPath);
+        canvas.drawTextOnPath(brushName,textPath,0,12,mPaintPath);
         textPath.reset();
 
         textPath.addArc(new RectF(posX + mOffsetCenter[0]-30,
@@ -441,7 +444,7 @@ public class CirclePanelView extends View {
                         posX + mOffsetCenter[0]+30,
                         posY + mOffsetCenter[1]+30),
                 90,120);
-        canvas.drawTextOnPath(colorName,textPath,0,5,mPaintPath);
+        canvas.drawTextOnPath(colorName,textPath,0,12,mPaintPath);
         textPath.reset();
 
         MenuMode selectedMode = MenuMode.MAIN;
@@ -577,6 +580,8 @@ public class CirclePanelView extends View {
         }
 
         mColorValueTmpCal = palette[i];
+        mPaintColor.setColor(palette[i]);
+        canvas.drawCircle(posX+mOffsetCenter[0],posY+mOffsetCenter[1],25,mPaintColor);
     }
 
     public void setVectorMoved(float x, float y) {

@@ -1,5 +1,6 @@
 package com.SiWei.PaintingApp;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -135,8 +136,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private TouchMode touchMode;
 
     //private View mBtnColor;
-
-    private ImageButton black_btn, red_btn, green_btn, blue_btn, purple_btn;
+    
     private ImageButton[] mColorBtns;
     private ImageButton[] mBgBtns;
 
@@ -155,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         Board
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -192,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 (ImageButton) findViewById(R.id.pencolor_blue_button),
                 (ImageButton) findViewById(R.id.pencolor_purple_button)
         };
+        mColorBtns[4].setSelected(true);
         mBgBtns = new ImageButton[]{
                 (ImageButton) findViewById(R.id.bg01),
                 (ImageButton) findViewById(R.id.bg02),
@@ -201,11 +203,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 (ImageButton) findViewById(R.id.bg06)
         };
         mBgBtns[0].setSelected(true);
-        black_btn = (ImageButton) findViewById(R.id.pencolor_black_button);
-        red_btn = (ImageButton) findViewById(R.id.pencolor_red_button);
-        green_btn = (ImageButton) findViewById(R.id.pencolor_green_button);
-        blue_btn = (ImageButton) findViewById(R.id.pencolor_blue_button);
-        purple_btn = (ImageButton) findViewById(R.id.pencolor_purple_button);
 
 
         //        mUndoView = findViewById(R.id.undo);
@@ -453,7 +450,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 break;
             case R.id.pencolor_purple_button:
                 setSelectedBtn(mColorBtns, 4);
-                mPaletteView.setPaintColor(paletteReq[3]);
+                mPaletteView.setPaintColor(0XFFcccccc);
                 break;
             case R.id.undo_button:
                 mPaletteView.unDo();
