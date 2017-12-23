@@ -483,9 +483,9 @@ public class CirclePanelView extends View {
         int i = mOpacityValueTmp;
         mMatrix.setRotate(-i * 360 / mOpacityCount, centerX, centerY);
         mMatrix.postTranslate(posX, posY);
-        mOpacityValueTmpCal = mOpacityRange - (mOpacityRange-55) / mOpacityCount * mOpacityValueTmp;
+        mOpacityValueTmpCal = mOpacityRange - (mOpacityRange - 55) / mOpacityCount * mOpacityValueTmp;
         canvas.drawBitmap(mOpacSelectBmp, mMatrix, mPaint);
-        canvas.drawText(String.valueOf((mOpacityCount - mOpacityValueTmp) * 4+20) + "%", posX + mOffsetCenter[0], posY + mOffsetCenter[1] + 10, mPaintTest);
+        canvas.drawText(String.valueOf((mOpacityCount - mOpacityValueTmp) * 4 + 20) + "%", posX + mOffsetCenter[0], posY + mOffsetCenter[1] + 10, mPaintTest);
     }
 
     private void drawBrushMenu(Canvas canvas) {
@@ -650,5 +650,25 @@ public class CirclePanelView extends View {
 
     private enum MenuMode {
         DEFAULT, MAIN, BRUSH, OPACITY, COLOR
+    }
+
+    /**
+     * @param opacity
+     * @param brush
+     * @param color
+     */
+    public void setRecordValues(int opacity, int brush, int color) {
+        if (opacity >= 0) {
+            mOpacityValueTmpRec = opacity;
+        }
+        if (brush >= 0) {
+            mBrushValueTmpRec = brush;
+        }
+        if (color >= 0) {
+            mColorValueTmpRec = color;
+        }
+    }
+    public int[] getRecordValues(){
+        return new int[]{mOpacityValueTmpRec,mBrushValueTmpRec,mColorValueTmpRec};
     }
 }
