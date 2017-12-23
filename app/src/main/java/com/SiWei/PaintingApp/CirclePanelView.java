@@ -27,23 +27,23 @@ public class CirclePanelView extends View {
     private float mBrushValueTmpCal;
     private int mColorValueTmpCal;
     private int mOpacityCount, mColorCount, mBrushCount;
-    private Bitmap mMainBmp,mMainBmp02, mOpacBmp, mOpacSelectBmp;
+    private Bitmap mMainBmp, mMainBmp02, mOpacBmp, mOpacSelectBmp;
     private Bitmap mMainSelectBmp, mMainSelectBmp02, mMainSelectBmp03;
     private Bitmap mColorSelectBmp, mColorSelectBmp02, mColorSelectBmp03, mColorSelectBmp04, mColorSelectBmp05, mColorSelectBmp06;
     private Bitmap mBrushSelectBmp, mBrushSelectBmp02;
     private Matrix mMatrix;
     private MenuMode menuMode, tmpMenuMode;
-    private Paint mPaint, mPaintTest,mPaintPath,mPaintColor;
+    private Paint mPaint, mPaintTest, mPaintPath, mPaintColor;
     private int[] palette;
     private float centerX, centerY, posX, posY;
     private float[] mOffset, mOffsetCenter;
     private boolean isAwake;
-    private float[] mGestureCenter, mVectorMoved,mVectorMoved02;
+    private float[] mGestureCenter, mVectorMoved, mVectorMoved02;
     private float mAng, mAngIni;
     private boolean isAngleInitialized;
     public boolean isColorChanged;//画笔颜色有没有由圆盘控件改变
     private Path textPath;
-    private String opacName,brushName,colorName;
+    private String opacName, brushName, colorName;
 
     public CirclePanelView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -72,7 +72,7 @@ public class CirclePanelView extends View {
 
 
         mMainBmp = BitmapFactory.decodeResource(getResources(), R.drawable.cir_main_02, null);
-        mMainBmp02 =BitmapFactory.decodeResource(getResources(), R.drawable.cir_main_02, null);
+        mMainBmp02 = BitmapFactory.decodeResource(getResources(), R.drawable.cir_main_02, null);
         centerX = mMainBmp.getWidth() / 2;
         centerY = mMainBmp.getHeight() / 2 + 1;
         mOffset = new float[]{-mMainBmp.getWidth() * 1.5f, -mMainBmp.getHeight() / 2};
@@ -420,32 +420,32 @@ public class CirclePanelView extends View {
         //mScrollValue = 0;
         canvas.drawBitmap(mMainBmp02, posX, posY, mPaint);
         int i = mScrollValue % 3;
-//        canvas.drawText("opacity", posX + mOffsetCenter[0], posY + mOffsetCenter[1] -12, mPaintTest);
-//        canvas.drawText("color", posX + mOffsetCenter[0]-10, posY + mOffsetCenter[1]+12, mPaintTest);
-//        canvas.drawText("brush", posX + mOffsetCenter[0]+10, posY + mOffsetCenter[1]+12, mPaintTest);
-       // textPath.addCircle(posX + mOffsetCenter[0], posY + mOffsetCenter[1], 30, Path.Direction.CW);
-        textPath.addArc(new RectF(posX + mOffsetCenter[0]-30,
-                posY + mOffsetCenter[1]-30,
-                posX + mOffsetCenter[0]+30,
-                posY + mOffsetCenter[1]+30),
-                210,120);
-        canvas.drawTextOnPath(opacName,textPath,0,12,mPaintPath);
+        //        canvas.drawText("opacity", posX + mOffsetCenter[0], posY + mOffsetCenter[1] -12, mPaintTest);
+        //        canvas.drawText("color", posX + mOffsetCenter[0]-10, posY + mOffsetCenter[1]+12, mPaintTest);
+        //        canvas.drawText("brush", posX + mOffsetCenter[0]+10, posY + mOffsetCenter[1]+12, mPaintTest);
+        // textPath.addCircle(posX + mOffsetCenter[0], posY + mOffsetCenter[1], 30, Path.Direction.CW);
+        textPath.addArc(new RectF(posX + mOffsetCenter[0] - 30,
+                        posY + mOffsetCenter[1] - 30,
+                        posX + mOffsetCenter[0] + 30,
+                        posY + mOffsetCenter[1] + 30),
+                210, 120);
+        canvas.drawTextOnPath(opacName, textPath, 0, 12, mPaintPath);
         textPath.reset();
 
-        textPath.addArc(new RectF(posX + mOffsetCenter[0]-30,
-                        posY + mOffsetCenter[1]-30,
-                        posX + mOffsetCenter[0]+30,
-                        posY + mOffsetCenter[1]+30),
-                330,120);
-        canvas.drawTextOnPath(brushName,textPath,0,12,mPaintPath);
+        textPath.addArc(new RectF(posX + mOffsetCenter[0] - 30,
+                        posY + mOffsetCenter[1] - 30,
+                        posX + mOffsetCenter[0] + 30,
+                        posY + mOffsetCenter[1] + 30),
+                330, 120);
+        canvas.drawTextOnPath(brushName, textPath, 0, 12, mPaintPath);
         textPath.reset();
 
-        textPath.addArc(new RectF(posX + mOffsetCenter[0]-30,
-                        posY + mOffsetCenter[1]-30,
-                        posX + mOffsetCenter[0]+30,
-                        posY + mOffsetCenter[1]+30),
-                90,120);
-        canvas.drawTextOnPath(colorName,textPath,0,12,mPaintPath);
+        textPath.addArc(new RectF(posX + mOffsetCenter[0] - 30,
+                        posY + mOffsetCenter[1] - 30,
+                        posX + mOffsetCenter[0] + 30,
+                        posY + mOffsetCenter[1] + 30),
+                90, 120);
+        canvas.drawTextOnPath(colorName, textPath, 0, 12, mPaintPath);
         textPath.reset();
 
         MenuMode selectedMode = MenuMode.MAIN;
@@ -483,9 +483,9 @@ public class CirclePanelView extends View {
         int i = mOpacityValueTmp;
         mMatrix.setRotate(-i * 360 / mOpacityCount, centerX, centerY);
         mMatrix.postTranslate(posX, posY);
-        mOpacityValueTmpCal = mOpacityRange - mOpacityRange / mOpacityCount * mOpacityValueTmp;
+        mOpacityValueTmpCal = mOpacityRange - (mOpacityRange-55) / mOpacityCount * mOpacityValueTmp;
         canvas.drawBitmap(mOpacSelectBmp, mMatrix, mPaint);
-        canvas.drawText(String.valueOf((mOpacityCount - mOpacityValueTmp) * 5) + "%", posX + mOffsetCenter[0], posY + mOffsetCenter[1] + 10, mPaintTest);
+        canvas.drawText(String.valueOf((mOpacityCount - mOpacityValueTmp) * 4+20) + "%", posX + mOffsetCenter[0], posY + mOffsetCenter[1] + 10, mPaintTest);
     }
 
     private void drawBrushMenu(Canvas canvas) {
@@ -582,22 +582,30 @@ public class CirclePanelView extends View {
 
         mColorValueTmpCal = palette[i];
         mPaintColor.setColor(palette[i]);
-        canvas.drawCircle(posX+mOffsetCenter[0],posY+mOffsetCenter[1],25,mPaintColor);
+        canvas.drawCircle(posX + mOffsetCenter[0], posY + mOffsetCenter[1], 25, mPaintColor);
     }
 
     public void setVectorMoved(float x, float y) {
         mVectorMoved[0] = x;
         mVectorMoved[1] = y;
     }
-    public void setVectorMoved(float x, float y,float x2, float y2) {
+
+    public void setVectorMoved(float x, float y, float x2, float y2) {
         mVectorMoved[0] = x;
         mVectorMoved[1] = y;
-        mVectorMoved02[0]= x2;
+        mVectorMoved02[0] = x2;
         mVectorMoved02[1] = y2;
     }
+
+    public void setVectorMovedinit(float x, float y) {
+        mVectorMoved[0] = x;
+        mVectorMoved[1] = y;
+    }
+
+
     public float AngleBetween() {
-        float detaX = mVectorMoved[0] - mVectorMoved02[0];
-        float detaY = mVectorMoved[1] - mVectorMoved02[1];
+        float detaX = mVectorMoved[0] - mGestureCenter[0];
+        float detaY = mVectorMoved[1] - mGestureCenter[1];
         double d;
         //坐标在四个象限里
         if (detaX != 0) {

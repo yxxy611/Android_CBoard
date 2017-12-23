@@ -420,7 +420,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                     Log.i("deng", "onCheckedChanged: " + isChecked);
                     // TODO: 12/3/2017 准备接收密码
                 } else {
-                    mPWDlayout.setVisibility(View.GONE);
+                    mPWDlayout.setVisibility(View.INVISIBLE);
                     // TODO: 12/3/2017 无需密码
                 }
                 break;
@@ -589,17 +589,17 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 imgCODE = 1;
                 break;
             case R.id.share_button://二维码分享
-                if (mQRLayout.getVisibility() == View.GONE) {
+                if (mQRLayout.getVisibility() == View.INVISIBLE) {
                     mQRShareView.setQRContent("http://www.baidu.com");
                     mQRLayout.setVisibility(View.VISIBLE);
                 } else {
-                    mQRLayout.setVisibility(View.GONE);
+                    mQRLayout.setVisibility(View.INVISIBLE);
                 }
 
                 break;
             case R.id.trader_pwd_set_next_button://密码确定
                 // TODO: 12/3/2017 记录传送密码
-                mPWDlayout.setVisibility(View.GONE);
+                mPWDlayout.setVisibility(View.INVISIBLE);
                 break;
             //change bg
             case R.id.bg01:
@@ -635,12 +635,15 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 break;
             case R.id.testButton_02:
                 mCirclePanelView.confirm();
+                mPaletteView.setPaintColor(mCirclePanelView.getmColorValue());
+                mPaletteView.setPaintOpacity(mCirclePanelView.getmOpacityValue());
+                setSelectedBtn(mColorBtns, -1);
                 break;
             case R.id.testButton_03:
                 mCirclePanelView.menuScrollNext();
                 break;
             case R.id.testButton_04:
-                mCirclePanelView.dismiss();
+                mCirclePanelView.menuScrollPrev();
                 break;
         }
     }
@@ -904,6 +907,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 }
                 break;
             case Board:
+                hideMenus();
                 int index = event.getActionIndex();
                 switch (event.getActionMasked()) {
                     case MotionEvent.ACTION_DOWN:
@@ -943,7 +947,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                     case MotionEvent.ACTION_MOVE:
 
                         if (event.getPointerCount() == 5 && mCirclePanelView.isAwake()) {
-                            mCirclePanelView.setVectorMoved(event.getX(1), event.getY(1),event.getX(2),event.getY(2));
+                            mCirclePanelView.setVectorMoved(event.getX(0),event.getY(0),event.getX(1),event.getY(1));
                             mCirclePanelView.menuScrollT();
                         }
                         break;
@@ -1092,5 +1096,12 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 });
             }
         }
+    }
+    private void hideMenus(){
+        mQRLayout.setVisibility(View.INVISIBLE);
+        mPWDlayout.setVisibility(View.INVISIBLE);
+        mMainMenu.setVisibility(View.INVISIBLE);
+        mBackgroundMenu.setVisibility(View.INVISIBLE);
+        mButtonContainerLayout.setVisibility(View.INVISIBLE);
     }
 }
