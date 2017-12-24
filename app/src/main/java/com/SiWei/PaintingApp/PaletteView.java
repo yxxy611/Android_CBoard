@@ -722,6 +722,10 @@ public class PaletteView extends View {
         Log.i("deng", "setPaintColor: " + Integer.toBinaryString(mPaintColor));
     }
 
+    public void setPaintColor(int color,boolean isIncludeAlpha){
+        mPaintDraw.setColor(color);
+    }
+
     public void setPaintOpacity(int alpha) {
         mPaintColor = mPaintColor & 0x00ffffff | (alpha << 24);
         mPaintDraw.setColor(mPaintColor);
@@ -1148,7 +1152,7 @@ public class PaletteView extends View {
                         //电视触摸面积：0.005，手机触摸面积：0.02
                         mTouchSize = event.getSize(0);
                         Log.e("Lilith", "TouchSize=" + mTouchSize);
-                        if (mTouchSize > 0.005f) {
+                        if (mTouchSize > 0.02f) {
                             setPen(Pen.ERASER);
                             //mTouchSize = 0.005f;
                             if (mTouchSize > 0.01) {

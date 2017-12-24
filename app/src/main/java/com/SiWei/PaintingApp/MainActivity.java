@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private int imgCODE = 0;
 
     private CirclePanelView mCirclePanelView;
-    private int[] paletteReq,paletteReqIndex;//需求颜色色板
+    private int[] paletteReq, paletteReqIndex;//需求颜色色板
     //扫码相关
     private QRShareView mQRShareView;
     private LinearLayout mQRLayout;
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private TouchMode touchMode;
 
     //private View mBtnColor;
-    
+
     private ImageButton[] mColorBtns;
     private ImageButton[] mBgBtns;
     private int BGBtnsIndex;
@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         // mPaletteView.setCallback(this);
         mPaletteView.setOnTouchListener(this);
         mCirclePanelView = (CirclePanelView) findViewById(R.id.circlePanel);
-        paletteReqIndex = new int[]{7,0,3,5};
+        paletteReqIndex = new int[]{7, 0, 3, 5};
         paletteReq = mCirclePanelView.getPaletteRequired(paletteReqIndex);
         touchMode = TouchMode.Board;
         //二维码相关
@@ -253,19 +253,20 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
         //用户配置文件相关
 
-//        sp = getSharedPreferences("XBoard_Config", Context.MODE_PRIVATE);
-//
-//        editor = sp.edit();
-//        int background = sp.getInt("Background",R.drawable.bg_01);
-//        int color = sp.getInt("Color",0xffbbbbbb);
-//        float strokeWidth = sp.getFloat("StrokeWidth",4.5f);
-//        Log.e("Lilith", "Background= " + background);
-//        Log.e("Lilith", "Color= " + color);
-//        Log.e("Lilith", "StrokeWidth= " + strokeWidth);
-//        setBoardBackground(background);
-//        mPaletteView.setPaintColor(color);
-//        mPaletteView.setPaintSize(strokeWidth);
+        //        sp = getSharedPreferences("XBoard_Config", Context.MODE_PRIVATE);
+        //
+        //        editor = sp.edit();
+        //        int background = sp.getInt("Background",R.drawable.bg_01);
+        //        int color = sp.getInt("Color",0xffbbbbbb);
+        //        float strokeWidth = sp.getFloat("StrokeWidth",4.5f);
+        //        Log.e("Lilith", "Background= " + background);
+        //        Log.e("Lilith", "Color= " + color);
+        //        Log.e("Lilith", "StrokeWidth= " + strokeWidth);
+        //        setBoardBackground(background);
+        //        mPaletteView.setPaintColor(color);
+        //        mPaletteView.setPaintSize(strokeWidth);
         initConfig();
+        mCirclePanelView.initCircleConfig();
     }
 
     public int sendMailByIntent() {
@@ -311,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
     @Override
     protected void onDestroy() {
-        initConfig();
+        saveConfig();
         super.onDestroy();
         mHandler.removeMessages(MSG_SAVE_FAILED);
         mHandler.removeMessages(MSG_SAVE_SUCCESS);
@@ -444,18 +445,18 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             case R.id.pencolor_red_button:
                 setSelectedBtn(mColorBtns, 1);
                 mPaletteView.setPaintColor(paletteReq[0]);
-                mCirclePanelView.setRecordValues(-1,-1,paletteReqIndex[0]);
-                Log.i("color record", "onClick: "+paletteReq[0]);
+                mCirclePanelView.setRecordValues(-1, -1, paletteReqIndex[0]);
+                Log.i("color record", "onClick: " + paletteReq[0]);
                 break;
             case R.id.pencolor_green_button:
                 setSelectedBtn(mColorBtns, 2);
                 mPaletteView.setPaintColor(paletteReq[1]);
-                mCirclePanelView.setRecordValues(-1,-1,paletteReqIndex[1]);
+                mCirclePanelView.setRecordValues(-1, -1, paletteReqIndex[1]);
                 break;
             case R.id.pencolor_blue_button:
                 setSelectedBtn(mColorBtns, 3);
                 mPaletteView.setPaintColor(paletteReq[2]);
-                mCirclePanelView.setRecordValues(-1,-1,paletteReqIndex[2]);
+                mCirclePanelView.setRecordValues(-1, -1, paletteReqIndex[2]);
                 break;
             case R.id.pencolor_purple_button:
                 setSelectedBtn(mColorBtns, 4);
@@ -735,7 +736,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         selectorContainer.addView(selectorView);
     }*/
 
-    private void setBoardBackground(int background){
+    private void setBoardBackground(int background) {
         mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), background);
         Drawable bg = new BitmapDrawable(mBackgroundBitmap);
         mPaletteView.setBackground(bg);
@@ -927,9 +928,11 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                             }
                             mCirclePanelView.awake();
                             mPaletteView.setCircleState(true);
-                        } else if (mCirclePanelView.isAwake()) {
+                        } else if (mCirclePanelView.isAwake()&&mCirclePanelView.menuMode==CirclePanelView.MenuMode.MAIN) {
                             mCirclePanelView.confirm();
                             //mPaletteView.setTempColor(mCirclePanelView.getmColorValue(),mCirclePanelView.getmOpacityValue());
+                        }else if(mCirclePanelView.isAwake()){
+                            mCirclePanelView.confirm();
                             if (mCirclePanelView.isColorChanged) {
                                 mPaletteView.setPaintColor(mCirclePanelView.getmColorValue());
                                 mPaletteView.setPaintOpacity(mCirclePanelView.getmOpacityValue());
@@ -949,7 +952,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                     case MotionEvent.ACTION_MOVE:
 
                         if (event.getPointerCount() == 5 && mCirclePanelView.isAwake()) {
-                            mCirclePanelView.setVectorMoved(event.getX(0),event.getY(0),event.getX(1),event.getY(1));
+                            mCirclePanelView.setVectorMoved(event.getX(0), event.getY(0), event.getX(1), event.getY(1));
                             mCirclePanelView.menuScrollT();
                         }
                         break;
@@ -1100,38 +1103,42 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             }
         }
     }
-    private void hideMenus(){
+
+    private void hideMenus() {
         mQRLayout.setVisibility(View.INVISIBLE);
         mPWDlayout.setVisibility(View.INVISIBLE);
         mMainMenu.setVisibility(View.INVISIBLE);
         mBackgroundMenu.setVisibility(View.INVISIBLE);
         mButtonContainerLayout.setVisibility(View.INVISIBLE);
     }
-    private void saveConfig(){
+
+    private void saveConfig() {
         editor.putInt("Background", mBackgroundPath);
         editor.putInt("Color", mPaletteView.getPaintColor());
         editor.putFloat("StrokeWidth", mPaletteView.getPaintSize());
         //UI 相关
-        editor.putInt("OpacityCirclePanel",mCirclePanelView.getRecordValues()[0]);
-        editor.putInt("BrushCirclePanel",mCirclePanelView.getRecordValues()[1]);
-        editor.putInt("ColorCirclePanel",mCirclePanelView.getRecordValues()[2]);
-        editor.putInt("BackgroundIndex",BGBtnsIndex);
+        editor.putInt("OpacityCirclePanel", mCirclePanelView.getRecordValues()[0]);
+        editor.putInt("BrushCirclePanel", mCirclePanelView.getRecordValues()[1]);
+        editor.putInt("ColorCirclePanel", mCirclePanelView.getRecordValues()[2]);
+        editor.putInt("BackgroundIndex", BGBtnsIndex);
         editor.commit();
 
     }
-    private void initConfig(){
+
+    private void initConfig() {
         sp = getSharedPreferences("XBoard_Config", Context.MODE_PRIVATE);
 
         editor = sp.edit();
 
-        setBoardBackground(sp.getInt("Background",R.drawable.bg_01));
-        mPaletteView.setPaintColor(sp.getInt("Color",0xffbbbbbb));
-        mPaletteView.setPaintSize(sp.getFloat("StrokeWidth",4.5f));
+        setBoardBackground(sp.getInt("Background", R.drawable.bg_01));
+        mPaletteView.setPaintColor(sp.getInt("Color", 0xffbbbbbb),true);
+        mPaletteView.setPaintSize(sp.getFloat("StrokeWidth", 4.5f));
 
 
-        mBgBtns[sp.getInt("BackgroundIndex",0)].setSelected(true);
-        mCirclePanelView.setRecordValues(sp.getInt("OpacityCirclePanel",0),
-                sp.getInt("BrushCirclePanel",0),
-                sp.getInt("ColorCirclePanel",0));
+        mBgBtns[sp.getInt("BackgroundIndex", 0)].setSelected(true);
+        mCirclePanelView.setRecordValues(sp.getInt("OpacityCirclePanel", 0),
+                sp.getInt("BrushCirclePanel", 0),
+                sp.getInt("ColorCirclePanel", 0));
+        Log.i("", "initConfig: "+sp.getInt("ColorCirclePanel", 0));
     }
 }

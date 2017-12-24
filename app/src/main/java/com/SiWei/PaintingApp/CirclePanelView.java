@@ -32,7 +32,7 @@ public class CirclePanelView extends View {
     private Bitmap mColorSelectBmp, mColorSelectBmp02, mColorSelectBmp03, mColorSelectBmp04, mColorSelectBmp05, mColorSelectBmp06;
     private Bitmap mBrushSelectBmp, mBrushSelectBmp02;
     private Matrix mMatrix;
-    private MenuMode menuMode, tmpMenuMode;
+    public MenuMode menuMode, tmpMenuMode;
     private Paint mPaint, mPaintTest, mPaintPath, mPaintColor;
     private int[] palette;
     private float centerX, centerY, posX, posY;
@@ -135,6 +135,7 @@ public class CirclePanelView extends View {
         opacName = ta.getString(R.styleable.CirclePanelView_opacity_name);
         brushName = ta.getString(R.styleable.CirclePanelView_brush_name);
         colorName = ta.getString(R.styleable.CirclePanelView_color_name);
+
     }
 
 
@@ -165,6 +166,9 @@ public class CirclePanelView extends View {
     public void confirm() {
         if (menuMode == MenuMode.MAIN) {
             setMode();
+            mOpacityValueTmp = mOpacityValueTmpRec;
+            mBrushValueTmp = mBrushValueTmpRec;
+            mColorValueTmp = mColorValueTmpRec;
         } else {
 
             switch (menuMode) {
@@ -541,6 +545,7 @@ public class CirclePanelView extends View {
         } else {
             i = 0;
         }
+        mColorValueTmp = i;
         Log.i("ceshi", "drawColorMenu: " + i);
         int p, q;
         for (int n = 0; n < mColorCount; n++) {
@@ -648,7 +653,7 @@ public class CirclePanelView extends View {
     }
 
 
-    private enum MenuMode {
+    public enum MenuMode {
         DEFAULT, MAIN, BRUSH, OPACITY, COLOR
     }
 
@@ -670,5 +675,9 @@ public class CirclePanelView extends View {
     }
     public int[] getRecordValues(){
         return new int[]{mOpacityValueTmpRec,mBrushValueTmpRec,mColorValueTmpRec};
+    }
+    public void initCircleConfig(){
+        mOpacityValue = mOpacityRange - (mOpacityRange - 55) / mOpacityCount * mOpacityValueTmpRec;
+        mBrushValue = mBrushRange / (mBrushCount - 1) * mBrushValueTmpRec + 0.25f;
     }
 }
