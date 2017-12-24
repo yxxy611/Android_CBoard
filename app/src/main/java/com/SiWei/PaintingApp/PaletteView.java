@@ -1152,7 +1152,7 @@ public class PaletteView extends View {
                         //电视触摸面积：0.005，手机触摸面积：0.02
                         mTouchSize = event.getSize(0);
                         Log.e("Lilith", "TouchSize=" + mTouchSize);
-                        if (mTouchSize > 0.02f) {
+                        if (mTouchSize > 0.005f) {
                             setPen(Pen.ERASER);
                             //mTouchSize = 0.005f;
                             if (mTouchSize > 0.01) {
