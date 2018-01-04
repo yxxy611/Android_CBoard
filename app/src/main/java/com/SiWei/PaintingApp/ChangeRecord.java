@@ -12,6 +12,8 @@ public class ChangeRecord {
     boolean isMove = false;
     int psIndex;
     float dX,dY;
+    float mScale;
+    float mRotation;
 
     public ChangeRecord(boolean ismove,int index){
         this.isMove = ismove;

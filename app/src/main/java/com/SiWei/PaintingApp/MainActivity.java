@@ -678,6 +678,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                             break;
                         case 1:
                             mBitmap = ImageUtils.createBitmapFromPath(imgPath, 1500, 800);
+                            //TouchImageView img = new TouchImageView(this,mBitmap);
+                            //setContentView(img);
                             mPaletteView.insertImage(mBitmap, imgPath);
                             Toast.makeText(getApplicationContext(), "图片插入成功", Toast.LENGTH_SHORT).show();
                             break;
