@@ -428,29 +428,29 @@ public class CirclePanelView extends View {
         //        canvas.drawText("color", posX + mOffsetCenter[0]-10, posY + mOffsetCenter[1]+12, mPaintTest);
         //        canvas.drawText("brush", posX + mOffsetCenter[0]+10, posY + mOffsetCenter[1]+12, mPaintTest);
         // textPath.addCircle(posX + mOffsetCenter[0], posY + mOffsetCenter[1], 30, Path.Direction.CW);
-        textPath.addArc(new RectF(posX + mOffsetCenter[0] - 30,
-                        posY + mOffsetCenter[1] - 30,
-                        posX + mOffsetCenter[0] + 30,
-                        posY + mOffsetCenter[1] + 30),
-                210, 120);
-        canvas.drawTextOnPath(opacName, textPath, 0, 12, mPaintPath);
-        textPath.reset();
-
-        textPath.addArc(new RectF(posX + mOffsetCenter[0] - 30,
-                        posY + mOffsetCenter[1] - 30,
-                        posX + mOffsetCenter[0] + 30,
-                        posY + mOffsetCenter[1] + 30),
-                330, 120);
-        canvas.drawTextOnPath(brushName, textPath, 0, 12, mPaintPath);
-        textPath.reset();
-
-        textPath.addArc(new RectF(posX + mOffsetCenter[0] - 30,
-                        posY + mOffsetCenter[1] - 30,
-                        posX + mOffsetCenter[0] + 30,
-                        posY + mOffsetCenter[1] + 30),
-                90, 120);
-        canvas.drawTextOnPath(colorName, textPath, 0, 12, mPaintPath);
-        textPath.reset();
+//        textPath.addArc(new RectF(posX + mOffsetCenter[0] - 30,
+//                        posY + mOffsetCenter[1] - 30,
+//                        posX + mOffsetCenter[0] + 30,
+//                        posY + mOffsetCenter[1] + 30),
+//                210, 120);
+//        canvas.drawTextOnPath(opacName, textPath, 0, 12, mPaintPath);
+//        textPath.reset();
+//
+//        textPath.addArc(new RectF(posX + mOffsetCenter[0] - 30,
+//                        posY + mOffsetCenter[1] - 30,
+//                        posX + mOffsetCenter[0] + 30,
+//                        posY + mOffsetCenter[1] + 30),
+//                330, 120);
+//        canvas.drawTextOnPath(brushName, textPath, 0, 12, mPaintPath);
+//        textPath.reset();
+//
+//        textPath.addArc(new RectF(posX + mOffsetCenter[0] - 30,
+//                        posY + mOffsetCenter[1] - 30,
+//                        posX + mOffsetCenter[0] + 30,
+//                        posY + mOffsetCenter[1] + 30),
+//                90, 120);
+//        canvas.drawTextOnPath(colorName, textPath, 0, 12, mPaintPath);
+//        textPath.reset();
 
         MenuMode selectedMode = MenuMode.MAIN;
         //        mMatrix.setRotate(-120 * i, centerX, centerY);
@@ -460,22 +460,57 @@ public class CirclePanelView extends View {
             case 0:
                 selectedMode = MenuMode.OPACITY;
                 canvas.drawBitmap(mMainSelectBmp, posX, posY, mPaint);
+                textPath.addArc(new RectF(posX + mOffsetCenter[0] - 30,
+                                posY + mOffsetCenter[1] - 30,
+                                posX + mOffsetCenter[0] + 30,
+                                posY + mOffsetCenter[1] + 30),
+                        210, 120);
+                canvas.drawTextOnPath(opacName, textPath, 0, 12, mPaintPath);
+                textPath.reset();
                 break;
             case 1:
                 selectedMode = MenuMode.COLOR;
-                canvas.drawBitmap(mMainSelectBmp02, posX, posY, mPaint);
+                canvas.drawBitmap(mMainSelectBmp03, posX, posY, mPaint);
+                textPath.addArc(new RectF(posX + mOffsetCenter[0] - 30,
+                                posY + mOffsetCenter[1] - 30,
+                                posX + mOffsetCenter[0] + 30,
+                                posY + mOffsetCenter[1] + 30),
+                        330, 120);
+                canvas.drawTextOnPath(brushName, textPath, 0, 12, mPaintPath);
+                textPath.reset();
                 break;
             case 2:
                 selectedMode = MenuMode.BRUSH;
-                canvas.drawBitmap(mMainSelectBmp03, posX, posY, mPaint);
+                canvas.drawBitmap(mMainSelectBmp02, posX, posY, mPaint);
+                textPath.addArc(new RectF(posX + mOffsetCenter[0] - 30,
+                                posY + mOffsetCenter[1] - 30,
+                                posX + mOffsetCenter[0] + 30,
+                                posY + mOffsetCenter[1] + 30),
+                        90, 120);
+                canvas.drawTextOnPath(colorName, textPath, 0, 12, mPaintPath);
+                textPath.reset();
                 break;
             case -1:
                 selectedMode = MenuMode.BRUSH;
-                canvas.drawBitmap(mMainSelectBmp03, posX, posY, mPaint);
+                canvas.drawBitmap(mMainSelectBmp02, posX, posY, mPaint);
+                textPath.addArc(new RectF(posX + mOffsetCenter[0] - 30,
+                                posY + mOffsetCenter[1] - 30,
+                                posX + mOffsetCenter[0] + 30,
+                                posY + mOffsetCenter[1] + 30),
+                        90, 120);
+                canvas.drawTextOnPath(colorName, textPath, 0, 12, mPaintPath);
+                textPath.reset();
                 break;
             case -2:
                 selectedMode = MenuMode.COLOR;
-                canvas.drawBitmap(mMainSelectBmp02, posX, posY, mPaint);
+                canvas.drawBitmap(mMainSelectBmp03, posX, posY, mPaint);
+                textPath.addArc(new RectF(posX + mOffsetCenter[0] - 30,
+                                posY + mOffsetCenter[1] - 30,
+                                posX + mOffsetCenter[0] + 30,
+                                posY + mOffsetCenter[1] + 30),
+                        330, 120);
+                canvas.drawTextOnPath(brushName, textPath, 0, 12, mPaintPath);
+                textPath.reset();
                 break;
         }
         return selectedMode;
