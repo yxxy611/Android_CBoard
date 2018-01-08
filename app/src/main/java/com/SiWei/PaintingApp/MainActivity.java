@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
@@ -140,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private ImageButton[] mColorBtns;
     private ImageButton[] mBgBtns;
     private int BGBtnsIndex;
+    private int ColorBtnsIndex;
 
     private ButtonContainer mButtonContainer;
     private PageButtonConfig pbc;
@@ -439,27 +441,32 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         mDone = false;
         switch (v.getId()) {
             case R.id.pencolor_black_button:
-                setSelectedBtn(mColorBtns, 0);
-                mPaletteView.setPaintColor(0xffbbbbbb);
+                ColorBtnsIndex = 0;
+                setSelectedBtn(mColorBtns, ColorBtnsIndex);
+                mPaletteView.setPaintColor(0xff050505);
                 break;
             case R.id.pencolor_red_button:
-                setSelectedBtn(mColorBtns, 1);
+                ColorBtnsIndex = 1;
+                setSelectedBtn(mColorBtns, ColorBtnsIndex);
                 mPaletteView.setPaintColor(paletteReq[0]);
                 mCirclePanelView.setRecordValues(-1, -1, paletteReqIndex[0]);
                 Log.i("color record", "onClick: " + paletteReq[0]);
                 break;
             case R.id.pencolor_green_button:
-                setSelectedBtn(mColorBtns, 2);
+                ColorBtnsIndex = 2;
+                setSelectedBtn(mColorBtns, ColorBtnsIndex);
                 mPaletteView.setPaintColor(paletteReq[1]);
                 mCirclePanelView.setRecordValues(-1, -1, paletteReqIndex[1]);
                 break;
             case R.id.pencolor_blue_button:
-                setSelectedBtn(mColorBtns, 3);
+                ColorBtnsIndex = 3;
+                setSelectedBtn(mColorBtns, ColorBtnsIndex);
                 mPaletteView.setPaintColor(paletteReq[2]);
                 mCirclePanelView.setRecordValues(-1, -1, paletteReqIndex[2]);
                 break;
             case R.id.pencolor_purple_button:
-                setSelectedBtn(mColorBtns, 4);
+                ColorBtnsIndex = 4;
+                setSelectedBtn(mColorBtns, ColorBtnsIndex);
                 mPaletteView.setPaintColor(0XFFcccccc);
                 break;
             case R.id.undo_button:
@@ -610,26 +617,32 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 setSelectedBtn(mBgBtns, 0);
                 //mBitmap = ImageUtils.createBitmapFromPath(imgPath, 1920, 1080);
                 setBoardBackground(R.drawable.bg_01);
+                mCirclePanelView.setTextColor(Color.WHITE);
                 break;
             case R.id.bg02:
                 setSelectedBtn(mBgBtns, 1);
                 setBoardBackground(R.drawable.bg_02);
+                mCirclePanelView.setTextColor(Color.BLACK);
                 break;
             case R.id.bg03:
                 setSelectedBtn(mBgBtns, 2);
                 setBoardBackground(R.drawable.bg_03);
+                mCirclePanelView.setTextColor(Color.BLACK);
                 break;
             case R.id.bg04:
                 setSelectedBtn(mBgBtns, 3);
                 setBoardBackground(R.drawable.bg_04);
+                mCirclePanelView.setTextColor(Color.BLACK);
                 break;
             case R.id.bg05:
                 setSelectedBtn(mBgBtns, 4);
                 setBoardBackground(R.drawable.bg_05);
+                mCirclePanelView.setTextColor(Color.WHITE);
                 break;
             case R.id.bg06:
                 setSelectedBtn(mBgBtns, 5);
                 setBoardBackground(R.drawable.bg_06);
+                mCirclePanelView.setTextColor(Color.WHITE);
                 break;
             case R.id.email_button:
                 sendMailByIntent();
@@ -938,7 +951,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                             if (mCirclePanelView.isColorChanged) {
                                 mPaletteView.setPaintColor(mCirclePanelView.getmColorValue());
                                 mPaletteView.setPaintOpacity(mCirclePanelView.getmOpacityValue());
-                                setSelectedBtn(mColorBtns, -1);
+                                ColorBtnsIndex = -1;
+                                setSelectedBtn(mColorBtns, ColorBtnsIndex);
                             } else {
                                 mPaletteView.setPaintOpacity(mCirclePanelView.getmOpacityValue());
                             }
@@ -1123,6 +1137,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         editor.putInt("BrushCirclePanel", mCirclePanelView.getRecordValues()[1]);
         editor.putInt("ColorCirclePanel", mCirclePanelView.getRecordValues()[2]);
         editor.putInt("BackgroundIndex", BGBtnsIndex);
+        editor.putInt("ColorBtnIndex",ColorBtnsIndex);
         editor.commit();
 
     }
@@ -1141,6 +1156,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         mCirclePanelView.setRecordValues(sp.getInt("OpacityCirclePanel", 0),
                 sp.getInt("BrushCirclePanel", 0),
                 sp.getInt("ColorCirclePanel", 0));
-        Log.i("", "initConfig: "+sp.getInt("ColorCirclePanel", 0));
+        setSelectedBtn(mColorBtns, sp.getInt("ColorBtnIndex",-1));
+
     }
 }

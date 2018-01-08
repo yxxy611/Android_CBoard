@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -65,14 +64,14 @@ public class CirclePanelView extends View {
         mPaintPath.setStrokeWidth(1.0f);              //线宽
         mPaintPath.setStyle(Paint.Style.FILL);
         mPaintPath.setTextAlign(Paint.Align.CENTER);
-        mPaintPath.setTextSize(12f);
+        mPaintPath.setTextSize(20);
 
         mPaintColor = new Paint();
         mPaintColor.setAntiAlias(true);
 
 
-        mMainBmp = BitmapFactory.decodeResource(getResources(), R.drawable.cir_main_02, null);
-        mMainBmp02 = BitmapFactory.decodeResource(getResources(), R.drawable.cir_main_02, null);
+        mMainBmp = BitmapFactory.decodeResource(getResources(), R.drawable.cir_main_04, null);
+        mMainBmp02 = BitmapFactory.decodeResource(getResources(), R.drawable.cir_main_04, null);
         centerX = mMainBmp.getWidth() / 2;
         centerY = mMainBmp.getHeight() / 2 + 1;
         mOffset = new float[]{-mMainBmp.getWidth() * 1.5f, -mMainBmp.getHeight() / 2};
@@ -435,82 +434,36 @@ public class CirclePanelView extends View {
 //                210, 120);
 //        canvas.drawTextOnPath(opacName, textPath, 0, 12, mPaintPath);
 //        textPath.reset();
-//
-//        textPath.addArc(new RectF(posX + mOffsetCenter[0] - 30,
-//                        posY + mOffsetCenter[1] - 30,
-//                        posX + mOffsetCenter[0] + 30,
-//                        posY + mOffsetCenter[1] + 30),
-//                330, 120);
-//        canvas.drawTextOnPath(brushName, textPath, 0, 12, mPaintPath);
-//        textPath.reset();
-//
-//        textPath.addArc(new RectF(posX + mOffsetCenter[0] - 30,
-//                        posY + mOffsetCenter[1] - 30,
-//                        posX + mOffsetCenter[0] + 30,
-//                        posY + mOffsetCenter[1] + 30),
-//                90, 120);
-//        canvas.drawTextOnPath(colorName, textPath, 0, 12, mPaintPath);
-//        textPath.reset();
+
 
         MenuMode selectedMode = MenuMode.MAIN;
-        //        mMatrix.setRotate(-120 * i, centerX, centerY);
-        //        mMatrix.postTranslate(posX,posY);
+
 
         switch (i) {
             case 0:
                 selectedMode = MenuMode.OPACITY;
                 canvas.drawBitmap(mMainSelectBmp, posX, posY, mPaint);
-                textPath.addArc(new RectF(posX + mOffsetCenter[0] - 30,
-                                posY + mOffsetCenter[1] - 30,
-                                posX + mOffsetCenter[0] + 30,
-                                posY + mOffsetCenter[1] + 30),
-                        210, 120);
-                canvas.drawTextOnPath(opacName, textPath, 0, 12, mPaintPath);
-                textPath.reset();
+                canvas.drawText(opacName, posX + mOffsetCenter[0], posY + mOffsetCenter[1] + 10, mPaintTest);
                 break;
             case 1:
                 selectedMode = MenuMode.COLOR;
                 canvas.drawBitmap(mMainSelectBmp03, posX, posY, mPaint);
-                textPath.addArc(new RectF(posX + mOffsetCenter[0] - 30,
-                                posY + mOffsetCenter[1] - 30,
-                                posX + mOffsetCenter[0] + 30,
-                                posY + mOffsetCenter[1] + 30),
-                        330, 120);
-                canvas.drawTextOnPath(brushName, textPath, 0, 12, mPaintPath);
-                textPath.reset();
+                canvas.drawText(brushName, posX + mOffsetCenter[0], posY + mOffsetCenter[1] + 10, mPaintTest);
                 break;
             case 2:
                 selectedMode = MenuMode.BRUSH;
                 canvas.drawBitmap(mMainSelectBmp02, posX, posY, mPaint);
-                textPath.addArc(new RectF(posX + mOffsetCenter[0] - 30,
-                                posY + mOffsetCenter[1] - 30,
-                                posX + mOffsetCenter[0] + 30,
-                                posY + mOffsetCenter[1] + 30),
-                        90, 120);
-                canvas.drawTextOnPath(colorName, textPath, 0, 12, mPaintPath);
-                textPath.reset();
+                canvas.drawText(colorName, posX + mOffsetCenter[0], posY + mOffsetCenter[1] + 10, mPaintTest);
                 break;
             case -1:
                 selectedMode = MenuMode.BRUSH;
                 canvas.drawBitmap(mMainSelectBmp02, posX, posY, mPaint);
-                textPath.addArc(new RectF(posX + mOffsetCenter[0] - 30,
-                                posY + mOffsetCenter[1] - 30,
-                                posX + mOffsetCenter[0] + 30,
-                                posY + mOffsetCenter[1] + 30),
-                        90, 120);
-                canvas.drawTextOnPath(colorName, textPath, 0, 12, mPaintPath);
-                textPath.reset();
+                canvas.drawText(colorName, posX + mOffsetCenter[0], posY + mOffsetCenter[1] + 10, mPaintTest);
                 break;
             case -2:
                 selectedMode = MenuMode.COLOR;
                 canvas.drawBitmap(mMainSelectBmp03, posX, posY, mPaint);
-                textPath.addArc(new RectF(posX + mOffsetCenter[0] - 30,
-                                posY + mOffsetCenter[1] - 30,
-                                posX + mOffsetCenter[0] + 30,
-                                posY + mOffsetCenter[1] + 30),
-                        330, 120);
-                canvas.drawTextOnPath(brushName, textPath, 0, 12, mPaintPath);
-                textPath.reset();
+                canvas.drawText(brushName, posX + mOffsetCenter[0], posY + mOffsetCenter[1] + 10, mPaintTest);
                 break;
         }
         return selectedMode;
@@ -714,5 +667,8 @@ public class CirclePanelView extends View {
     public void initCircleConfig(){
         mOpacityValue = mOpacityRange - (mOpacityRange - 55) / mOpacityCount * mOpacityValueTmpRec;
         mBrushValue = mBrushRange / (mBrushCount - 1) * mBrushValueTmpRec + 0.25f;
+    }
+    public void setTextColor(int c){
+        mPaintTest.setColor(c);
     }
 }
