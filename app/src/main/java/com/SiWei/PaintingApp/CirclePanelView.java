@@ -446,22 +446,22 @@ public class CirclePanelView extends View {
                 canvas.drawText(opacName, posX + mOffsetCenter[0], posY + mOffsetCenter[1] + 10, mPaintTest);
                 break;
             case 1:
-                selectedMode = MenuMode.COLOR;
+                selectedMode = MenuMode.BRUSH;
                 canvas.drawBitmap(mMainSelectBmp03, posX, posY, mPaint);
                 canvas.drawText(brushName, posX + mOffsetCenter[0], posY + mOffsetCenter[1] + 10, mPaintTest);
                 break;
             case 2:
-                selectedMode = MenuMode.BRUSH;
+                selectedMode = MenuMode.COLOR;
                 canvas.drawBitmap(mMainSelectBmp02, posX, posY, mPaint);
                 canvas.drawText(colorName, posX + mOffsetCenter[0], posY + mOffsetCenter[1] + 10, mPaintTest);
                 break;
             case -1:
-                selectedMode = MenuMode.BRUSH;
+                selectedMode = MenuMode.COLOR;
                 canvas.drawBitmap(mMainSelectBmp02, posX, posY, mPaint);
                 canvas.drawText(colorName, posX + mOffsetCenter[0], posY + mOffsetCenter[1] + 10, mPaintTest);
                 break;
             case -2:
-                selectedMode = MenuMode.COLOR;
+                selectedMode = MenuMode.BRUSH;
                 canvas.drawBitmap(mMainSelectBmp03, posX, posY, mPaint);
                 canvas.drawText(brushName, posX + mOffsetCenter[0], posY + mOffsetCenter[1] + 10, mPaintTest);
                 break;
