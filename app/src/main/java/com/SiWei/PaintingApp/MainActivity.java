@@ -157,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         Move,
         Board
     }
+    private ImageButton eraserBtn;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -246,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         //页码相关
         pbc = new PageButtonConfig((Button) findViewById(R.id.page_count_button_test), mPaletteView);
 
-
+        eraserBtn = (ImageButton)findViewById(R.id.erase_menu_button);
         //        Bitmap bitmap1 = new BitmapFactory().decodeResource(getResources(), R.drawable.ic_add);
         //        mButtonContainer.addView(bitmap1);
 
@@ -930,6 +931,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 switch (event.getActionMasked()) {
                     case MotionEvent.ACTION_DOWN:
                         mEraserBar.setVisibility(View.INVISIBLE);
+                        eraserBtn.setSelected(false);
                         Log.e("asdf", "第1个手指按下");
                         break;
                     case MotionEvent.ACTION_UP:
