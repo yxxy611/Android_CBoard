@@ -929,6 +929,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 int index = event.getActionIndex();
                 switch (event.getActionMasked()) {
                     case MotionEvent.ACTION_DOWN:
+                        mEraserBar.setVisibility(View.INVISIBLE);
                         Log.e("asdf", "第1个手指按下");
                         break;
                     case MotionEvent.ACTION_UP:
