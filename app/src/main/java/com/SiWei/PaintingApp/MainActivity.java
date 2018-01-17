@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -39,6 +40,14 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.baidubce.BceClientException;
+import com.baidubce.BceServiceException;
+import com.baidubce.auth.DefaultBceCredentials;
+import com.baidubce.services.bos.BosClient;
+import com.baidubce.services.bos.BosClientConfiguration;
+import com.baidubce.services.bos.model.ObjectMetadata;
+import com.baidubce.services.bos.model.PutObjectResponse;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -152,6 +161,15 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     //配置文件相关变量
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
+
+    //扫码分享功能相关变量
+    private final String AccessKeyID = "ff33d0b9bf26410fb7468d0b6777f5c4";
+    private final String SecretAccessKey = "96003cb538b3465bb9ae15ffea5b598b";
+    private final String EndPoint = "gz.bcebos.com";
+    private final String BucketName = "xboard001";
+    private String ObjectKey = "";
+    private String ObjectPath = "";
+    private PutObjectResponse putObjectFromFileResponse;
 
     public enum TouchMode {
         Move,
@@ -601,13 +619,25 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 imgCODE = 1;
                 break;
             case R.id.share_button://二维码分享
-                if (mQRLayout.getVisibility() == View.INVISIBLE) {
-                    mQRShareView.setQRContent("http://www.baidu.com");
-                    mQRLayout.setVisibility(View.VISIBLE);
-                } else {
-                    mQRLayout.setVisibility(View.INVISIBLE);
-                }
+                upLoadImg();
+                Toast.makeText(getApplicationContext(), "正在生成二维码,请稍后", Toast.LENGTH_SHORT).show();
+                mHandler.postDelayed(new Runnable(){
+                    @Override
+                    public void run() {
+                        if (mQRLayout.getVisibility() == View.INVISIBLE) {
+                            mQRShareView.setQRContent(ObjectPath);
+                            mQRLayout.setVisibility(View.VISIBLE);
+                        } else {
+                            mQRLayout.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                },2000);
+                /*try {
+                    Thread.sleep(2000);
 
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }*/
                 break;
             case R.id.trader_pwd_set_next_button://密码确定
                 // TODO: 12/3/2017 记录传送密码
@@ -769,7 +799,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         }
         Bitmap bitmap = backBitmap.copy(Bitmap.Config.ARGB_8888, true);
         Canvas canvas = new Canvas(bitmap);
-        Rect baseRect = new Rect(0, 0, 1920, 1080);
+        Rect baseRect = new Rect(0, 0, frontBitmap.getWidth(), frontBitmap.getHeight());
         Rect frontRect = new Rect(0, 0, frontBitmap.getWidth(), frontBitmap.getHeight());
         canvas.drawBitmap(frontBitmap, frontRect, baseRect, null);
         return bitmap;
@@ -799,7 +829,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         //boolean isDir = mPaletteView.mSavePathIsDir;
         if (TextUtils.isEmpty(savePath)) {
             File dcimFile = new File(Environment.getExternalStorageDirectory(), "DCIM");
-            graffitiFile = new File(dcimFile, "CBoard");
+            graffitiFile = new File(dcimFile, "XBoard");
             //　保存的路径
             file = new File(graffitiFile, System.currentTimeMillis() + ".jpg");
         } else {
@@ -1162,4 +1192,76 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         setSelectedBtn(mColorBtns, sp.getInt("ColorBtnIndex",-1));
 
     }
+
+    //上传当前图片
+    private void upLoadImg(){
+
+        BosClientConfiguration config = new BosClientConfiguration();
+        config.setCredentials(new DefaultBceCredentials(AccessKeyID, SecretAccessKey));
+        config.setEndpoint(EndPoint); //Bucket所在区域
+        final BosClient client = new BosClient(config);
+
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    Looper.prepare();
+                    putObjectFromFileResponse = null;
+                    //创建Bucket
+                    //CreateBucketResponse response = client.createBucket("fku"); //新建一个Bucket并指定Bucket名称
+                    //System.out.println(response.getLocation());
+                    //System.out.println(response.getName());
+
+                    //上传Object
+                    ObjectMetadata meta = new ObjectMetadata();
+                    meta.setContentType("image/jpeg");
+                    File file = onSaved(mergeBitmap(mBackgroundBitmap, mPaletteView.getmGraffitiBitmap()));
+                    ObjectKey = System.currentTimeMillis() + ".jpg";
+                    putObjectFromFileResponse = client.putObject(BucketName,ObjectKey,file,meta);
+                    System.out.println(putObjectFromFileResponse.getETag());
+                    Log.e("LilithUPLOAD", "FileTag= " + putObjectFromFileResponse.getETag());
+                    ObjectPath = "http://" + BucketName + "." + EndPoint + "/" + ObjectKey;
+                    Log.e("LilithUPLOAD", "URL= " + ObjectPath);
+                    /*
+                    //查看Object
+                    ListObjectsResponse list = client.listObjects(BucketName);
+                    for (BosObjectSummary objectSummary : list.getContents()) {
+                        if(putObjectFromFileResponse.getETag() == objectSummary.getETag()){
+                        }
+                        Log.e("LilithUPLOAD", "ObjectKey: " + objectSummary.getKey());
+                        System.out.println("ObjectKey: " + objectSummary.getKey());
+                    }
+                    // 获取Object
+                    BosObject object = client.getObject(<BucketName>, <ObjectKey>);
+                    // 获取ObjectMeta
+                    ObjectMetadata meta = object.getObjectMetadata();
+                    // 获取Object的输入流
+                    InputStream objectContent = object.getObjectContent();
+                    // 处理Object
+                    FileOutputStream fos=new FileOutputStream(<Path>);//下载文件的目录/文件名
+                    byte[] buffer=new byte[2048];
+                    int count=0;
+                    while ((count=objectContent.read(buffer))>=0) {
+                        fos.write(buffer,0,count);
+                    }
+
+                    // 关闭流
+                    objectContent.close();
+                    fos.close();
+                    System.out.println(meta.getETag());
+                    System.out.println(meta.getContentLength());*/
+                }catch (BceServiceException e) {
+                    System.out.println("Error ErrorCode: " + e.getErrorCode());
+                    System.out.println("Error RequestId: " + e.getRequestId());
+                    System.out.println("Error StatusCode: " + e.getStatusCode());
+                    System.out.println("Error Message: " + e.getMessage());
+                    System.out.println("Error ErrorType: " + e.getErrorType());
+                } catch (BceClientException e) {
+                    Log.e("LilithUPLOAD", e.getMessage());
+                }
+            }
+        }).start();
+    }
+
 }

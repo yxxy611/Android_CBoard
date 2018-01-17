@@ -34,4 +34,7 @@ dependencies {
     compile 'com.forward.androids:androids:1.1.4'
     compile project(':ImageSelctorLib-release')
     compile files('libs/core-3.2.1.jar')
+    implementation files('libs/bos-android-sdk-1.0.4.jar')
+    implementation files('libs/okhttp-3.8.1.jar')
+    implementation files('libs/okio-1.13.0.jar')
 }

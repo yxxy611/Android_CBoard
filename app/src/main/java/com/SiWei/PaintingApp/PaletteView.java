@@ -1375,7 +1375,7 @@ public class PaletteView extends View {
                     return true;
             }
         } else {
-            //单指，双指书写
+            //单指，双指书写，擦除
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_DOWN:
                     if(!isCircleOpen){
@@ -1413,15 +1413,19 @@ public class PaletteView extends View {
                     }else{
                         doTouchMove(event,mPointerIDs[1]);
                     }*/
-                        if (mTouchMode < 2) {
-                            for (int i = 0; i < 2; i++) {
-                                if (mPointerIDs[i] == moveID) {
+                        if(mPen == Pen.ERASER){
+                            doTouchMove(event, mPointerIDs[0]);
+                        }else{
+                            if (mTouchMode < 2) {
+                                for (int i = 0; i < 2; i++) {
+                                    if (mPointerIDs[i] == moveID) {
+                                        doTouchMove(event, mPointerIDs[i]);
+                                    }
+                                }
+                            } else {
+                                for (int i = 0; i < 2; i++) {
                                     doTouchMove(event, mPointerIDs[i]);
                                 }
-                            }
-                        } else {
-                            for (int i = 0; i < 2; i++) {
-                                doTouchMove(event, mPointerIDs[i]);
                             }
                         }
                         invalidate();
@@ -1441,12 +1445,16 @@ public class PaletteView extends View {
                     }*/
                         if(mPen == Pen.ERASER){
                             mEraserBitmap.recycle();
-                        }
-                        if (mPointerIDs[0] != -1) {
-                            doTouchUp(event, mPointerIDs[0]);
-                        }
-                        if (mPointerIDs[1] != -1) {
-                            doTouchUp(event, mPointerIDs[1]);
+                            if (mPointerIDs[0] != -1) {
+                                doTouchUp(event, mPointerIDs[0]);
+                            }
+                        }else{
+                            if (mPointerIDs[0] != -1) {
+                                doTouchUp(event, mPointerIDs[0]);
+                            }
+                            if (mPointerIDs[1] != -1) {
+                                doTouchUp(event, mPointerIDs[1]);
+                            }
                         }
                     }
                     invalidate();
@@ -1476,7 +1484,7 @@ public class PaletteView extends View {
                     break;
                 //return true;
                 case MotionEvent.ACTION_POINTER_UP:
-                    if(!isCircleOpen){
+                    if(!isCircleOpen && mPen != Pen.ERASER){
                         mTouchMode -= 1;
                         /*if (mTouchMode > 2) {
                             break;
