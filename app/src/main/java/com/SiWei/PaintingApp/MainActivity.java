@@ -701,6 +701,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        imgPath = "";
         if (requestCode == REQ_CODE_SELECT_IMAGE) {
             if (data == null) {
                 return;
@@ -709,27 +710,23 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             if (list != null && list.size() > 0) {
                 LogUtil.d("Graffiti", list.get(0));
                 imgPath = list.get(0);
-                mBitmap = ImageUtils.createBitmapFromPath(imgPath, 1920, 1080);
-                if (mBitmap != null) {
-                    switch (imgCODE) {
-                        case 0:
-                            mBitmap = ImageUtils.createBitmapFromPath(imgPath, 1920, 1080);
-                            //Drawable bg =new BitmapDrawable(mBitmap);
-                            /*Resources resources = getResources();
-                            Drawable bg = resources.getDrawable(R.drawable.bg);*/
-                            Drawable bg = new BitmapDrawable(mBitmap);
-                            mPaletteView.setBackground(bg);
-                            //mPaletteView.changeBG(mBitmap);
-                            Toast.makeText(getApplicationContext(), "背景更换成功", Toast.LENGTH_SHORT).show();
-                            break;
-                        case 1:
-                            mBitmap = ImageUtils.createBitmapFromPath(imgPath, 1500, 800);
-                            //TouchImageView img = new TouchImageView(this,mBitmap);
-                            //setContentView(img);
-                            mPaletteView.insertImage(mBitmap, imgPath);
-                            Toast.makeText(getApplicationContext(), "图片插入成功", Toast.LENGTH_SHORT).show();
-                            break;
+                //mBitmap = ImageUtils.createBitmapFromPath(imgPath, 1920, 1080);
+                if (imgPath != "") {
+                    mBitmap = ImageUtils.createBitmapFromPath(imgPath, 1920, 1080);
+                    float scaleWidth = 960f / mBitmap.getWidth();
+                    float scaleHeight = 540f / mBitmap.getHeight();
+                    if(mBitmap.getWidth() > 960){
+                        Log.e("Lilith", "scaleWidth= " + 960f / mBitmap.getWidth());
+                        mBitmap  = Bitmap.createScaledBitmap(mBitmap,960,Math.round(mBitmap.getHeight() * scaleWidth),true);
                     }
+                    if(mBitmap.getHeight() > 540) {
+                        mBitmap = Bitmap.createScaledBitmap(mBitmap, Math.round(mBitmap.getWidth() * scaleHeight), 540, true);
+                    }
+                    Log.e("Lilith", "mBitmapHeight= " + mBitmap.getHeight());
+                    //TouchImageView img = new TouchImageView(this,mBitmap);
+                    //setContentView(img);
+                    mPaletteView.insertImage(mBitmap, imgPath);
+                    Toast.makeText(getApplicationContext(), "图片插入成功", Toast.LENGTH_SHORT).show();
                 }
             }
         }

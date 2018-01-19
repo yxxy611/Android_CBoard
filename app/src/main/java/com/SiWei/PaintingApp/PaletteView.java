@@ -144,6 +144,7 @@ public class PaletteView extends View {
     private Bitmap mLassoBitmap;
     //private int mLassoBitmapIndex = -1;
     private float mLassoBitmapX,mLassoBitmapY;
+    private Matrix tempMatrix = new Matrix();
 
     //撤销，重做相关
     private float mDXS, mDYS;
@@ -799,14 +800,16 @@ public class PaletteView extends View {
 
     public void insertImage(Bitmap bitmap,String imgpath) {
         GraffitiPath graffitiPath = null;
-        graffitiPath = GraffitiPath.toBitmap(true,imgpath,576,324,1f,0f,mPageIndexNow);
+        graffitiPath = GraffitiPath.toBitmap(true,imgpath, bitmap.getWidth(),bitmap.getHeight(), 576,324,1f,0f,mPageIndexNow);
         Path areaPath = new Path();
         //mInsertBitmaps.add(bitmap);
         RectF areaRectF = new RectF(576, 324, 576 + bitmap.getWidth(), 324 + bitmap.getHeight());
+        Log.e("Lilith", "insertImage: " + bitmap.getWidth() + " x " + bitmap.getHeight());
         areaPath.addRect(areaRectF, Path.Direction.CCW);
         areaPath.setFillType(Path.FillType.WINDING);
         mAreaPathsList.add(areaPath);
         mBitmapCanvas.drawBitmap(bitmap, 576, 324, null);
+        mBitmapCanvas.drawPath(areaPath,mPaintLasso);
         mPSIndex ++;
         if (mPSIndex < mPathStack.size()) {
             for (int i = mPathStack.size() - 1; i >= mPSIndex; i--) {
@@ -922,7 +925,9 @@ public class PaletteView extends View {
             }
             if (!tempPath.isEmpty()) {
                 if(mPathStack.get(i).mIsBitmap){
-                    mLassoBitmap = ImageUtils.createBitmapFromPath(mPathStack.get(i).mImgPath, 1500, 800);
+                    mLassoBitmap = ImageUtils.createBitmapFromPath(mPathStack.get(i).mImgPath, 1920, 1080);
+                    mLassoBitmap = Bitmap.createScaledBitmap(mLassoBitmap,mPathStack.get(i).imgWidth,mPathStack.get(i).imgHeight,true);
+
                     mLassoBitmapX = mPathStack.get(i).imgX;
                     mLassoBitmapY = mPathStack.get(i).imgY;
                     mIsLassoBitmap = true;
@@ -1073,15 +1078,19 @@ public class PaletteView extends View {
         for (int i = 0; i <= index; i++) {
             if (pathStack.get(i).mPageIndex == mPageIndexNow) {
                 draw(canvas, pathStack.get(i));
+                if(tempMatrix != null){
+                    mAreaPathsList.get(i).transform(tempMatrix);
+                }
                 //canvas.drawPath(mAreaPathsList.get(i),mPaintLasso);
             }
         }
     }
 
     private void draw(Canvas canvas, GraffitiPath path) {
+        tempMatrix = null;
         if(path.mIsBitmap){
-            Matrix tempMatrix = new Matrix();
-            Bitmap bitmap = ImageUtils.createBitmapFromPath(path.mImgPath, 1500, 800);
+            tempMatrix = new Matrix();
+            Bitmap bitmap = ImageUtils.createBitmapFromPath(path.mImgPath, 1920, 1080);
             //Log.e("Lasso", "path.mRotation= " + path.mRotation);
             //Log.e("Lasso", "path.mScale= " + path.mScale);
             Log.e("Lasso", "draw-path.imgX= " + path.imgX);
@@ -1089,8 +1098,11 @@ public class PaletteView extends View {
             tempMatrix.setTranslate(path.imgX,path.imgY);
             tempMatrix.postRotate(path.mRotation,path.imgX + bitmap.getWidth() / 2,path.imgY + bitmap.getHeight() / 2);
             tempMatrix.postScale(path.mScale,path.mScale,path.imgX + bitmap.getWidth() / 2,path.imgY + bitmap.getHeight() / 2);
+            bitmap = Bitmap.createScaledBitmap(bitmap,path.imgWidth,path.imgHeight,true);
             //canvas.drawBitmap(bitmap,path.imgX,path.imgY,null);
-            canvas.drawBitmap(bitmap,tempMatrix,null);
+            bitmap = Bitmap.createBitmap(bitmap,0,0,path.imgWidth,path.imgHeight,tempMatrix,true);
+            //canvas.drawBitmap(bitmap,tempMatrix,null);
+            canvas.drawBitmap(bitmap,path.imgX,path.imgY,null);
         }else{
             if (path.mPen == Pen.HAND) {
                 mPaintDrawTemp.setColor(path.mColor);
@@ -1939,6 +1951,7 @@ public class PaletteView extends View {
         boolean mIsBitmap; //是否是图片
         String mImgPath;
         float imgX,imgY;
+        int imgWidth,imgHeight;
         float mScale;
         float mRotation;
         //int index; //序号
@@ -1956,10 +1969,12 @@ public class PaletteView extends View {
             return path;
         }
 
-        static GraffitiPath toBitmap(boolean isbitmap,String imgPath,float imgx,float imgy,float scale,float rotation,int pageindex) {
+        static GraffitiPath toBitmap(boolean isbitmap,String imgPath,int imgwidth,int imgheight,float imgx,float imgy,float scale,float rotation,int pageindex) {
             GraffitiPath path = new GraffitiPath();
             path.mIsBitmap = isbitmap;
             path.mImgPath = imgPath;
+            path.imgWidth = imgwidth;
+            path.imgHeight = imgheight;
             path.imgX = imgx;
             path.imgY = imgy;
             path.mScale = scale;
