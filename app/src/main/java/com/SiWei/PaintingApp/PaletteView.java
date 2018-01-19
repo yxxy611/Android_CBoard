@@ -1609,6 +1609,11 @@ public class PaletteView extends View {
     }*/
 
     private void setBG() {// 不用resize preview
+        /*mPrivateScale = 1;
+        mCentreTranX = getWidth() / 2;
+        mCentreTranY = getHeight() / 2;
+        mPrivateWidth = getWidth();
+        mPrivateHeight = getHeight();*/
         int w = mBitmaps[mPageIndexNow].getWidth();
         int h = mBitmaps[mPageIndexNow].getHeight();
         float nw = w * 1f / getWidth();

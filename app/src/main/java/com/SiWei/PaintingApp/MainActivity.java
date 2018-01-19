@@ -170,6 +170,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private String ObjectKey = "";
     private String ObjectPath = "";
     private PutObjectResponse putObjectFromFileResponse;
+    private String upLoadError = "";
 
     public enum TouchMode {
         Move,
@@ -624,20 +625,21 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 mHandler.postDelayed(new Runnable(){
                     @Override
                     public void run() {
-                        if (mQRLayout.getVisibility() == View.INVISIBLE) {
-                            mQRShareView.setQRContent(ObjectPath);
-                            mQRLayout.setVisibility(View.VISIBLE);
-                        } else {
-                            mQRLayout.setVisibility(View.INVISIBLE);
+                        if(upLoadError == "Successful"){
+                            if (mQRLayout.getVisibility() == View.INVISIBLE) {
+                                mQRShareView.setQRContent(ObjectPath);
+                                mQRLayout.setVisibility(View.VISIBLE);
+                            } else {
+                                mQRLayout.setVisibility(View.INVISIBLE);
+                            }
+                        }else{
+                            if(upLoadError == ""){
+                                upLoadError = "连接超时！";
+                            }
+                            Toast.makeText(getApplicationContext(), upLoadError, Toast.LENGTH_SHORT).show();
                         }
                     }
-                },2000);
-                /*try {
-                    Thread.sleep(2000);
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }*/
+                },3000);
                 break;
             case R.id.trader_pwd_set_next_button://密码确定
                 // TODO: 12/3/2017 记录传送密码
@@ -784,25 +786,31 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
     private void setBoardBackground(int background) {
         mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), background);
-        Drawable bg = new BitmapDrawable(mBackgroundBitmap);
+        Drawable bg = new BitmapDrawable(getResources(),mBackgroundBitmap);
         mPaletteView.setBackground(bg);
+
         mBackgroundPath = background;
         Log.e("Lilith", "setBackground: mBackgroundPath= " + mBackgroundPath);
     }
 
     //背景和bitmap合成
     public static Bitmap mergeBitmap(Bitmap backBitmap, Bitmap frontBitmap) {
+        Log.e("BitmapInfo", "BG= " + backBitmap.getWidth() + " X " + backBitmap.getHeight());
+        Log.e("BitmapInfo", "DrawBitmap= " + frontBitmap.getWidth() + " X " + frontBitmap.getHeight());
         if (backBitmap == null || backBitmap.isRecycled()
                 || frontBitmap == null || frontBitmap.isRecycled()) {
             Log.e("Lilith", "backBitmap=" + backBitmap + ";frontBitmap=" + frontBitmap);
             return null;
         }
-        Bitmap bitmap = backBitmap.copy(Bitmap.Config.ARGB_8888, true);
-        Canvas canvas = new Canvas(bitmap);
+        //Bitmap bitmap = backBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        Bitmap bitmap = Bitmap.createScaledBitmap(backBitmap,1920,1080,true);
+        Bitmap bg = bitmap.copy(Bitmap.Config.RGB_565,true);
+        Canvas canvas = new Canvas(bg);
         Rect baseRect = new Rect(0, 0, frontBitmap.getWidth(), frontBitmap.getHeight());
         Rect frontRect = new Rect(0, 0, frontBitmap.getWidth(), frontBitmap.getHeight());
         canvas.drawBitmap(frontBitmap, frontRect, baseRect, null);
-        return bitmap;
+        Log.e("BitmapInfo", "Bitmap= " + bg.getWidth() + " X " + bg.getHeight());
+        return bg;
     }
 
     public Bitmap[] mergePagePreview(Bitmap[] pagePreview) {
@@ -1195,7 +1203,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
     //上传当前图片
     private void upLoadImg(){
-
+        upLoadError = "";
         BosClientConfiguration config = new BosClientConfiguration();
         config.setCredentials(new DefaultBceCredentials(AccessKeyID, SecretAccessKey));
         config.setEndpoint(EndPoint); //Bucket所在区域
@@ -1208,57 +1216,26 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 try {
                     Looper.prepare();
                     putObjectFromFileResponse = null;
-                    //创建Bucket
-                    //CreateBucketResponse response = client.createBucket("fku"); //新建一个Bucket并指定Bucket名称
-                    //System.out.println(response.getLocation());
-                    //System.out.println(response.getName());
-
                     //上传Object
                     ObjectMetadata meta = new ObjectMetadata();
                     meta.setContentType("image/jpeg");
                     File file = onSaved(mergeBitmap(mBackgroundBitmap, mPaletteView.getmGraffitiBitmap()));
                     ObjectKey = System.currentTimeMillis() + ".jpg";
                     putObjectFromFileResponse = client.putObject(BucketName,ObjectKey,file,meta);
-                    System.out.println(putObjectFromFileResponse.getETag());
-                    Log.e("LilithUPLOAD", "FileTag= " + putObjectFromFileResponse.getETag());
+                    /*Log.e("LilithUPLOAD", "FileTag= " + putObjectFromFileResponse.getETag());
                     ObjectPath = "http://" + BucketName + "." + EndPoint + "/" + ObjectKey;
-                    Log.e("LilithUPLOAD", "URL= " + ObjectPath);
-                    /*
-                    //查看Object
-                    ListObjectsResponse list = client.listObjects(BucketName);
-                    for (BosObjectSummary objectSummary : list.getContents()) {
-                        if(putObjectFromFileResponse.getETag() == objectSummary.getETag()){
-                        }
-                        Log.e("LilithUPLOAD", "ObjectKey: " + objectSummary.getKey());
-                        System.out.println("ObjectKey: " + objectSummary.getKey());
-                    }
-                    // 获取Object
-                    BosObject object = client.getObject(<BucketName>, <ObjectKey>);
-                    // 获取ObjectMeta
-                    ObjectMetadata meta = object.getObjectMetadata();
-                    // 获取Object的输入流
-                    InputStream objectContent = object.getObjectContent();
-                    // 处理Object
-                    FileOutputStream fos=new FileOutputStream(<Path>);//下载文件的目录/文件名
-                    byte[] buffer=new byte[2048];
-                    int count=0;
-                    while ((count=objectContent.read(buffer))>=0) {
-                        fos.write(buffer,0,count);
-                    }
-
-                    // 关闭流
-                    objectContent.close();
-                    fos.close();
-                    System.out.println(meta.getETag());
-                    System.out.println(meta.getContentLength());*/
+                    Log.e("LilithUPLOAD", "URL= " + ObjectPath);*/
+                    upLoadError = "Successful";
                 }catch (BceServiceException e) {
                     System.out.println("Error ErrorCode: " + e.getErrorCode());
                     System.out.println("Error RequestId: " + e.getRequestId());
                     System.out.println("Error StatusCode: " + e.getStatusCode());
                     System.out.println("Error Message: " + e.getMessage());
                     System.out.println("Error ErrorType: " + e.getErrorType());
+                    upLoadError = "连接服务器失败！请联系客服";
                 } catch (BceClientException e) {
                     Log.e("LilithUPLOAD", e.getMessage());
+                    upLoadError = "网络错误！请检查网络后重试";
                 }
             }
         }).start();
