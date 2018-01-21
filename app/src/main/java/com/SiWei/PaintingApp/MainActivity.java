@@ -629,6 +629,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                             if (mQRLayout.getVisibility() == View.INVISIBLE) {
                                 mQRShareView.setQRContent(ObjectPath);
                                 mQRLayout.setVisibility(View.VISIBLE);
+                                Toast.makeText(getApplicationContext(), "二维码已生成", Toast.LENGTH_SHORT).show();
                             } else {
                                 mQRLayout.setVisibility(View.INVISIBLE);
                             }
@@ -1220,8 +1221,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                     File file = onSaved(mergeBitmap(mBackgroundBitmap, mPaletteView.getmGraffitiBitmap()));
                     ObjectKey = System.currentTimeMillis() + ".jpg";
                     putObjectFromFileResponse = client.putObject(BucketName,ObjectKey,file,meta);
-                    /*Log.e("LilithUPLOAD", "FileTag= " + putObjectFromFileResponse.getETag());
                     ObjectPath = "http://" + BucketName + "." + EndPoint + "/" + ObjectKey;
+                    /*Log.e("LilithUPLOAD", "FileTag= " + putObjectFromFileResponse.getETag());
                     Log.e("LilithUPLOAD", "URL= " + ObjectPath);*/
                     upLoadError = "Successful";
                 }catch (BceServiceException e) {
