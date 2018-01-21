@@ -994,9 +994,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                             } else {
                                 mPaletteView.setPaintOpacity(mCirclePanelView.getmOpacityValue());
                             }
+                            if(mCirclePanelView.isBrushChanged){
 
                             //mPaletteView.setTmpPaintSize(mCirclePanelView.getmBrushValue()*3);
-                            mPaletteView.setPaintSize(mCirclePanelView.getmBrushValue() * 3);
+                            mPaletteView.setPaintSize(mCirclePanelView.getmBrushValue() * 3);}
                         }
                         Log.e("asdf", "第" + (index + 1) + "个手指按下");
                         break;

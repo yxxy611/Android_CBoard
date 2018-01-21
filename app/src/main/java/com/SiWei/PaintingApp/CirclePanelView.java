@@ -40,7 +40,7 @@ public class CirclePanelView extends View {
     private float[] mGestureCenter, mVectorMoved, mVectorMoved02;
     private float mAng, mAngIni;
     private boolean isAngleInitialized;
-    public boolean isColorChanged;//画笔颜色有没有由圆盘控件改变
+    public boolean isColorChanged,isBrushChanged;//画笔颜色有没有由圆盘控件改变
     private Path textPath;
     private String opacName, brushName, colorName;
 
@@ -128,6 +128,7 @@ public class CirclePanelView extends View {
         mBrushValue = 1.5f;
         mColorValue = 0xffaaaaaa;
         isColorChanged = false;
+        isBrushChanged = false;
         textPath = new Path();
 
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.CirclePanelView);
@@ -183,6 +184,7 @@ public class CirclePanelView extends View {
                 case BRUSH:
                     mBrushValue = mBrushValueTmpCal;
                     mBrushValueTmpRec = mBrushValueTmp;
+                    isBrushChanged = true;
                     break;
             }
             menuMode = MenuMode.DEFAULT;
@@ -264,7 +266,7 @@ public class CirclePanelView extends View {
         }
         mAng = AngleBetween() - mAngIni;
         if (mAng > 180) {
-            mAng = 360 - mAng;
+            mAng =  mAng-360;
         } else if (mAng <= -180) {
             mAng = 360 + mAng;
         }
@@ -273,7 +275,7 @@ public class CirclePanelView extends View {
 
         switch (menuMode) {
             case MAIN:
-                mScrollValue = (int) f / 25;
+                mScrollValue = (int) -f / 25;
                 break;
             case OPACITY:
                 if (f < 0) {
@@ -340,6 +342,7 @@ public class CirclePanelView extends View {
             mGestureCenter[1] = 200;
         }
         isColorChanged = false;
+        isBrushChanged = false;
         setPosition();
         mScrollValue = 0;
         menuMode = MenuMode.MAIN;
@@ -595,7 +598,10 @@ public class CirclePanelView extends View {
         mVectorMoved[1] = y;
     }
 
+public float calcAngle(){
 
+        return 1.0f;
+}
     public float AngleBetween() {
         float detaX = mVectorMoved[0] - mGestureCenter[0];
         float detaY = mVectorMoved[1] - mGestureCenter[1];
