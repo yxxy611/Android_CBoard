@@ -21,7 +21,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -31,13 +30,11 @@ import android.view.View;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,7 +62,7 @@ import static com.SiWei.PaintingApp.R.id.eraser_bar;
 import static com.SiWei.PaintingApp.R.id.main_menu;
 import static com.SiWei.PaintingApp.R.id.slider;
 
-public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener,
+public class MainActivity extends AppCompatActivity implements /*CompoundButton.OnCheckedChangeListener,*/
         PaletteView.Callback,
         View.OnClickListener,
         CustomSlideToUnlockView.CallBack,
@@ -99,9 +96,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private QRShareView mQRShareView;
     private LinearLayout mQRLayout;
     private RelativeLayout mPWDlayout;
-    private Switch mPwdSwitch;
-    private PasswordInputView edtPwd;
-    private NumKeyboardUtil keyboardUtil;
+//    private Switch mPwdSwitch;
+//    private PasswordInputView edtPwd;
+//    private NumKeyboardUtil keyboardUtil;
 
     private PaletteView mPaletteView;
     private ProgressDialog mSaveProgressDlg;
@@ -196,20 +193,20 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         mQRShareView = (QRShareView) findViewById(R.id.QRView);
         mQRLayout = (LinearLayout) findViewById(R.id.QRLayout);
         mPWDlayout = (RelativeLayout) findViewById(R.id.pwd_layout);
-        edtPwd = (PasswordInputView) findViewById(R.id.trader_pwd_set_pwd_edittext);
-        edtPwd.setInputType(InputType.TYPE_NULL); // 屏蔽系统软键盘
+//        edtPwd = (PasswordInputView) findViewById(R.id.trader_pwd_set_pwd_edittext);
+//        edtPwd.setInputType(InputType.TYPE_NULL); // 屏蔽系统软键盘
         // 自定义软键盘
-        if (keyboardUtil == null)
-            keyboardUtil = new NumKeyboardUtil(this, this, edtPwd);
-        edtPwd.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                keyboardUtil.showKeyboard();
-                return false;
-            }
-        });
-        mPwdSwitch = (Switch) findViewById(R.id.pwd_switch);
-        mPwdSwitch.setOnCheckedChangeListener(this);
+//        if (keyboardUtil == null)
+//            keyboardUtil = new NumKeyboardUtil(this, this, edtPwd);
+//        edtPwd.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                keyboardUtil.showKeyboard();
+//                return false;
+//            }
+//        });
+//        mPwdSwitch = (Switch) findViewById(R.id.pwd_switch);
+//        mPwdSwitch.setOnCheckedChangeListener(this);
         mColorBtns = new ImageButton[]{
                 (ImageButton) findViewById(R.id.pencolor_black_button),
                 (ImageButton) findViewById(R.id.pencolor_red_button),
@@ -439,21 +436,21 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
     private boolean mDone = false;
 
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()) {
-            case R.id.pwd_switch:
-                if (isChecked) {
-                    mPWDlayout.setVisibility(View.VISIBLE);
-                    Log.i("deng", "onCheckedChanged: " + isChecked);
-                    // TODO: 12/3/2017 准备接收密码
-                } else {
-                    mPWDlayout.setVisibility(View.INVISIBLE);
-                    // TODO: 12/3/2017 无需密码
-                }
-                break;
-        }
-    }
+//    @Override
+//    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//        switch (buttonView.getId()) {
+//            case R.id.pwd_switch:
+//                if (isChecked) {
+//                    mPWDlayout.setVisibility(View.VISIBLE);
+//                    Log.i("deng", "onCheckedChanged: " + isChecked);
+//                    // TODO: 12/3/2017 准备接收密码
+//                } else {
+//                    mPWDlayout.setVisibility(View.INVISIBLE);
+//                    // TODO: 12/3/2017 无需密码
+//                }
+//                break;
+//        }
+//    }
 
 
     @Override

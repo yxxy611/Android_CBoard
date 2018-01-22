@@ -56,18 +56,18 @@
             custom:titleTextColor="#ff0000"
             custom:titleTextSize="30sp"/>
 
-        <Switch
-            android:id="@+id/pwd_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:switchMinWidth="20dp"
-            android:text="加密"
-            android:textColor="#555555"
-            android:textOff=""
-            android:textOn=""
-            android:textSize="12sp"
-            android:thumb="@drawable/thumb"
-            android:track="@drawable/track"/>
+        <!--<Switch-->
+            <!--android:id="@+id/pwd_switch"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:switchMinWidth="20dp"-->
+            <!--android:text="加密"-->
+            <!--android:textColor="#555555"-->
+            <!--android:textOff=""-->
+            <!--android:textOn=""-->
+            <!--android:textSize="12sp"-->
+            <!--android:thumb="@drawable/thumb"-->
+            <!--android:track="@drawable/track"/>-->
 
     </LinearLayout>
 
