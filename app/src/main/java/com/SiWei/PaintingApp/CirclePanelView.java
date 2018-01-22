@@ -520,7 +520,7 @@ public class CirclePanelView extends View {
             }
         }
 
-        mBrushValueTmpCal = mBrushRange / (mBrushCount - 1) * mBrushValueTmp + 0.25f;
+        mBrushValueTmpCal = mBrushRange / (mBrushCount - 1) * mBrushValueTmp + 0.75f;
         canvas.drawText(String.valueOf(mBrushValueTmpCal), posX + mOffsetCenter[0], posY + mOffsetCenter[1] + 10, mPaintTest);
 
 
