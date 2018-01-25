@@ -55,7 +55,7 @@ public class CirclePanelView extends View {
         mPaintTest.setStrokeWidth(1.0f);              //线宽
         mPaintTest.setStyle(Paint.Style.FILL);
         mPaintTest.setTextAlign(Paint.Align.CENTER);
-        mPaintTest.setTextSize(20);
+        mPaintTest.setTextSize(18);
         mPaintTest.setAntiAlias(true);
 
         mPaintPath = new Paint();
