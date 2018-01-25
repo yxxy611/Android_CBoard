@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
 
     private boolean mIsScaling = false;
     private float mScale = 1f;
-    private final float mMaxScale = 3f; // 最大缩放倍数
+    private final float mMaxScale = 2f; // 最大缩放倍数
     private final float mMinScale = 1f; // 最小缩放倍数
     private final int TIME_SPAN = 40;
     private View mBtnMovePic, mBtnHidePanel, mSettingsPanel;

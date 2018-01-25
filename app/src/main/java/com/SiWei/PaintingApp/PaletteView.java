@@ -141,10 +141,15 @@ public class PaletteView extends View {
     private int mPhase = 0;
     private DashPathEffect mEffect = new DashPathEffect(new float[] {10,10}, mPhase);
     private boolean mIsLassoBitmap = false;
-    private Bitmap mLassoBitmap;
+    //private Bitmap mLassoBitmap;
     //private int mLassoBitmapIndex = -1;
     private float mLassoBitmapX,mLassoBitmapY;
     private Matrix tempMatrix = new Matrix();
+    //float mPathRotation;
+    private float mPathScale;
+    private float mOldScale = 1f;
+    //private float mLassoBitmapMidX,mLassoBitmapMidY;
+    private final float mMaxScale = 3f;
 
     //撤销，重做相关
     private float mDXS, mDYS;
@@ -224,7 +229,8 @@ public class PaletteView extends View {
         mPaintEraser.setAntiAlias(true);
         mPaintEraser.setDither(true);
         mPaintEraser.setStrokeJoin(Paint.Join.ROUND);
-        mPaintEraser.setStrokeCap(Paint.Cap.SQUARE);// 圆滑
+        mPaintEraser.setStrokeCap(Paint.Cap.ROUND);// 圆滑
+        //mPaintEraser.setStrokeCap(Paint.Cap.SQUARE);
         mClearMode = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
         //mClearMode = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
         //mClearMode = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
@@ -239,7 +245,8 @@ public class PaletteView extends View {
         mPaintEraserTemp.setAntiAlias(true);
         mPaintEraserTemp.setDither(true);
         mPaintEraserTemp.setStrokeJoin(Paint.Join.ROUND);
-        mPaintEraserTemp.setStrokeCap(Paint.Cap.SQUARE);// 圆滑
+        mPaintEraserTemp.setStrokeCap(Paint.Cap.ROUND);// 圆滑
+        //mPaintEraserTemp.setStrokeCap(Paint.Cap.SQUARE);
         mPaintEraserTemp.setXfermode(mClearMode);
         //初始化套索
         mPaintLasso = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
@@ -264,7 +271,7 @@ public class PaletteView extends View {
         mBitmaps[mPageIndexNow] = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);
         mBitmapCanvas = new Canvas(mBitmaps[mPageIndexNow]);
         //Bitmap tempBitmap = Bitmap.createBitmap(mBitmaps[mPageIndexNow]);
-        mLassoBitmapMidX = mLassoBitmapMidY = 0;
+        //mLassoBitmapMidX = mLassoBitmapMidY = 0;
         initCache();
         //初始化橡皮擦图片
         //mEraserBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.eraserimg100);
@@ -285,7 +292,7 @@ public class PaletteView extends View {
         Log.e("Lilith", "mPSIndex=" + mPSIndex);
     }
 
-    private void setEraserBitmap(int num){
+    private void setEraserBitmap(float num){
         float scale;
         mEraserBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.eraserimg100);
         scale = mTouchSize * num * 7;
@@ -806,7 +813,7 @@ public class PaletteView extends View {
         RectF areaRectF = new RectF(576, 324, 576 + bitmap.getWidth(), 324 + bitmap.getHeight());
         Log.e("Lilith", "insertImage: " + bitmap.getWidth() + " x " + bitmap.getHeight());
         areaPath.addRect(areaRectF, Path.Direction.CCW);
-        areaPath.setFillType(Path.FillType.WINDING);
+        //areaPath.setFillType(Path.FillType.WINDING);
         mAreaPathsList.add(areaPath);
         mBitmapCanvas.drawBitmap(bitmap, 576, 324, null);
         mBitmapCanvas.drawPath(areaPath,mPaintLasso);
@@ -850,7 +857,7 @@ public class PaletteView extends View {
 
     Bitmap gintama;
 
-    private boolean matrixCheck() {
+    /*private boolean matrixCheck() {
         float[] f = new float[9];
         matrix1.getValues(f);
         // 图片4个顶点的坐标
@@ -880,7 +887,7 @@ public class PaletteView extends View {
             return true;
         }
         return false;
-    }
+    }*/
 
     // 触碰两点间距离
     private float spacing() {
@@ -917,30 +924,39 @@ public class PaletteView extends View {
 
         lassoPath.addRect(lassoArea, Path.Direction.CCW);
         lassoAreaPath.addRect(lassoArea, Path.Direction.CCW);
-        lassoAreaPath.setFillType(Path.FillType.WINDING);
+        //lassoAreaPath.setFillType(Path.FillType.WINDING);
 
-        for (int i = 0; i < mAreaPathsList.size(); i++) {
+        for (int i = mAreaPathsList.size() - 1; i >= 0; i--) {
             if (mPathStack.get(i).mPageIndex == mPageIndexNow) {
                 tempPath.op(lassoAreaPath, mAreaPathsList.get(i), Path.Op.INTERSECT);
             }
             if (!tempPath.isEmpty()) {
-                if(mPathStack.get(i).mIsBitmap){
+                //tempPath.setFillType(Path.FillType.WINDING);
+                if(mPathStack.get(i).mIsBitmap){ //选中为图片
+                    //根据缩放旋转修改选中图片
+                    /*
+                    Matrix matrix = new Matrix();
                     mLassoBitmap = ImageUtils.createBitmapFromPath(mPathStack.get(i).mImgPath, 1920, 1080);
+                    matrix.setTranslate(mPathStack.get(i).imgX,mPathStack.get(i).imgY);
+                    //matrix.postRotate(mPathStack.get(i).mRotation,mPathStack.get(i).imgX + mLassoBitmap.getWidth() / 2,mPathStack.get(i).imgY + mLassoBitmap.getHeight() / 2); //旋转
+                    matrix.postScale(mPathStack.get(i).mScale,mPathStack.get(i).mScale,mPathStack.get(i).imgX + mLassoBitmap.getWidth() / 2,mPathStack.get(i).imgY + mLassoBitmap.getHeight() / 2);
                     mLassoBitmap = Bitmap.createScaledBitmap(mLassoBitmap,mPathStack.get(i).imgWidth,mPathStack.get(i).imgHeight,true);
-
+                    mLassoBitmap = Bitmap.createBitmap(mLassoBitmap,0,0,mPathStack.get(i).imgWidth,mPathStack.get(i).imgHeight,tempMatrix,true);
                     mLassoBitmapX = mPathStack.get(i).imgX;
-                    mLassoBitmapY = mPathStack.get(i).imgY;
+                    mLassoBitmapY = mPathStack.get(i).imgY;*/
+
                     mIsLassoBitmap = true;
                     mSelectedPaths.clear();
                     selectedPathIndex.clear();
                     selectedPathIndex.add(i);
                     mSelectedAreaPaths.clear();
                     mSelectedAreaPaths.add(mAreaPathsList.get(i));
+                    mOldScale = mPathStack.get(i).mScale;
                     //mLassoBitmapIndex = i;
                     break;
-                }else{
+                }else{ //选中为笔画
                     selectedPathIndex.add(i);
-                    tempPath.setFillType(Path.FillType.WINDING);
+                    //tempPath.setFillType(Path.FillType.WINDING);
                     if (i < mPathStack.size()) {
                         mSelectedPaths.add(mPathStack.get(i).mPath);
                         mSelectedAreaPaths.add(mAreaPathsList.get(i));
@@ -969,14 +985,28 @@ public class PaletteView extends View {
         //mBitmapCanvas.drawColor(Color.WHITE);
         mPaintLasso.setPathEffect(mEffect);
         if(mIsLassoBitmap){
-            Log.e("Lasso", "mIsLassoBitmap= " + mIsLassoBitmap);
-            Log.e("Lasso", "mLassoBitmapX= " + mLassoBitmapX);
-            Log.e("Lasso", "mLassoBitmapY= " + mLassoBitmapY);
+            //Log.e("Lasso", "mIsLassoBitmap= " + mIsLassoBitmap);
+            //Log.e("Lasso", "mLassoBitmapX= " + mLassoBitmapX);
+            //Log.e("Lasso", "mLassoBitmapY= " + mLassoBitmapY);
+
+            /*Matrix matrix = new Matrix();
             lassoAreaPath.reset();
-            lassoArea.set(mLassoBitmapX,mLassoBitmapY,mLassoBitmapX + mLassoBitmap.getWidth(),mLassoBitmapY + mLassoBitmap.getHeight());
+            lassoArea.set(mPathStack.get(selectedPathIndex.get(0)).imgX,mPathStack.get(selectedPathIndex.get(0)).imgY,
+                    mPathStack.get(selectedPathIndex.get(0)).imgX +mPathStack.get(selectedPathIndex.get(0)).imgWidth,
+                    mPathStack.get(selectedPathIndex.get(0)).imgY +mPathStack.get(selectedPathIndex.get(0)).imgHeight);
+            matrix.postScale(mPathStack.get(selectedPathIndex.get(0)).mScale,mPathStack.get(selectedPathIndex.get(0)).mScale,
+                    mPathStack.get(selectedPathIndex.get(0)).imgX,mPathStack.get(selectedPathIndex.get(0)).imgY);
+            lassoAreaPath.addRect(lassoArea, Path.Direction.CCW);
+            lassoAreaPath.transform(matrix);*/
+
+            lassoAreaPath.set(mAreaPathsList.get(selectedPathIndex.get(0)));
+
+            /*lassoArea.set(mLassoBitmapX,mLassoBitmapY,mLassoBitmapX + mLassoBitmap.getWidth(),mLassoBitmapY + mLassoBitmap.getHeight());
             lassoAreaPath.addRect(lassoArea, Path.Direction.CCW);
             mLassoBitmapMidX = mLassoBitmapX + mLassoBitmap.getWidth() / 2;
-            mLassoBitmapMidY = mLassoBitmapY + mLassoBitmap.getHeight() / 2;
+            mLassoBitmapMidY = mLassoBitmapY + mLassoBitmap.getHeight() / 2;*/
+
+            //Log.e("lilith", "选中的Path总数" + selectedPathIndex.size());
         }else{
             for (int i = 0; i < mSelectedPaths.size(); i++) {
                 mBitmapCanvas.drawPath(mSelectedPaths.get(i), mPaintLasso);
@@ -1004,9 +1034,10 @@ public class PaletteView extends View {
             mDY = mTouchYs[0] - mLastTouchYs[0];
             //Log.e("Lasso", "mIsLassoBitmap= " + mIsLassoBitmap );
             if(mIsLassoBitmap){
-                mPathStack.get(mSelectedPathsIndex.get(0)).imgX += mDX;
-                mPathStack.get(mSelectedPathsIndex.get(0)).imgY += mDY;
+                mPathStack.get(mSelectedPathsIndex.get(0)).imgX += mDX / mScale;
+                mPathStack.get(mSelectedPathsIndex.get(0)).imgY += mDY / mScale;
                 mSelectedAreaPaths.get(0).offset(mDX / mScale , mDY / mScale);
+                //mBitmapCanvas.drawPath(mSelectedAreaPaths.get(0),mPaintLasso);
                 //canvas.drawBitmap(mLassoBitmap, mPathStack.get(mSelectedPathsIndex.get(0)).imgX + mDX,mPathStack.get(mSelectedPathsIndex.get(0)).imgY + mDY,null);
             }else{
                // Log.e("Lasso", "mSelectedPaths.size()= " + mSelectedPaths.size() );
@@ -1029,11 +1060,15 @@ public class PaletteView extends View {
                 canvas.drawBitmap(mLassoBitmap, matrix, null);
                 //invalidate();
             }*/
-            mPathRotation = rotation();
-            mPathScale = newDist / oldDist;
-            Log.e("Lasso", "mPathRotation= " + mPathRotation);
+            //mPathRotation = rotation();
+            if(mPathScale > mMaxScale){
+                mPathScale = mMaxScale;
+            }else{
+                mPathScale = mOldScale * (newDist / oldDist);
+            }
+            //Log.e("Lasso", "mPathRotation= " + mPathRotation);
             Log.e("Lasso", "mPathScale= " + mPathScale);
-            mPathStack.get(mSelectedPathsIndex.get(0)).mRotation = mPathRotation - oldRotation;
+            //mPathStack.get(mSelectedPathsIndex.get(0)).mRotation = mPathRotation - oldRotation;
             mPathStack.get(mSelectedPathsIndex.get(0)).mScale = mPathScale;
 
             //mLassoBitmap = ImageUtils.createBitmapFromPath(mPathStack.get(mSelectedPathsIndex.get(0)).mImgPath, 1500, 800);
@@ -1062,9 +1097,6 @@ public class PaletteView extends View {
         //invalidate();
     }
 
-    float mPathRotation,mPathScale;
-    float mLassoBitmapMidX,mLassoBitmapMidY;
-
     /*private void draw(Canvas canvas, Pen pen, Paint paint, Path path) {
         //paint.setStrokeWidth();
         canvas.drawPath(path, paint);
@@ -1078,9 +1110,10 @@ public class PaletteView extends View {
         for (int i = 0; i <= index; i++) {
             if (pathStack.get(i).mPageIndex == mPageIndexNow) {
                 draw(canvas, pathStack.get(i));
-                if(tempMatrix != null){
+                //mBitmapCanvas.drawPath(mAreaPathsList.get(i),mPaintLasso);
+                /*if(tempMatrix != null){
                     mAreaPathsList.get(i).transform(tempMatrix);
-                }
+                }*/
                 //canvas.drawPath(mAreaPathsList.get(i),mPaintLasso);
             }
         }
@@ -1096,7 +1129,7 @@ public class PaletteView extends View {
             Log.e("Lasso", "draw-path.imgX= " + path.imgX);
             Log.e("Lasso", "draw-path.imgY= " + path.imgY);
             tempMatrix.setTranslate(path.imgX,path.imgY);
-            tempMatrix.postRotate(path.mRotation,path.imgX + bitmap.getWidth() / 2,path.imgY + bitmap.getHeight() / 2);
+            //tempMatrix.postRotate(path.mRotation,path.imgX + bitmap.getWidth() / 2,path.imgY + bitmap.getHeight() / 2);
             tempMatrix.postScale(path.mScale,path.mScale,path.imgX + bitmap.getWidth() / 2,path.imgY + bitmap.getHeight() / 2);
             bitmap = Bitmap.createScaledBitmap(bitmap,path.imgWidth,path.imgHeight,true);
             //canvas.drawBitmap(bitmap,path.imgX,path.imgY,null);
@@ -1186,13 +1219,14 @@ public class PaletteView extends View {
         /*if (mIsLassoMove) {
             MoveLasso(canvas);
         }*/
+        /*
         if(mIsLassoMove){
             draw(canvas,mPathStack,mPSIndex);
             for (int i = 0; i < mSelectedPaths.size(); i++) {
                 canvas.drawPath(mSelectedPaths.get(i), mPaintLasso);
             }
             //canvas.drawPath(mLassoAreaPath,mPaintLasso);
-        }
+        }*/
         if (mPen == Pen.HAND) {
             if (mPointerIDs[0] != -1) {
                 canvas.drawPath(mCurrPaths[0], mPaint);
@@ -1262,6 +1296,10 @@ public class PaletteView extends View {
                         mTouchXs[0] = event.getX();
                         mTouchYs[0] = event.getY();
                         MoveLasso(mBitmapCanvas);
+                        draw(mBitmapCanvas,mPathStack,mPSIndex);
+                        for (int i = 0; i < mSelectedPaths.size(); i++) {
+                            mBitmapCanvas.drawPath(mSelectedPaths.get(i), mPaintLasso);
+                        }
                     } else {
                         if (mTouchMode < 2) { // 单点滑动
                             mLastTouchXs[0] = mTouchXs[0];
@@ -1320,26 +1358,26 @@ public class PaletteView extends View {
                             }*/
                             draw(mBitmapCanvas,mPathStack,mPSIndex);
                             if(mIsLassoBitmap){
+                                float scale = mPathStack.get(mSelectedPathsIndex.get(0)).mScale;
                                 Path path = new Path();
-                                Matrix matrix = new Matrix();
                                 float left, top, right, bottom;
                                 left = mPathStack.get(mSelectedPathsIndex.get(0)).imgX;
                                 top = mPathStack.get(mSelectedPathsIndex.get(0)).imgY;
-                                right = mPathStack.get(mSelectedPathsIndex.get(0)).imgX + mLassoBitmap.getWidth();
-                                bottom = mPathStack.get(mSelectedPathsIndex.get(0)).imgY + mLassoBitmap.getHeight();
-                                mLassoBitmapMidX = mPathStack.get(mSelectedPathsIndex.get(0)).imgX + mLassoBitmap.getWidth() / 2;
-                                mLassoBitmapMidY = mPathStack.get(mSelectedPathsIndex.get(0)).imgY + mLassoBitmap.getHeight() / 2;
+                                right = mPathStack.get(mSelectedPathsIndex.get(0)).imgX + mPathStack.get(mSelectedPathsIndex.get(0)).imgWidth * scale;
+                                bottom = mPathStack.get(mSelectedPathsIndex.get(0)).imgY + mPathStack.get(mSelectedPathsIndex.get(0)).imgHeight * scale;
                                 mLassoArea.set(left, top, right, bottom);
                                 path.addRect(mLassoArea, Path.Direction.CCW);
-                                Log.e("Lasso", "left=  " + left);
-                                Log.e("Lasso", "top=  " + top);
-                                //Log.e("Lasso", "rotation= " + mPathStack.get(mSelectedPathsIndex.get(0)).mRotation );
-                                //Log.e("Lasso", "scale= " + mPathStack.get(mSelectedPathsIndex.get(0)).mScale );
-                                matrix.postRotate(mPathStack.get(mSelectedPathsIndex.get(0)).mRotation,mLassoBitmapMidX,mLassoBitmapMidY);
-                                matrix.postScale(mPathStack.get(mSelectedPathsIndex.get(0)).mScale,mPathStack.get(mSelectedPathsIndex.get(0)).mScale,mLassoBitmapMidX,mLassoBitmapMidY);
-                                path.transform(matrix);
-                                path.setFillType(Path.FillType.WINDING);
+                                //path.setFillType(Path.FillType.WINDING);
+                                //Log.e("Lasso", "mPathScale=  " + mPathScale);
+                                //Log.e("Lasso", "scale=  " + scale);
+                                //Log.e("Lasso", "left=  " + left);
+                                //Log.e("Lasso", "top=  " + top);
+                                //Log.e("Lasso", "right=  " + right);
+                                //Log.e("Lasso", "bottom=  " + bottom);
+                                mAreaPathsList.get(mSelectedPathsIndex.get(0)).reset();
                                 mAreaPathsList.get(mSelectedPathsIndex.get(0)).set(path);
+                                //mSelectedAreaPaths.get(0).set(path);
+                                mBitmapCanvas.drawPath(path,mPaintLasso);
                             }else{
                                 saveMoveChanged();
                             }
@@ -1397,13 +1435,17 @@ public class PaletteView extends View {
                         Log.e("Lilith", "TouchSize=" + mTouchSize);
                         if (mTouchSize > 0.005f) {
                             setPen(Pen.ERASER);
-                            //mTouchSize = 0.005f;
-                            if (mTouchSize > 0.01) {
+                            //mTouchSize = 0.01f;
+                            if(mTouchSize >= 0.02) {
+                                mTouchSize = 0.01f;
                                 mPaintEraserSize = mTouchSize * 1000 * 6;
-                                setEraserBitmap(6);
-                            } else {
+                                setEraserBitmap(6f);
+                            }else if(mTouchSize >= 0.01){
+                                mPaintEraserSize = mTouchSize * 1000 * 6;
+                                setEraserBitmap(6f);
+                            }else{
                                 mPaintEraserSize = mTouchSize * 1000 * 13;
-                                setEraserBitmap(13);
+                                setEraserBitmap(12f);
                             }
                             mPaint.setStrokeWidth(mPaintEraserSize);
                         } else {
