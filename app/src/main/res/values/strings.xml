@@ -28,10 +28,17 @@
     <string name="image_title">选择图片</string>
     <string name="image_back">返回</string>
     <string name="image_enter">确定</string>
+    <string name="image_insert">图片插入成功</string>
 
     <string name="opac_ic">透明度</string>
     <string name="brush_ic">笔刷</string>
     <string name="color_ic">颜色</string>
+
+    <string name="net_errorCheck">网络错误！请检查网络后重试</string>
+    <string name="net_errorConnect">连接服务器失败！请联系客服</string>
+    <string name="net_errorTimeOut">连接超时</string>
+    <string name="net_generating">正在生成二维码，请稍候</string>
+    <string name="net_generated">二维码已生成</string>
 
 
     <string name="hint_save_succeed">保存成功！</string>

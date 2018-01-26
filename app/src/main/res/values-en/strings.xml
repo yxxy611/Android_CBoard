@@ -27,10 +27,17 @@
     <string name="image_title">Select Image</string>
     <string name="image_back">Back</string>
     <string name="image_enter">Enter</string>
+    <string name="image_insert">Picture inserted successfully</string>
 
     <string name="opac_ic">Opacity</string>
     <string name="brush_ic">Brush</string>
     <string name="color_ic">Color</string>
+
+    <string name="net_errorCheck">Network Error,Please check and try again</string>
+    <string name="net_errorConnect">Connection failure! Please contact customer service</string>
+    <string name="net_errorTimeOut">Connection timed out</string>
+    <string name="net_generating">Generating QR code, please wait</string>
+    <string name="net_generated">QR code is generated</string>
 
     <string name="hint_save_succeed">Saving succeed!</string>
 </resources>

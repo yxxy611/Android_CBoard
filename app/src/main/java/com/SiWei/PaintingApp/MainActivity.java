@@ -618,7 +618,7 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
                 break;
             case R.id.share_button://二维码分享
                 upLoadImg();
-                Toast.makeText(getApplicationContext(), "正在生成二维码,请稍后", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.net_generating, Toast.LENGTH_SHORT).show();
                 mHandler.postDelayed(new Runnable(){
                     @Override
                     public void run() {
@@ -626,13 +626,13 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
                             if (mQRLayout.getVisibility() == View.INVISIBLE) {
                                 mQRShareView.setQRContent(ObjectPath);
                                 mQRLayout.setVisibility(View.VISIBLE);
-                                Toast.makeText(getApplicationContext(), "二维码已生成", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), R.string.net_generated, Toast.LENGTH_SHORT).show();
                             } else {
                                 mQRLayout.setVisibility(View.INVISIBLE);
                             }
                         }else{
                             if(upLoadError == ""){
-                                upLoadError = "连接超时！";
+                                upLoadError = getResources().getString(R.string.net_errorTimeOut);
                             }
                             Toast.makeText(getApplicationContext(), upLoadError, Toast.LENGTH_SHORT).show();
                         }
@@ -724,7 +724,7 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
                     //TouchImageView img = new TouchImageView(this,mBitmap);
                     //setContentView(img);
                     mPaletteView.insertImage(mBitmap, imgPath);
-                    Toast.makeText(getApplicationContext(), "图片插入成功", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.image_insert, Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -1228,10 +1228,10 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
                     System.out.println("Error StatusCode: " + e.getStatusCode());
                     System.out.println("Error Message: " + e.getMessage());
                     System.out.println("Error ErrorType: " + e.getErrorType());
-                    upLoadError = "连接服务器失败！请联系客服";
+                    upLoadError = getResources().getString(R.string.net_errorConnect);
                 } catch (BceClientException e) {
                     Log.e("LilithUPLOAD", e.getMessage());
-                    upLoadError = "网络错误！请检查网络后重试";
+                    upLoadError = getResources().getString(R.string.net_errorCheck);
                 }
             }
         }).start();

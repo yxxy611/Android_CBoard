@@ -1492,9 +1492,9 @@ public class PaletteView extends View {
                         Log.e("Lilith", "TouchSize=" + mTouchSize);
                         if (mTouchSize > 0.005f) {
                             setPen(Pen.ERASER);
-                            //mTouchSize = 0.01f;
-                            if(mTouchSize >= 0.02) {
-                                mTouchSize = 0.01f;
+                            //mTouchSize = 0.02f;
+                            if(mTouchSize > 0.02) {
+                                mTouchSize = 0.02f;
                                 mPaintEraserSize = mTouchSize * 1000 * 6;
                                 setEraserBitmap(6f);
                             }else if(mTouchSize >= 0.01){
@@ -1502,7 +1502,7 @@ public class PaletteView extends View {
                                 setEraserBitmap(6f);
                             }else{
                                 mPaintEraserSize = mTouchSize * 1000 * 13;
-                                setEraserBitmap(12f);
+                                setEraserBitmap(13f);
                             }
                             mPaint.setStrokeWidth(mPaintEraserSize);
                         } else {
