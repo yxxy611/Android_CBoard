@@ -10,7 +10,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 /**
@@ -223,7 +222,7 @@ public class CirclePanelView extends View {
         } else if (mAng <= -180) {
             mAng = 360 + mAng;
         }
-        Log.i("angleeee", String.valueOf(mAng));
+        //Log.i("angleeee", String.valueOf(mAng));
         f = -mAng;
 
         switch (menuMode) {
@@ -270,7 +269,7 @@ public class CirclePanelView extends View {
         } else if (mAng <= -180) {
             mAng = 360 + mAng;
         }
-        Log.i("angleeee", String.valueOf(mAng));
+        //Log.i("angleeee", String.valueOf(mAng));
         f = -mAng;
 
         switch (menuMode) {
@@ -537,7 +536,7 @@ public class CirclePanelView extends View {
             i = 0;
         }
         mColorValueTmp = i;
-        Log.i("ceshi", "drawColorMenu: " + i);
+        //Log.i("ceshi", "drawColorMenu: " + i);
         int p, q;
         for (int n = 0; n < mColorCount; n++) {
             p = (int) Math.floor(n / 3);

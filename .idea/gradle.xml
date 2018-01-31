@@ -10,8 +10,8 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/AndroidsLib-release" />
             <option value="$PROJECT_DIR$/ImageSelctorLib-release" />
-            <option value="$PROJECT_DIR$/ImageSelector" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/imageselector" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

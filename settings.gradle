@@ -1,1 +1,1 @@
-include ':app', ':ImageSelector', ':AndroidsLib-release', ':ImageSelctorLib-release'
+include ':app',':AndroidsLib-release', ':ImageSelctorLib-release',':imageselector'

@@ -75,34 +75,6 @@
         android:id="@+id/bottom_bar"
         layout="@layout/bottom_ui_layout"/>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="113dp"
-        android:layout_marginEnd="209dp">
-
-        <ImageButton
-            android:id="@+id/testButton_01"
-            style="@style/buttonIconStyle"
-            android:src="@drawable/pen_01"/>
-
-        <ImageButton
-            android:id="@+id/testButton_02"
-            style="@style/buttonIconStyle"
-            android:src="@drawable/erase_01"/>
-
-        <ImageButton
-            android:id="@+id/testButton_03"
-            style="@style/buttonIconStyle"/>
-
-        <ImageButton
-            android:id="@+id/testButton_04"
-            style="@style/buttonIconStyle"
-            android:src="@drawable/undo_01"/>
-    </LinearLayout>
-
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/pwd_layout"
                     style="@style/buttonIconStyle"

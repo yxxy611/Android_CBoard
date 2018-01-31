@@ -45,6 +45,7 @@ import com.baidubce.services.bos.BosClient;
 import com.baidubce.services.bos.BosClientConfiguration;
 import com.baidubce.services.bos.model.ObjectMetadata;
 import com.baidubce.services.bos.model.PutObjectResponse;
+import com.donkingliang.imageselector.utils.ImageSelectorUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -56,7 +57,6 @@ import java.util.Iterator;
 import cn.forward.androids.utils.ImageUtils;
 import cn.forward.androids.utils.LogUtil;
 import cn.forward.androids.utils.ThreadUtil;
-import cn.hzw.imageselector.ImageSelectorActivity;
 
 import static com.SiWei.PaintingApp.R.id.eraser_bar;
 import static com.SiWei.PaintingApp.R.id.main_menu;
@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
 
     public static final int REQ_CODE_SELECT_IMAGE = 100;
     public static final int REQ_CODE_GRAFFITI = 101;
+    private static final int REQUEST_CODE = 0x00000011;
     private String imgPath;
     private TextView mPath;
     private int imgCODE = 0;
@@ -503,7 +504,8 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
             //                //mPaletteView.setMode(PaletteView.Mode.DRAW);
             //                break;
             case R.id.erase_menu_button:
-                Log.i("eraserbar", toString().valueOf(mEraserBar.getVisibility()));
+                //Log.i("eraserbar", toString().valueOf(mEraserBar.getVisibility()));
+                //Toast.makeText(getApplicationContext(), R.string.graffiti_cant_undo_after_clearing, Toast.LENGTH_SHORT).show();
                 if (mEraserBar.getVisibility() == View.INVISIBLE) {
                     mEraserBar.setVisibility(View.VISIBLE);
                 } else {
@@ -606,19 +608,16 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
                 } else {
                     mBackgroundMenu.setVisibility(View.INVISIBLE);
                 }
-                //ImageSelectorActivity.startActivityForResult(REQ_CODE_SELECT_IMAGE, MainActivity.this, null, false);
-                //imgCODE = 0;
                 break;
             case R.id.insert_img_button:
-               /* System.out.println(mPaletteView.getOriginalPivotX());
-                System.out.println(mPaletteView.getOriginalPivotY());
-                createGraffitiBitmap(null, mPaletteView.getOriginalPivotX(),mPaletteView.getOriginalPivotY());*/
-                ImageSelectorActivity.startActivityForResult(REQ_CODE_SELECT_IMAGE, MainActivity.this, null, false);
+                //ImageSelectorActivity.startActivityForResult(REQ_CODE_SELECT_IMAGE, MainActivity.this, null, false);
+                ImageSelectorUtils.openPhoto(this,REQUEST_CODE,true,0);
                 imgCODE = 1;
                 break;
             case R.id.share_button://二维码分享
-                upLoadImg();
                 Toast.makeText(getApplicationContext(), R.string.net_generating, Toast.LENGTH_SHORT).show();
+                upLoadImg();
+                int count = 0;
                 mHandler.postDelayed(new Runnable(){
                     @Override
                     public void run() {
@@ -633,6 +632,8 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
                         }else{
                             if(upLoadError == ""){
                                 upLoadError = getResources().getString(R.string.net_errorTimeOut);
+                                //Toast.makeText(getApplicationContext(), upLoadError, Toast.LENGTH_SHORT).show();
+                                //Log.e("Lilith", "error: " + "正在重试请稍后。。。");
                             }
                             Toast.makeText(getApplicationContext(), upLoadError, Toast.LENGTH_SHORT).show();
                         }
@@ -678,20 +679,6 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
             case R.id.email_button:
                 sendMailByIntent();
                 break;
-            case R.id.testButton_01:
-                mCirclePanelView.awake();
-                break;
-            case R.id.testButton_02:
-                mCirclePanelView.confirm();
-                mPaletteView.setPaintColor(mCirclePanelView.getmColorValue());
-                mPaletteView.setPaintOpacity(mCirclePanelView.getmOpacityValue());
-                break;
-            case R.id.testButton_03:
-                mCirclePanelView.menuScrollNext();
-                break;
-            case R.id.testButton_04:
-                mCirclePanelView.menuScrollPrev();
-                break;
         }
     }
 
@@ -700,11 +687,12 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         imgPath = "";
-        if (requestCode == REQ_CODE_SELECT_IMAGE) {
+        if (requestCode == REQUEST_CODE) {
             if (data == null) {
                 return;
             }
-            final ArrayList<String> list = data.getStringArrayListExtra(ImageSelectorActivity.KEY_PATH_LIST);
+            //final ArrayList<String> list = data.getStringArrayListExtra(ImageSelectorActivity.KEY_PATH_LIST);
+            final ArrayList<String> list = data.getStringArrayListExtra(ImageSelectorUtils.SELECT_RESULT);
             if (list != null && list.size() > 0) {
                 LogUtil.d("Graffiti", list.get(0));
                 imgPath = list.get(0);
@@ -714,13 +702,13 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
                     float scaleWidth = 960f / mBitmap.getWidth();
                     float scaleHeight = 540f / mBitmap.getHeight();
                     if(mBitmap.getWidth() > 960){
-                        Log.e("Lilith", "scaleWidth= " + 960f / mBitmap.getWidth());
+                        //Log.e("Lilith", "scaleWidth= " + 960f / mBitmap.getWidth());
                         mBitmap  = Bitmap.createScaledBitmap(mBitmap,960,Math.round(mBitmap.getHeight() * scaleWidth),true);
                     }
                     if(mBitmap.getHeight() > 540) {
                         mBitmap = Bitmap.createScaledBitmap(mBitmap, Math.round(mBitmap.getWidth() * scaleHeight), 540, true);
                     }
-                    Log.e("Lilith", "mBitmapHeight= " + mBitmap.getHeight());
+                    //Log.e("Lilith", "mBitmapHeight= " + mBitmap.getHeight());
                     //TouchImageView img = new TouchImageView(this,mBitmap);
                     //setContentView(img);
                     mPaletteView.insertImage(mBitmap, imgPath);
@@ -730,71 +718,22 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
         }
     }
 
-    // 添加贴图
-   /* private void createGraffitiBitmap(final GraffitiBitmap graffitiBitmap, final float x, final float y) {
-        Activity activity = this;
-
-        boolean fullScreen = (activity.getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) != 0;
-        Dialog dialog = null;
-        if (fullScreen) {
-            dialog = new Dialog(activity,
-                    android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
-        } else {
-            dialog = new Dialog(activity,
-                    android.R.style.Theme_Translucent_NoTitleBar);
-        }
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        dialog.show();
-        ViewGroup container = (ViewGroup) View.inflate(getApplicationContext(), R.layout.graffiti_create_bitmap, null);
-        final Dialog finalDialog = dialog;
-        container.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finalDialog.dismiss();
-            }
-        });
-        dialog.setContentView(container);
-
-        ViewGroup selectorContainer = (ViewGroup) finalDialog.findViewById(R.id.graffiti_image_selector_container);
-        ImageSelectorView selectorView = new ImageSelectorView(this, false, 1, null, new ImageSelectorView.ImageSelectorListener() {
-            @Override
-            public void onCancel() {
-                finalDialog.dismiss();
-            }
-
-            @Override
-            public void onEnter(List<String> pathList) {
-                finalDialog.dismiss();
-                Bitmap bitmap = ImageUtils.createBitmapFromPath(pathList.get(0), mPaletteView.getWidth() / 4, mPaletteView.getHeight() / 4);
-
-                if (graffitiBitmap == null) {
-                    mPaletteView.addSelectableItem(new GraffitiBitmap(mPaletteView.getPen(), bitmap, mPaletteView.getPaintSize(), mPaletteView.getColor().copy(),
-                            0, mPaletteView.getGraffitiRotateDegree(), x, y, mPaletteView.getOriginalPivotX(), mPaletteView.getOriginalPivotY()));
-                } else {
-                    graffitiBitmap.setBitmap(bitmap);
-                }
-                mPaletteView.invalidate();
-            }
-        });
-        selectorContainer.addView(selectorView);
-    }*/
-
     private void setBoardBackground(int background) {
         mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), background);
         Drawable bg = new BitmapDrawable(getResources(),mBackgroundBitmap);
         mPaletteView.setBackground(bg);
 
         mBackgroundPath = background;
-        Log.e("Lilith", "setBackground: mBackgroundPath= " + mBackgroundPath);
+        //Log.e("Lilith", "setBackground: mBackgroundPath= " + mBackgroundPath);
     }
 
     //背景和bitmap合成
     public static Bitmap mergeBitmap(Bitmap backBitmap, Bitmap frontBitmap) {
-        Log.e("BitmapInfo", "BG= " + backBitmap.getWidth() + " X " + backBitmap.getHeight());
-        Log.e("BitmapInfo", "DrawBitmap= " + frontBitmap.getWidth() + " X " + frontBitmap.getHeight());
+        //Log.e("BitmapInfo", "BG= " + backBitmap.getWidth() + " X " + backBitmap.getHeight());
+        //Log.e("BitmapInfo", "DrawBitmap= " + frontBitmap.getWidth() + " X " + frontBitmap.getHeight());
         if (backBitmap == null || backBitmap.isRecycled()
                 || frontBitmap == null || frontBitmap.isRecycled()) {
-            Log.e("Lilith", "backBitmap=" + backBitmap + ";frontBitmap=" + frontBitmap);
+            //Log.e("Lilith", "backBitmap=" + backBitmap + ";frontBitmap=" + frontBitmap);
             return null;
         }
         //Bitmap bitmap = backBitmap.copy(Bitmap.Config.ARGB_8888, true);
@@ -804,7 +743,7 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
         Rect baseRect = new Rect(0, 0, frontBitmap.getWidth(), frontBitmap.getHeight());
         Rect frontRect = new Rect(0, 0, frontBitmap.getWidth(), frontBitmap.getHeight());
         canvas.drawBitmap(frontBitmap, frontRect, baseRect, null);
-        Log.e("BitmapInfo", "Bitmap= " + bg.getWidth() + " X " + bg.getHeight());
+        //Log.e("BitmapInfo", "Bitmap= " + bg.getWidth() + " X " + bg.getHeight());
         return bg;
     }
 
@@ -846,7 +785,7 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
             }
         }
         graffitiFile.mkdirs();
-        Log.e("Lilith", "onSaved: " + file.getPath());
+        //Log.e("Lilith", "onSaved: " + file.getPath());
 
         FileOutputStream outputStream = null;
         try {
@@ -935,7 +874,7 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
                                 }
                                 // 围绕坐标(0,0)缩放图片
                                 mPaletteView.setScale(mScale);
-                                Log.e("Lilith", "mScale= " + mScale);
+                                //Log.e("Lilith", "mScale= " + mScale);
                                 // 缩放后，偏移图片，以产生围绕某个点缩放的效果
                                 float transX = mPaletteView.toTransX(mTouchCentreX, mToucheCentreXOnGraffiti);
                                 float transY = mPaletteView.toTransY(mTouchCentreY, mToucheCentreYOnGraffiti);
@@ -965,12 +904,12 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
                     case MotionEvent.ACTION_DOWN:
                         mEraserBar.setVisibility(View.INVISIBLE);
                         eraserBtn.setSelected(false);
-                        Log.e("asdf", "第1个手指按下");
+                        //Log.e("asdf", "第1个手指按下");
                         break;
                     case MotionEvent.ACTION_UP:
                         mCirclePanelView.dismiss();
                         //mPaletteView.setCircleState(false);
-                        Log.e("asdf", "最后1个手指抬起");
+                        //Log.e("asdf", "最后1个手指抬起");
                         break;
                     case MotionEvent.ACTION_POINTER_DOWN:
                         if (!mCirclePanelView.isAwake() && index == 4) {
@@ -997,10 +936,10 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
                             //mPaletteView.setTmpPaintSize(mCirclePanelView.getmBrushValue()*3);
                             mPaletteView.setPaintSize(mCirclePanelView.getmBrushValue() * 3);}
                         }
-                        Log.e("asdf", "第" + (index + 1) + "个手指按下");
+                        //Log.e("asdf", "第" + (index + 1) + "个手指按下");
                         break;
                     case MotionEvent.ACTION_POINTER_UP:
-                        Log.e("asdf", "第" + (index + 1) + "个手指抬起");
+                        //Log.e("asdf", "第" + (index + 1) + "个手指抬起");
                         break;
                     case MotionEvent.ACTION_MOVE:
 
@@ -1148,7 +1087,7 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
                     @Override
                     public void onClick(View view) {
                         mPaletteView.setPageIndexNow(b.getIndex());
-                        Log.i("deng", "onClick: " + b.getIndex());
+                        //Log.i("deng", "onClick: " + b.getIndex());
                         updatePages();
                         pbc.update();
                     }
@@ -1230,7 +1169,7 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
                     System.out.println("Error ErrorType: " + e.getErrorType());
                     upLoadError = getResources().getString(R.string.net_errorConnect);
                 } catch (BceClientException e) {
-                    Log.e("LilithUPLOAD", e.getMessage());
+                    //Log.e("LilithUPLOAD", e.getMessage());
                     upLoadError = getResources().getString(R.string.net_errorCheck);
                 }
             }

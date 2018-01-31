@@ -5,7 +5,7 @@
     <string name="graffiti_moving_pic">Single finger pan/Double fingers zoom</string>
     <string name="graffiti_moving_pic_cancel">Pan/Zoom cancelled</string>
     <string name="graffiti_clear_screen">Clear Screen</string>
-    <string name="graffiti_cant_undo_after_clearing">清屏后不可撤销</string>
+    <string name="graffiti_cant_undo_after_clearing">Warning! After cleaning can not UnDo</string>
     <string name="graffiti_saving_picture">Saving picture</string>
     <string name="graffiti_enter">Enter</string>
     <string name="graffiti_cancel">Cancel</string>
@@ -29,15 +29,15 @@
     <string name="image_enter">Enter</string>
     <string name="image_insert">Picture inserted successfully</string>
 
-    <string name="opac_ic">Opacity</string>
+    <string name="opac_ic">Alpha</string>
     <string name="brush_ic">Brush</string>
     <string name="color_ic">Color</string>
 
     <string name="net_errorCheck">Network Error,Please check and try again</string>
     <string name="net_errorConnect">Connection failure! Please contact customer service</string>
     <string name="net_errorTimeOut">Connection timed out</string>
-    <string name="net_generating">Generating QR code, please wait</string>
-    <string name="net_generated">QR code is generated</string>
+    <string name="net_generating">Generating QR code</string>
+    <string name="net_generated">Scan QR code to capture the current image</string>
 
     <string name="hint_save_succeed">Saving succeed!</string>
 </resources>

@@ -207,14 +207,6 @@
         app:layout_constraintBottom_toTopOf="@+id/paint_menu"
         app:layout_constraintLeft_toLeftOf="@+id/paint_menu">
 
-        <ImageButton
-            android:id="@+id/erase_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/button_menu_selector"
-            android:onClick="onClick"
-            android:src="@drawable/ic_eraser"/>
-
         <android.support.v4.widget.Space
             android:layout_width="10dp"
             android:layout_height="match_parent"/>
