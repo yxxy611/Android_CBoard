@@ -932,7 +932,6 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
                                 mPaletteView.setPaintOpacity(mCirclePanelView.getmOpacityValue());
                             }
                             if(mCirclePanelView.isBrushChanged){
-
                             //mPaletteView.setTmpPaintSize(mCirclePanelView.getmBrushValue()*3);
                             mPaletteView.setPaintSize(mCirclePanelView.getmBrushValue() * 3);}
                         }
@@ -942,7 +941,6 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
                         //Log.e("asdf", "第" + (index + 1) + "个手指抬起");
                         break;
                     case MotionEvent.ACTION_MOVE:
-
                         if (event.getPointerCount() == 5 && mCirclePanelView.isAwake()) {
                             mCirclePanelView.setVectorMoved(event.getX(0), event.getY(0), event.getX(1), event.getY(1));
                             mCirclePanelView.menuScrollT();
@@ -1124,7 +1122,8 @@ public class MainActivity extends AppCompatActivity implements /*CompoundButton.
         editor = sp.edit();
 
         setBoardBackground(sp.getInt("Background", R.drawable.bg_01));
-        mPaletteView.setPaintColor(sp.getInt("Color", 0xffbbbbbb),true);
+        //mPaletteView.setPaintColor(sp.getInt("Color", 0xffbbbbbb),true);
+        mPaletteView.setPaintColor(sp.getInt("Color", Color.BLACK),true);
         mPaletteView.setPaintSize(sp.getFloat("StrokeWidth", 4.5f));
 
 

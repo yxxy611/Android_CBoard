@@ -853,6 +853,10 @@ public class PaletteView extends View {
                 //Log.e("Lasso", "mPathScale= " + mPathScale);
                 //mPathStack.get(mSelectedPathsIndex.get(0)).mRotation = mPathRotation - oldRotation;
                 mPathStack.get(mSelectedPathsIndex.get(0)).mScale = mPathScale;
+                Matrix matrix = new Matrix();
+                matrix.postScale(mPathScale,mPathScale,mPathStack.get(mSelectedPathsIndex.get(0)).imgX,mPathStack.get(mSelectedPathsIndex.get(0)).imgY);
+                mLassoAreaPath.set(mAreaPathsList.get(mSelectedPathsIndex.get(0)));
+                mLassoAreaPath.transform(matrix);
             }else{
                 Matrix matrix = new Matrix();
                 float pathOldDist = pathDist;
@@ -865,6 +869,7 @@ public class PaletteView extends View {
                     mPathScale = 0.95f;
                 }
                 matrix.setScale(mPathScale ,mPathScale ,mid.x,mid.y);
+                mLassoAreaPath.transform(matrix);
                 //Log.e("Lasso", "mPathScale= " + mPathScale);
                 //Log.e("Lasso", "midx= " + mid.x);
                 //Log.e("Lasso", "midy= " + mid.y);
@@ -1026,6 +1031,7 @@ public class PaletteView extends View {
                         for (int i = 0; i < mSelectedPaths.size(); i++) {
                             mBitmapCanvas.drawPath(mSelectedPaths.get(i), mPaintLasso);
                         }
+                        mBitmapCanvas.drawPath(mLassoAreaPath, mPaintLasso);
                     } else {
                         if (mTouchMode < 2) { // 单点滑动
                             mLastTouchXs[0] = mTouchXs[0];
@@ -1136,6 +1142,7 @@ public class PaletteView extends View {
                         mTouchSize = event.getSize(0);
                         //Log.e("Lilith", "TouchSize=" + mTouchSize);
                         if (mTouchSize > 0.005f) {
+                        //if (mTouchSize > 0.000f) {
                             setPen(Pen.ERASER);
                             //mTouchSize = 0.02f;
                             if(mTouchSize > 0.02) {
@@ -1251,6 +1258,7 @@ public class PaletteView extends View {
             mCurrPaths[id] = new Path();
             mAreaPaths[id] = new Path();
             mCurrPaths[id].moveTo(toX(mTouchDownXs[id]), toY(mTouchDownYs[id]));
+            mAreaPaths[id].moveTo(toX(mTouchDownXs[id]), toY(mTouchDownYs[id]));
         } catch (Exception e) {
             //Log.e("error", "down下标越界！！！！！");
         }
@@ -1270,7 +1278,16 @@ public class PaletteView extends View {
                         toY(mLastTouchYs[id]),
                         toX((mTouchXs[id] + mLastTouchXs[id]) / 2),
                         toY((mTouchYs[id] + mLastTouchYs[id]) / 2));
-                mAreaPaths[id].addRect(new RectF(toX(mLastTouchXs[id]), toY(mLastTouchYs[id]), toX(mTouchXs[id]), toY(mTouchYs[id])), Path.Direction.CCW);
+                //mAreaPaths[id].addRect(new RectF(toX(mLastTouchXs[id]), toY(mLastTouchYs[id]), toX(mTouchXs[id]), toY(mTouchYs[id])), Path.Direction.CCW);
+                //创造线条区域
+                mAreaPaths[id].lineTo(toX(mTouchXs[id]),toY(mTouchYs[id]));
+                mAreaPaths[id].lineTo(toX(mTouchXs[id] + 0.01f),toY(mTouchYs[id] - 0.01f));
+                mAreaPaths[id].lineTo(toX(mLastTouchXs[id] + 0.01f),toY(mLastTouchYs[id] - 0.01f));
+                mAreaPaths[id].lineTo(toX(mLastTouchXs[id]),toY(mLastTouchYs[id]));
+                //mAreaPaths[id].lineTo(mTouchXs[id],mTouchYs[id]);
+                mAreaPaths[id].moveTo(toX(mTouchXs[id]),toY(mTouchYs[id]));
+                //mAreaPaths[id].close();
+
                 if (mPen == Pen.ERASER && !isCircleOpen) {
                     mBitmapCanvas.drawPath(mCurrPaths[id], mPaint);
                 }
@@ -1319,10 +1336,14 @@ public class PaletteView extends View {
             //addPath(path);
             //mPathStack.add(path);
             mPathStack.add(path);
+            if(path.mPen == Pen.ERASER){
+                mAreaPaths[id].reset();
+            }
             mAreaPathsList.add(mAreaPaths[id]);
             saveAddChanged();
             //Log.e("Lilith", "当前画笔是:" + getPen());
             draw(mBitmapCanvas, path); // 保存到图片中
+            mBitmapCanvas.drawPath(mAreaPaths[id],mPaintLasso);
         } catch (Exception e) {
             //Log.e("error", "up下标越界！！！！！");
         }
