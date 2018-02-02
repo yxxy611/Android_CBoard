@@ -853,6 +853,7 @@ public class PaletteView extends View {
                 //Log.e("Lasso", "mPathScale= " + mPathScale);
                 //mPathStack.get(mSelectedPathsIndex.get(0)).mRotation = mPathRotation - oldRotation;
                 mPathStack.get(mSelectedPathsIndex.get(0)).mScale = mPathScale;
+                //套索区域同比缩放
                 Matrix matrix = new Matrix();
                 matrix.postScale(mPathScale,mPathScale,mPathStack.get(mSelectedPathsIndex.get(0)).imgX,mPathStack.get(mSelectedPathsIndex.get(0)).imgY);
                 mLassoAreaPath.set(mAreaPathsList.get(mSelectedPathsIndex.get(0)));
@@ -869,6 +870,7 @@ public class PaletteView extends View {
                     mPathScale = 0.95f;
                 }
                 matrix.setScale(mPathScale ,mPathScale ,mid.x,mid.y);
+                //套索区域同比缩放
                 mLassoAreaPath.transform(matrix);
                 //Log.e("Lasso", "mPathScale= " + mPathScale);
                 //Log.e("Lasso", "midx= " + mid.x);
@@ -1343,7 +1345,7 @@ public class PaletteView extends View {
             saveAddChanged();
             //Log.e("Lilith", "当前画笔是:" + getPen());
             draw(mBitmapCanvas, path); // 保存到图片中
-            mBitmapCanvas.drawPath(mAreaPaths[id],mPaintLasso);
+            //mBitmapCanvas.drawPath(mAreaPaths[id],mPaintLasso);
         } catch (Exception e) {
             //Log.e("error", "up下标越界！！！！！");
         }
